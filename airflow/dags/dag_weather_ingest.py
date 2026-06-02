@@ -230,6 +230,7 @@ with DAG(
     schedule="0 4,10,16,22 * * *",   # 01:00, 07:00, 13:00, 19:00 BRT
     start_date=datetime(2026, 1, 1),
     catchup=False,
+    is_paused_upon_creation=True,
     tags=["weather", "bigquery", "ingestao", "postgres"],
 ) as dag:
 

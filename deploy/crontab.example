@@ -10,5 +10,8 @@
 # O pipeline coleta os últimos 2 dias do Open-Meteo, grava no BigQuery
 # e executa dbt run + dbt test.
 
-0 9  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1
-0 1  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1
+# Pipeline desativado — o projeto opera em modo somente leitura (consulta dados existentes no BigQuery).
+# Para reativar, remova os comentários abaixo e reinstale com: crontab crontab.example
+#
+# 0 9  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1
+# 0 1  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1

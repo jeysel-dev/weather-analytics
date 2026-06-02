@@ -84,6 +84,7 @@ with DAG(
     schedule="30 3,9,15,21 * * *",
     start_date=datetime(2026, 1, 1),
     catchup=False,
+    is_paused_upon_creation=True,
     tags=["weather", "coleta", "open-meteo", "postgresql"],
 ) as dag:
 

@@ -55,7 +55,7 @@ with DAG(
     schedule="30 10 * * *",
     start_date=datetime(2026, 1, 1),
     catchup=False,
-    
+    is_paused_upon_creation=True,
     sla_miss_callback=None,
     tags=["weather", "dbt", "bigquery", "transformacao"],
 ) as dag:
