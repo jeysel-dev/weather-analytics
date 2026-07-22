@@ -1,6 +1,13 @@
 # Weather Analytics Pipeline — crontab do servidor Lightsail
 #
-# Para instalar: crontab crontab.example  (como usuário ubuntu)
+# ⚠️  NÃO rode `crontab crontab.example` direto — isso SUBSTITUI o crontab
+#     inteiro do usuário ubuntu, apagando todos os outros jobs (backups,
+#     monitoramento, restart de outros apps etc). Este servidor é
+#     compartilhado por vários serviços.
+#
+# Para instalar corretamente: `crontab -l` para ver o que já existe, editar
+# com `crontab -e` e colar só a linha do weather-pipeline no fim, ou anexar
+# programaticamente (`(crontab -l; echo "<linha>") | crontab -`).
 # Para verificar: crontab -l
 #
 # Horário em UTC (BRT = UTC-3):
