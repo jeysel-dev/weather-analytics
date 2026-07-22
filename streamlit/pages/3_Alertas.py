@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 st.set_page_config(page_title="Alertas | Weather SC", page_icon="🚨", layout="wide")
 
@@ -29,13 +29,15 @@ with st.sidebar:
 
 meso_clause = f"AND mesoregion = '{meso}'" if meso != "Todas" else ""
 sev_clause  = f"AND severity = '{severity}'" if severity != "Todas" else ""
+_max_alerts = max_date("mart_climate__alerts")
 base_where  = f"""
-  date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+  date >= DATE_SUB(DATE '{_max_alerts}', INTERVAL {days} DAY)
   {meso_clause}
   {sev_clause}
 """
 
 st.title("🚨 Alertas Climáticos")
+st.caption(f"Dados disponíveis até {_max_alerts}")
 
 # ── KPIs ──────────────────────────────────────────────────────────────────────
 kpi = query(f"""

@@ -49,6 +49,14 @@ def query(sql: str) -> pd.DataFrame:
     return _client().query(sql).to_dataframe()
 
 
+def max_date(table: str):
+    """Última data disponível na tabela — usada para ancorar filtros de período
+    no dado mais recente em vez do relógio de hoje (o pipeline roda por lote,
+    não em tempo real, e pode ficar dias/semanas sem rodar)."""
+    df = query(f"SELECT MAX(date) AS max_date FROM {tbl(table)}")
+    return df["max_date"].iloc[0] if not df.empty else None
+
+
 MESOREGIONS = [
     "Grande Florianópolis",
     "Norte Catarinense",

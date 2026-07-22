@@ -1,7 +1,7 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 st.set_page_config(page_title="Temperatura | Weather SC", page_icon="🌡️", layout="wide")
 
@@ -19,8 +19,10 @@ with st.sidebar:
     days = st.slider("Período (dias)", 7, 90, 30, step=7)
 
 meso_clause = f"AND mesoregion = '{meso}'" if meso != "Todas" else ""
+_max_daily = max_date("mart_climate__daily_facts")
 
 st.title("🌡️ Temperatura")
+st.caption(f"Dados disponíveis até {_max_daily}")
 
 # ── Rankings ──────────────────────────────────────────────────────────────────
 col1, col2 = st.columns(2)
@@ -31,7 +33,7 @@ with col1:
     SELECT city_name, mesoregion,
            ROUND(AVG(temp_max_c), 1) AS media_max
     FROM {tbl('mart_climate__daily_facts')}
-    WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL 7 DAY)
+    WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL 7 DAY)
       {meso_clause}
     GROUP BY city_name, mesoregion
     ORDER BY media_max DESC
@@ -59,7 +61,7 @@ with col2:
     SELECT city_name, mesoregion,
            ROUND(AVG(temp_min_c), 1) AS media_min
     FROM {tbl('mart_climate__daily_facts')}
-    WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL 7 DAY)
+    WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL 7 DAY)
       {meso_clause}
     GROUP BY city_name, mesoregion
     ORDER BY media_min ASC
@@ -89,7 +91,7 @@ meso_trend = query(f"""
 SELECT date, mesoregion,
        ROUND(AVG(temp_avg_c), 1) AS temp_avg
 FROM {tbl('mart_climate__daily_facts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
   {meso_clause}
 GROUP BY date, mesoregion
 ORDER BY date
@@ -115,7 +117,7 @@ anomaly = query(f"""
 SELECT date, mesoregion,
        ROUND(AVG(temp_anomaly_c), 2) AS anomaly
 FROM {tbl('mart_climate__daily_facts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
 GROUP BY date, mesoregion
 ORDER BY date
 """)

@@ -1,6 +1,6 @@
 import plotly.express as px
 import streamlit as st
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 st.set_page_config(page_title="Precipitação | Weather SC", page_icon="🌧️", layout="wide")
 
@@ -18,6 +18,7 @@ with st.sidebar:
     days = st.slider("Período (dias)", 7, 90, 30, step=7)
 
 meso_clause = f"AND mesoregion = '{meso}'" if meso != "Todas" else ""
+_max_daily = max_date("mart_climate__daily_facts")
 
 CLASS_COLORS = {
     "dry":      "#78909C",
@@ -41,7 +42,7 @@ with col1:
            ROUND(SUM(precipitation_mm), 1)                           AS total_mm,
            COUNT(CASE WHEN precipitation_mm > 0 THEN 1 END)          AS dias_chuva
     FROM {tbl('mart_climate__daily_facts')}
-    WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+    WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
       {meso_clause}
     GROUP BY city_name, mesoregion
     ORDER BY total_mm DESC
@@ -68,7 +69,7 @@ with col2:
     dist = query(f"""
     SELECT precipitation_class, COUNT(*) AS qtd
     FROM {tbl('mart_climate__daily_facts')}
-    WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+    WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
       {meso_clause}
     GROUP BY precipitation_class
     ORDER BY qtd DESC
@@ -91,7 +92,7 @@ heat = query(f"""
 SELECT date, mesoregion,
        ROUND(AVG(precipitation_mm), 1) AS avg_precip
 FROM {tbl('mart_climate__daily_facts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
 GROUP BY date, mesoregion
 ORDER BY date
 """)

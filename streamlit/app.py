@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 from dotenv import load_dotenv
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 load_dotenv()
 
@@ -39,7 +39,10 @@ with st.sidebar:
 
 meso_clause = f"AND mesoregion = '{meso}'" if meso != "Todas" else ""
 
-# ── KPIs (últimos 7 dias) ─────────────────────────────────────────────────────
+_max_daily = max_date("mart_climate__daily_facts")
+_max_alerts = max_date("mart_climate__alerts")
+
+# ── KPIs (últimos 7 dias com dado disponível) ──────────────────────────────────
 kpi_df = query(f"""
 SELECT
   ROUND(AVG(temp_max_c), 1)  AS avg_max,
@@ -50,19 +53,19 @@ SELECT
   )                           AS avg_precip,
   ROUND(AVG(temp_anomaly_c), 2) AS avg_anomaly
 FROM {tbl('mart_climate__daily_facts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL 7 DAY)
+WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL 7 DAY)
   {meso_clause}
 """)
 
 alerts_df = query(f"""
 SELECT COUNT(*) AS total
 FROM {tbl('mart_climate__alerts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL 7 DAY)
+WHERE date >= DATE_SUB(DATE '{_max_alerts}', INTERVAL 7 DAY)
   {meso_clause}
 """)
 
 st.title("🌤️ Weather Analytics — Santa Catarina")
-st.caption(f"Últimos 7 dias · {meso if meso != 'Todas' else '295 municípios'}")
+st.caption(f"Últimos 7 dias (dados até {_max_daily}) · {meso if meso != 'Todas' else '295 municípios'}")
 
 if not kpi_df.empty:
     r = kpi_df.iloc[0]
@@ -93,7 +96,7 @@ SELECT
   ROUND(AVG(temp_min_c), 1) AS temp_min,
   ROUND(AVG(temp_avg_c), 1) AS temp_avg
 FROM {tbl('mart_climate__daily_facts')}
-WHERE date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+WHERE date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
   {meso_clause}
 GROUP BY date
 ORDER BY date

@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 st.set_page_config(page_title="Análise Comparativa | Weather SC", page_icon="🔍", layout="wide")
 st.title("🔍 Análise Comparativa")
@@ -19,6 +19,8 @@ WHERE mesoregion IS NOT NULL
 ORDER BY mesoregion
 """)
 _meso_list = _meso_df["mesoregion"].tolist() if not _meso_df.empty else []
+
+_max_daily = max_date("mart_climate__daily_facts")
 
 
 def _idx(name: str) -> int:
@@ -74,7 +76,7 @@ with tab1:
     SELECT date, city_name, ROUND({col}, 1) AS valor
     FROM {tbl('mart_climate__daily_facts')}
     WHERE city_name IN ({cities_sql})
-      AND date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {comp_days} DAY)
+      AND date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {comp_days} DAY)
     ORDER BY date, city_name
     """)
 
@@ -116,7 +118,7 @@ with tab2:
            ROUND(SUM(precipitation_mm), 1) AS precipitation_mm
     FROM {tbl('mart_climate__daily_facts')}
     WHERE mesoregion = '{meso_w}'
-      AND date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {wet_days} DAY)
+      AND date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {wet_days} DAY)
     GROUP BY date, city_name
     ORDER BY city_name, date
     """)

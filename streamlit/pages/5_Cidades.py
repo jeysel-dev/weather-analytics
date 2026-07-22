@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utils.bigquery import query, tbl
+from utils.bigquery import query, tbl, max_date
 
 st.set_page_config(page_title="Perfil por Cidade | Weather SC", page_icon="🏙️", layout="wide")
 
@@ -36,6 +36,9 @@ with st.sidebar:
     city = st.selectbox("Selecione", cities["city_name"].tolist())
     days = st.slider("Período (dias)", 30, 365, 90, step=30)
 
+_max_daily = max_date("mart_climate__daily_facts")
+_max_alerts = max_date("mart_climate__alerts")
+
 info = cities[cities["city_name"] == city].iloc[0]
 st.subheader(f"📍 {city}")
 st.caption(
@@ -53,7 +56,7 @@ SELECT
   wind_speed_max_kmh, uv_index_max, uv_risk_level
 FROM {tbl('mart_climate__daily_facts')}
 WHERE city_name = '{city}'
-  AND date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+  AND date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
 ORDER BY date
 """)
 
@@ -172,7 +175,7 @@ with tab_alertas:
       uv_index_max
     FROM {tbl('mart_climate__alerts')}
     WHERE city_name = '{city}'
-      AND date >= DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL {days} DAY)
+      AND date >= DATE_SUB(DATE '{_max_alerts}', INTERVAL {days} DAY)
     ORDER BY date DESC
     LIMIT 100
     """)
