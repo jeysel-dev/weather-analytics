@@ -1,17 +1,18 @@
 # Weather Analytics Pipeline — crontab do servidor Lightsail
 #
-# Para instalar: crontab -e  (como usuário ubuntu)
+# Para instalar: crontab crontab.example  (como usuário ubuntu)
 # Para verificar: crontab -l
 #
-# Horários em UTC (BRT = UTC-3):
+# Horário em UTC (BRT = UTC-3):
 #   09:00 UTC = 06:00 BRT  → coleta matinal
-#   01:00 UTC = 22:00 BRT  → coleta noturna
+#
+# 1x/dia (reduzido de 2x/dia) por custo: a granularidade diária dos marts não
+# precisa de mais que isso, e mart_climate__hourly_facts agora é incremental
+# (custo de dbt run deixa de escalar com o histórico total). ingest.py roda
+# com a janela padrão de 2 dias (--days 2), o que já cobre uma falha pontual
+# do dia anterior.
 #
 # O pipeline coleta os últimos 2 dias do Open-Meteo, grava no BigQuery
 # e executa dbt run + dbt test.
 
-# Pipeline desativado — o projeto opera em modo somente leitura (consulta dados existentes no BigQuery).
-# Para reativar, remova os comentários abaixo e reinstale com: crontab crontab.example
-#
-# 0 9  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1
-# 0 1  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1
+0 9  * * * cd /home/ubuntu/app_weather && docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline >> /home/ubuntu/app_weather/logs/cron.log 2>&1

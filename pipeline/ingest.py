@@ -206,6 +206,21 @@ def ensure_dataset(client: bigquery.Client):
 def ensure_table(client: bigquery.Client, table_name: str):
     table_id = f"{GCP_PROJECT}.{BQ_DATASET}.{table_name}"
     table = bigquery.Table(table_id, schema=BQ_SCHEMA[table_name])
+    table.clustering_fields = ["location_id"]
+    if table_name == "open_meteo_daily":
+        # Sem expiração: mart_climate__daily_facts é reconstruída via full
+        # rebuild (materialized='table') e depende do histórico completo.
+        table.time_partitioning = bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="date",
+        )
+    else:
+        # open_meteo_hourly pode expirar — mart_climate__hourly_facts é
+        # incremental e não depende mais do raw para preservar histórico já
+        # mesclado. ~450 dias de folga para backfill/debug antes de expirar.
+        table.time_partitioning = bigquery.TimePartitioning(
+            type_=bigquery.TimePartitioningType.DAY, field="timestamp",
+            expiration_ms=450 * 24 * 60 * 60 * 1000,
+        )
     client.create_table(table, exists_ok=True)
 
 

@@ -1,6 +1,9 @@
 {{
   config(
-    materialized = 'table',
+    materialized = 'incremental',
+    unique_key = 'surrogate_key',
+    incremental_strategy = 'merge',
+    on_schema_change = 'sync_all_columns',
     schema = 'marts',
     partition_by = {
       "field": "date",
@@ -11,8 +14,17 @@
   )
 }}
 
+-- Sem dependência de rolling window (diferente de daily_facts) — cada linha
+-- é independente, então incremental por delta é seguro sem recomputar
+-- histórico. Ancorado no MAX(observed_at) já mesclado nesta tabela, não no
+-- relógio de hoje (mesma lição do bug dos gráficos vazios no Streamlit).
 with hourly as (
     select * from {{ ref('stg_weather__hourly') }}
+    {% if is_incremental() %}
+    where observed_at >= (
+        select date_sub(max(observed_at), interval 4 day) from {{ this }}
+    )
+    {% endif %}
 ),
 
 locations as (
