@@ -1,6 +1,9 @@
 {{
   config(
-    materialized = 'table',
+    materialized = 'incremental',
+    unique_key = 'surrogate_key',
+    incremental_strategy = 'merge',
+    on_schema_change = 'sync_all_columns',
     schema = 'marts',
     partition_by = {
       "field": "date",
@@ -11,10 +14,21 @@
   )
 }}
 
-
-
+-- INCREMENTAL POR NECESSIDADE, NÃO SÓ POR CUSTO: weather_raw guarda só uma
+-- janela recente (ver ingest.py), então um full rebuild ('table') aqui
+-- reconstruiria a tabela inteira a partir de uns poucos dias de raw,
+-- destruindo o histórico acumulado. Já aconteceu uma vez em produção e foi
+-- restaurado via BigQuery time travel — não reverter para 'table' sem
+-- garantir que weather_raw.open_meteo_daily tenha o histórico completo de
+-- novo. Lookback generoso (35d) dá margem para a rolling average de 30
+-- dias em int_weather__daily_enriched.
 with enriched as (
     select * from {{ ref('int_weather__daily_enriched') }}
+    {% if is_incremental() %}
+    where date >= (
+        select date_sub(max(date), interval 35 day) from {{ this }}
+    )
+    {% endif %}
 ),
 
 final as (
