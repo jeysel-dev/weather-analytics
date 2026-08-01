@@ -1,0 +1,20 @@
+# Segredos / env
+.env
+.env.*
+!.env.example
+
+# Ambientes virtuais e caches Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Controle de versão
+.git/
+.gitignore
+
+# Docs (não precisam estar na imagem)
+*.md
+
+# Deploy assets (config de host, não da app)
+deploy/
