@@ -9,7 +9,7 @@ services:
       - /home/ubuntu/secrets:/app/secrets:ro
       - /home/ubuntu/app_weather/logs:/app/logs
     env_file:
-      - .env.prod
+      - /home/ubuntu/secrets/weather-analytics.env
     networks:
       - jeysel-network
 
