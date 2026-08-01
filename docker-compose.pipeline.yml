@@ -1,8 +1,6 @@
 services:
   weather-pipeline:
-    build:
-      context: .
-      dockerfile: pipeline/Dockerfile
+    image: ghcr.io/jeysel-dev/weather-pipeline:f7e3ba8
     container_name: weather-pipeline
     restart: "no"
     volumes:
