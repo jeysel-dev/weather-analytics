@@ -37,11 +37,14 @@ def _location() -> str | None:
 
 @st.cache_resource
 def _client() -> bigquery.Client:
-    key_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
-    if key_path:
-        creds = service_account.Credentials.from_service_account_file(key_path)
-        return bigquery.Client(project=_project(), credentials=creds, location=_location())
-    return bigquery.Client(project=_project(), location=_location())
+    key_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD")
+    if not key_path:
+        raise EnvironmentError(
+            "GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD não definido. Crie um "
+            "arquivo .env com base em .env.example"
+        )
+    creds = service_account.Credentials.from_service_account_file(key_path)
+    return bigquery.Client(project=_project(), credentials=creds, location=_location())
 
 
 @st.cache_data(ttl=3600, show_spinner="Consultando BigQuery...")

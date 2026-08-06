@@ -24,6 +24,7 @@ from typing import Generator
 
 import requests
 from google.cloud import bigquery
+from google.oauth2 import service_account
 
 logging.basicConfig(
     level=logging.INFO,
@@ -193,8 +194,17 @@ def iter_daily(raw: dict, location_id: str, extracted_at: str) -> Generator[dict
 # ── BigQuery ──────────────────────────────────────────────────────────────────
 
 def get_bq_client() -> bigquery.Client:
-    # Usa GOOGLE_APPLICATION_CREDENTIALS automaticamente via ADC
-    return bigquery.Client(project=GCP_PROJECT)
+    # Credencial explícita (não ADC): pipeline e dashboard agora usam service
+    # accounts distintas no mesmo ambiente, então não dá para depender da
+    # credencial "default" implícita.
+    key_path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_PIPELINE")
+    if not key_path:
+        raise EnvironmentError(
+            "GOOGLE_APPLICATION_CREDENTIALS_PIPELINE não definido. Aponte "
+            "para o JSON da service account do pipeline/dbt."
+        )
+    credentials = service_account.Credentials.from_service_account_file(key_path)
+    return bigquery.Client(project=GCP_PROJECT, credentials=credentials)
 
 
 def ensure_dataset(client: bigquery.Client):
