@@ -1,3 +1,4 @@
+# Diagnóstico 2026-08-06: comentário trivial pra testar se o push volta a disparar o run.
 name: Build and push streamlit image
 
 on:
