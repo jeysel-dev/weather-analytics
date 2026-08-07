@@ -9,7 +9,7 @@ Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`s
 | Ingestão | `pipeline/ingest.py` (Python) | Busca API Open-Meteo → grava direto em `weather_raw.*` no BigQuery (sem staging intermediário) |
 | Transform | dbt | Lê `weather_raw` → materializa `staging` → `intermediate` → `marts` |
 | Warehouse | BigQuery | Dataset `marts` com as tabelas analíticas finais (`mart_climate__daily_facts`, `mart_climate__hourly_facts`, `mart_climate__alerts`) |
-| Visualização | **Streamlit** | 6 páginas analíticas + análise comparativa; deploy via Docker no Lightsail com Nginx + systemd |
+| Visualização | **Streamlit** | 6 páginas analíticas + análise comparativa; deploy via imagem Docker publicada no GHCR, pull/recreate gerenciados pelo repositório `infra` |
 | Agendamento | cron (host) | `pipeline/run_pipeline.sh` 1×/dia via `docker compose -f docker-compose.pipeline.yml run` |
 
 `weather_raw` guarda só uma janela recente de dias (não o histórico completo — decisão de custo). O histórico completo vive acumulado nas marts, que são `materialized='incremental'` por isso mesmo.
@@ -20,7 +20,7 @@ Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`s
 Weather-Analytics/
 ├── pipeline/       # Ingestão (Open-Meteo → BigQuery weather_raw) + orquestração do run diário
 ├── dbt/            # Transformações: staging → intermediate → marts
-├── streamlit/       # Dashboard interativo em Python; deploy no Lightsail
+├── streamlit/       # Dashboard interativo em Python; deploy via imagem GHCR (repo infra)
 ├── deploy/         # crontab.example do host + delegação para deploy centralizado (repo infra)
 ├── docs/           # Specs (docs/specs/), steering e memória de decisões
 ├── airflow/        # Arquitetura anterior, pausada — ver nota abaixo
@@ -84,7 +84,8 @@ qualquer comando de exemplo abaixo.
 ## 🎯 Streamlit — Dashboard em Produção
 
 Dashboard interativo construído em Python, conectado diretamente ao BigQuery via `google-cloud-bigquery`.
-Deploy no AWS Lightsail com Nginx como proxy reverso e systemd gerenciando o processo.
+Deploy via imagem Docker publicada no GHCR (`build-and-push.yml`); pull e recreate do
+container são gerenciados pelo repositório `infra` — ver seção "Deploy em produção" abaixo.
 
 ### Estrutura
 
@@ -103,8 +104,8 @@ streamlit/
 ├── requirements.txt
 ├── .env.example
 └── deploy/
-    ├── nginx-weather.conf        ← Proxy com WebSocket headers (obrigatório pro Streamlit)
-    └── weather-streamlit.service ← systemd com EnvironmentFile e restart automático
+    ├── nginx-weather.conf        ← Configuração legada (Nginx + systemd)
+    └── weather-streamlit.service ← não é o mecanismo de deploy ativo hoje
 ```
 
 ### Executar localmente (Windows)
@@ -170,63 +171,20 @@ O cache de queries tem TTL de 1h. Para forçar recarga durante testes:
 
 ---
 
-### Deploy na AWS (Maquina Linux) — passo a passo
+### Deploy em produção
 
-#### 1. Preparar o servidor
+O deploy não é feito manualmente neste repositório: a imagem Docker do
+Streamlit é publicada no GHCR pelo workflow `build-and-push.yml` (ver seção
+CI/CD abaixo), e o pull da imagem + recreate do container são gerenciados
+pelo repositório `infra`. Este repositório não documenta o mecanismo físico
+de deploy — ver `docs/steering/weather-analytics.md` para a fronteira entre
+os dois repositórios.
 
-```bash
-# Instalar Python venv e criar ambiente isolado
-sudo apt install python3-venv python3-pip -y
-python3 -m venv ~/venv/weather
-source ~/venv/weather/bin/activate
-
-# Clonar o repositório (segue a convenção ~/app_* do servidor)
-git clone https://github.com/SEU_USUARIO/weather-analytics.git ~/app_weather
-cd ~/app_weather/streamlit
-source ~/venv/weather/bin/activate
-pip install -r requirements.txt
-```
-
-#### 2. Configurar credenciais
-
-```bash
-# Copiar a service account do GCP para o servidor
-mkdir -p ~/secrets
-# scp da sua máquina local:
-# scp <caminho-local>/weather-dashboard-sa-key.json ubuntu@<ip>:~/secrets/
-
-# Criar o .env a partir do exemplo
-cp .env.example .env
-nano .env   # preencher GCP_PROJECT_ID e ajustar BIGQUERY_DATASET
-```
-
-> **Atenção nos datasets BigQuery:** verifique no console GCP quais datasets
-> existem no projeto — o dashboard lê do dataset `marts`.
-
-#### 3. Nginx
-
-```bash
-sudo cp deploy/nginx-weather.conf /etc/nginx/sites-available/weather.jeysel.dev
-sudo ln -s /etc/nginx/sites-available/weather.jeysel.dev /etc/nginx/sites-enabled/
-
-# Obter certificado SSL para o novo subdomínio
-sudo certbot certonly --nginx -d weather.jeysel.dev
-
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-#### 4. systemd
-
-```bash
-# Ajustar o caminho do venv no .service se necessário
-sudo cp deploy/weather-streamlit.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable weather-streamlit
-sudo systemctl start weather-streamlit
-
-# Verificar logs
-sudo journalctl -u weather-streamlit -f
-```
+`streamlit/deploy/nginx-weather.conf` e
+`streamlit/deploy/weather-streamlit.service` continuam no repositório por
+referência histórica de uma configuração anterior (Nginx + systemd
+gerenciados manualmente no host) — **não são o mecanismo de deploy ativo
+hoje**.
 
 ### Decisões de arquitetura
 

@@ -4,8 +4,10 @@
 [x] Melhoria
 
 ## Status
-[x] implementado (relocação de arquivo + `constitution.md` criados; reescrita
-de conteúdo do arquivo movido continua pendente — ver [[001-atualizar-docs-arquitetura]])
+[x] implementado (relocação de arquivo + `constitution.md` criados; a
+reescrita de conteúdo do arquivo movido, requirement pendente desta nota
+originalmente, foi concluída depois pela spec [[001-atualizar-docs-arquitetura]]
+— ver `docs/steering/weather-analytics.md`)
 
 ## Resumo
 Cria `docs/steering/` e `docs/memory/` neste repositório, espelhando a
