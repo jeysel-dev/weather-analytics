@@ -1,309 +1,83 @@
 # Weather Analytics Pipeline
 
-Open-Meteo API → collector.py (PostgreSQL) → Airflow → BigQuery → dbt → BigQuery DW → Streamlit
+Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`staging` → `intermediate` → `marts`) → Streamlit
 
 ## Arquitetura em Camadas
 
 | Camada | Tecnologia | O que faz |
 |--------|-----------|-----------|
-| Orquestração | **Airflow** (Docker) | Agenda coleta, ingestão e transformação |
-| Coleta | `collector.py` (Python) | Busca API Open-Meteo → grava em `raw.*` |
-| Staging | PostgreSQL 17 | Armazena dados raw |
-| Ingest | `dag_weather_ingest` (Python + BigQuery SDK) | Replica `raw.*` do PostgreSQL para o BigQuery de forma incremental |
-| Transform | dbt | Lê `weather_raw` (prod) ou `raw` (dev) → materializa marts |
-| Warehouse | BigQuery | Dataset `weather_dw` com tabelas analíticas finais |
-| Visualização | **Streamlit** | 6 páginas analíticas + análise comparativa; deploy no Lightsail com Nginx + systemd |
+| Ingestão | `pipeline/ingest.py` (Python) | Busca API Open-Meteo → grava direto em `weather_raw.*` no BigQuery (sem staging intermediário) |
+| Transform | dbt | Lê `weather_raw` → materializa `staging` → `intermediate` → `marts` |
+| Warehouse | BigQuery | Dataset `marts` com as tabelas analíticas finais (`mart_climate__daily_facts`, `mart_climate__hourly_facts`, `mart_climate__alerts`) |
+| Visualização | **Streamlit** | 6 páginas analíticas + análise comparativa; deploy via Docker no Lightsail com Nginx + systemd |
+| Agendamento | cron (host) | `pipeline/run_pipeline.sh` 1×/dia via `docker compose -f docker-compose.pipeline.yml run` |
+
+`weather_raw` guarda só uma janela recente de dias (não o histórico completo — decisão de custo). O histórico completo vive acumulado nas marts, que são `materialized='incremental'` por isso mesmo.
 
 ## Estrutura
 
 ```
 Weather-Analytics/
-├── airflow/        # Orquestração: 4 DAGs (coleta + ingestão + transformação + backfill)
-├── postgresql/     # Container Ubuntu 24.04 + PostgreSQL 17 + app coletor
-├── dbt/            # Transformações: staging → marts (dev: Postgres, prod: BigQuery)
-├── streamlit/      # Dashboard interativo em Python; deploy no Lightsail
-└── docs/           # Arquitetura e decisões
+├── pipeline/       # Ingestão (Open-Meteo → BigQuery weather_raw) + orquestração do run diário
+├── dbt/            # Transformações: staging → intermediate → marts
+├── streamlit/       # Dashboard interativo em Python; deploy no Lightsail
+├── deploy/         # crontab.example do host + delegação para deploy centralizado (repo infra)
+├── docs/           # Specs (docs/specs/), steering e memória de decisões
+├── airflow/        # Arquitetura anterior, pausada — ver nota abaixo
+└── postgresql/     # Arquitetura anterior, pausada — ver nota abaixo
 ```
 
 ## Pré-requisitos
 
 - Docker Desktop instalado e rodando
 - Docker Compose disponível
-- ~8GB de espaço livre em disco
 - Conexão com internet para download de imagens e integração com APIs
-- Conta GCP com BigQuery e um Service Account com roles: `BigQuery Data Editor` + `BigQuery Job User`
+- Conta GCP com BigQuery e Service Accounts com roles: `BigQuery Data Editor` + `BigQuery Job User`
 
 ---
 
-## 🐳 PostgreSQL + Collector
+## Arquitetura anterior (Airflow + PostgreSQL) — pausada
 
-Siga o guia: `postgresql/README.md`
-
-```bash
-# Subir o PostgreSQL
-cd postgresql
-docker compose up -d
-
-# Verificar dados coletados
-docker exec weather_postgres psql -U weather_user -d weather_staging \
-  -c "SELECT location_id, COUNT(*) FROM raw.open_meteo_daily GROUP BY 1 ORDER BY 1;"
-```
+Este repositório já teve uma arquitetura anterior com Airflow orquestrando
+coleta → PostgreSQL → BigQuery em 4 DAGs, mais um Postgres standalone para
+staging. Essa stack está **pausada** hoje (não é o caminho vivo) — o ingest
+direto para BigQuery via `pipeline/ingest.py` é mais simples e mais barato
+para o volume atual. Os diretórios `airflow/` e `postgresql/` continuam no
+repositório para referência histórica, mas não têm setup/comandos
+documentados aqui; para reativá-los, seria preciso planejamento próprio (não
+é um caminho suportado atualmente).
 
 ---
 
-## ⚡ Airflow — Orquestração do Pipeline
+## Executar o dbt manualmente
 
-O Airflow centraliza o pipeline completo em três DAGs:
+**Em produção**, o dbt roda dentro do container `weather-pipeline`, disparado
+automaticamente pelo cron via `pipeline/run_pipeline.sh` — não é algo que se
+roda manualmente no dia a dia.
 
-| DAG | Schedule | O que faz |
-|-----|----------|-----------|
-| `dag_weather_collection` | 00:30, 06:30, 12:30, 18:30 BRT | Coleta Open-Meteo → PostgreSQL + verifica inserção |
-| `dag_weather_ingest` | 01:00, 07:00, 13:00, 19:00 BRT | PostgreSQL → BigQuery (incremental via SDK) |
-| `dag_weather_transform` | 07:30 BRT (diário) | `dbt seed → dbt run → dbt test` no BigQuery (prod) |
-
-### 1. Pré-requisito
-
-O `postgresql/docker-compose.yml` deve estar rodando antes de subir o Airflow, pois a rede `weather_network` é criada por ele.
-
-```powershell
-# Confirmar que a rede existe
-docker network ls | Select-String weather
-```
-
-### 2. Configurar variáveis de ambiente
+**Para rodar manualmente/local** (dbt instalado no host, fora do container),
+com `profiles.yml` gerado a partir de `pipeline/dbt_profiles.yml.example` e
+variáveis de ambiente (`GCP_PROJECT_ID`, `GOOGLE_APPLICATION_CREDENTIALS_PIPELINE`,
+etc.) configuradas no seu shell:
 
 ```bash
-cd airflow
-cp .env.example .env
+dbt deps --project-dir dbt --profiles-dir pipeline
+dbt run  --project-dir dbt --profiles-dir pipeline
+dbt test --project-dir dbt --profiles-dir pipeline
 ```
 
-Editar o `.env` e preencher:
+## Credenciais GCP
 
-| Variável | Onde encontrar |
-|----------|----------------|
-| `POSTGRES_PASSWORD` | Mesmo valor do `postgresql/.env` |
-| `DBT_PROFILES_DIR` | Caminho absoluto para a pasta com `profiles.yml` (ex: `C:/Users/seu-usuario/.dbt`) |
-| `GCP_PROJECT_ID` | ID do projeto no Google Cloud Console |
+O projeto usa duas Service Accounts separadas, uma por serviço — não
+compartilhe a mesma chave entre pipeline e dashboard:
 
-### 3. Subir o Airflow
+| Variável | Usada por | Onde configurar |
+|----------|-----------|------------------|
+| `GOOGLE_APPLICATION_CREDENTIALS_PIPELINE` | `pipeline/` (ingest + dbt) | `pipeline/dbt_profiles.yml.example` → copiar e preencher |
+| `GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD` | `streamlit/` | `streamlit/.env.example` → copiar para `.env` |
 
-```bash
-cd airflow
-docker compose up -d
-```
-
-Acessar: [http://localhost:8081](http://localhost:8081) — `admin` / `admin`
-
-### 4. Verificar os containers
-
-```bash
-docker compose ps
-```
-
-Esperado: `airflow_webserver (healthy)`, `airflow_scheduler (healthy)`, `airflow_meta_postgres (healthy)`, `airflow_init (Exited 0)`.
-
-### 5. Executar as DAGs manualmente (primeiro teste)
-
-Via UI em [http://localhost:8081](http://localhost:8081), acionar na ordem:
-
-1. `dag_weather_collection` → botão "Trigger DAG"
-   - `collect_open_meteo` — coleta os 295 municípios de SC via API Open-Meteo e insere no PostgreSQL (`raw.open_meteo_daily` e `raw.open_meteo_hourly`)
-   - `verify_rows_inserted` — verifica se há linhas com `_extracted_at` nos últimos 30 minutos
-
-2. Após conclusão: `dag_weather_ingest` → botão "Trigger DAG"
-   - `ingest_daily` — copia `raw.open_meteo_daily` do PostgreSQL para o BigQuery (incremental)
-   - `ingest_hourly` — copia `raw.open_meteo_hourly` do PostgreSQL para o BigQuery (incremental)
-   - `verify_ingest` — verifica se ambas as tabelas têm dados recentes no BigQuery
-
-3. Após conclusão: `dag_weather_transform` → botão "Trigger DAG"
-   - `dbt_seed` — carrega `seeds/locations.csv`
-   - `dbt_run` — materializa os modelos no BigQuery (target prod)
-   - `dbt_test` — valida os testes de qualidade
-
-Via CLI (PowerShell):
-
-```powershell
-# Trigger coleta
-docker exec airflow_scheduler airflow dags trigger dag_weather_collection
-
-# Trigger ingestão
-docker exec airflow_scheduler airflow dags trigger dag_weather_ingest
-
-# Trigger transformação
-docker exec airflow_scheduler airflow dags trigger dag_weather_transform
-```
-
-### 6. Monitorar logs
-
-```bash
-# Logs do scheduler
-docker logs -f airflow_scheduler
-
-# Logs de uma task específica
-docker exec airflow_scheduler \
-  airflow tasks logs dag_weather_collection collect_open_meteo <run_id>
-```
-
-### Parar o Airflow
-
-```bash
-cd airflow
-docker compose down
-```
-
-### Estrutura das DAGs
-
-```
-dag_weather_collection (00:30 / 06:30 / 12:30 / 18:30 BRT)
-  └── collect_open_meteo        BashOperator   → python3 collector.py --mode once
-  └── verify_rows_inserted      PythonOperator → verifica inserção no PostgreSQL
-
-dag_weather_ingest (01:00 / 07:00 / 13:00 / 19:00 BRT)
-  ├── ingest_daily              PythonOperator → PostgreSQL raw.open_meteo_daily → BigQuery
-  ├── ingest_hourly             PythonOperator → PostgreSQL raw.open_meteo_hourly → BigQuery
-  └── verify_ingest             PythonOperator → verifica dados recentes no BigQuery
-
-dag_weather_transform (07:30 BRT)
-  └── dbt_seed    BashOperator → dbt seed  --target prod
-  └── dbt_run     BashOperator → dbt run   --target prod   [SLA: 30 min]
-  └── dbt_test    BashOperator → dbt test  --target prod
-```
-
-### Backfill de dados históricos
-
-A DAG `dag_weather_backfill` popula o BigQuery com dados históricos da API Open-Meteo Archive
-diretamente, sem passar pelo PostgreSQL. Indicada para quem quer iniciar o projeto com volume
-suficiente para dashboards com storytelling (5 anos de dados diários + 2 anos de dados horários).
-
-**Estimativa:** ~90 min | **Storage BigQuery:** ~2 GB | Dentro do free tier (10 GB/mês)
-
-Os períodos estão configurados diretamente no arquivo
-`airflow/dags/dag_weather_backfill.py` nas constantes:
-
-```python
-DAILY_START  = "2021-01-01"   # 5 anos de dados diários
-DAILY_END    = _YESTERDAY     # até ontem (calculado automaticamente)
-HOURLY_START = "2024-01-01"   # 2 anos de dados horários
-HOURLY_END   = _YESTERDAY
-```
-
-Ajuste antes de disparar, se necessário.
-
-#### Passo 1 — Limpar dados existentes
-
-```bash
-# PostgreSQL (requer superusuário)
-docker exec -it weather_postgres psql -U postgres -d weather_staging -c "TRUNCATE raw.open_meteo_daily CASCADE;"
-docker exec -it weather_postgres psql -U postgres -d weather_staging -c "TRUNCATE raw.open_meteo_hourly CASCADE;"
-```
-
-No **BigQuery Console → Query editor**:
-
-```sql
-TRUNCATE TABLE `seu-projeto.weather_raw.open_meteo_daily`;
-TRUNCATE TABLE `seu-projeto.weather_raw.open_meteo_hourly`;
-```
-
-> Substitua `seu-projeto` pelo seu `GCP_PROJECT_ID`.
-
-#### Passo 2 — Despausar a DAG
-
-```bash
-docker exec -it airflow_scheduler airflow dags unpause dag_weather_backfill
-```
-
-Se o comando não persistir, acesse a Airflow UI em [http://localhost:8081](http://localhost:8081),
-encontre a DAG `dag_weather_backfill` na lista e ative o toggle ao lado do nome.
-
-#### Passo 3 — Disparar o backfill
-
-```bash
-docker exec -it airflow_scheduler airflow dags trigger dag_weather_backfill
-```
-
-#### Sequência de execução
-
-```
-prepare_bigquery  (~5s)    → cria tabelas e trunca weather_raw no BigQuery
-backfill_daily    (~15min) → 295 cidades × 5 anos ≈ 540k linhas
-backfill_hourly   (~20min) → 295 cidades × 2 anos ≈ 12,9M linhas
-trigger_transform (~5min)  → dbt seed → run → test (reconstrói todos os marts)
-```
-
-> **Nota:** a DAG faz 1,5 requisições por segundo à API Open-Meteo com retry automático
-> e backoff exponencial em caso de rate limit (HTTP 429). Não interrompa a execução durante o backfill.
-
-#### Verificar dados inseridos no BigQuery
-
-Após a execução, confirme no **BigQuery Console → Query editor** (substitua `seu-projeto` pelo `GCP_PROJECT_ID`):
-
-```sql
--- Total de linhas inseridas
-SELECT COUNT(*) FROM `seu-projeto.weather_raw.open_meteo_daily`;
-SELECT COUNT(*) FROM `seu-projeto.weather_raw.open_meteo_hourly`;
-
--- Municípios distintos coletados (esperado: 295)
-SELECT COUNT(DISTINCT location_id) AS municipios_coletados
-FROM `seu-projeto.weather_raw.open_meteo_daily`;
-
--- Linhas por município (útil para identificar quem falhou)
-SELECT location_id, COUNT(*) AS total
-FROM `seu-projeto.weather_raw.open_meteo_daily`
-GROUP BY location_id
-ORDER BY location_id;
-```
-
-#### Passo 4 (opcional) — Re-executar para municípios que falharam
-
-Se a execução terminar com erros em alguns municípios (visível no log da task como `✗ nome_cidade`),
-edite as constantes no arquivo `airflow/dags/dag_weather_backfill.py` antes de disparar novamente:
-
-```python
-# Re-execução após falhas — coleta apenas municípios que falharam
-TRUNCATE_EXISTING = False   # mantém dados já coletados
-SKIP_EXISTING     = True    # pula quem já tem dados no BigQuery
-```
-
-> **Atenção:** a configuração padrão no arquivo é `TRUNCATE_EXISTING = True` / `SKIP_EXISTING = False`
-> (primeira execução). Altere antes de disparar a re-execução.
-
-Depois dispare normalmente:
-
-```bash
-docker exec -it airflow_scheduler airflow dags trigger dag_weather_backfill
-```
-
-A DAG vai consultar o BigQuery, identificar quais municípios já têm dados e pular esses automaticamente,
-coletando apenas os que estão faltando. Ao final, restaure os valores originais para a próxima vez:
-
-```python
-TRUNCATE_EXISTING = True
-SKIP_EXISTING     = False
-```
-
----
-
-## 🔧 Executar o dbt manualmente (desenvolvimento)
-
-Siga o guia: `dbt/README.md`
-
-```bash
-cd postgresql
-
-# Desenvolvimento (PostgreSQL local)
-docker compose run --rm dbt-seed
-docker compose run --rm dbt-build
-
-# Produção (BigQuery)
-DBT_TARGET=prod docker compose run --rm dbt-build
-```
-
-PowerShell:
-
-```powershell
-$env:DBT_TARGET="prod"; docker compose run --rm dbt-seed
-$env:DBT_TARGET="prod"; $env:DBT_SOURCE_DATABASE="weather-analytics-490113"; $env:DBT_SOURCE_SCHEMA="raw"; docker compose run --rm dbt-build
-```
+Substitua `seu-projeto-gcp` pelo `GCP_PROJECT_ID` real do seu projeto em
+qualquer comando de exemplo abaixo.
 
 ---
 
@@ -357,10 +131,9 @@ Editar o `.env` com os valores locais:
 GCP_PROJECT_ID=seu-projeto-gcp
 BIGQUERY_DATASET=marts
 BIGQUERY_SEEDS_DATASET=seeds
-GOOGLE_APPLICATION_CREDENTIALS=C:/Users/seu-usuario/secrets/gcp-service-account.json
+GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD=C:/Users/seu-usuario/secrets/weather-dashboard-sa-key.json
 ```
 
-> O arquivo `gcp-service-account.json` é o mesmo já usado no Airflow (`postgresql/secrets/`).
 > Use barras `/` ou `\\` no caminho — barra invertida simples `\` causa erro no Python.
 
 #### 3. Sobrescrever o endereço para desenvolvimento
@@ -420,15 +193,15 @@ pip install -r requirements.txt
 # Copiar a service account do GCP para o servidor
 mkdir -p ~/secrets
 # scp da sua máquina local:
-# scp postgresql/secrets/gcp-service-account.json ubuntu@<ip>:~/secrets/
+# scp <caminho-local>/weather-dashboard-sa-key.json ubuntu@<ip>:~/secrets/
 
 # Criar o .env a partir do exemplo
 cp .env.example .env
 nano .env   # preencher GCP_PROJECT_ID e ajustar BIGQUERY_DATASET
 ```
 
-> **Atenção nos datasets BigQuery:** o Evidence usa `dataset=marts` — provavelmente `BIGQUERY_DATASET=marts`.
-> Verifique no console GCP quais datasets existem no projeto.
+> **Atenção nos datasets BigQuery:** verifique no console GCP quais datasets
+> existem no projeto — o dashboard lê do dataset `marts`.
 
 #### 3. Nginx
 
@@ -467,55 +240,20 @@ sudo journalctl -u weather-streamlit -f
 
 ---
 
+## CI/CD
+
+Único workflow: `.github/workflows/build-and-push.yml` — builda e publica
+imagens Docker no GHCR (`ghcr.io/jeysel-dev/...`) para `streamlit/` e para o
+pipeline (`pipeline/Dockerfile`), disparado em push para `main` que toque
+`streamlit/`, `pipeline/`, `dbt/` ou o próprio arquivo do workflow. O deploy
+em si (pull da imagem + recreate do container) é feito manualmente/via script
+no servidor — ver `docs/steering/` para o fluxo de deploy completo.
+
 ---
 
-## 📋 Metodologia Ágil
+## Metodologia
 
-Este projeto foi desenvolvido seguindo práticas **Scrum** e **Behavior-Driven Development (BDD)**, combinando competências de **Analytics Engineering** e **Product Ownership**.
-
-### Epic
-
-**Weather Analytics Platform**
-Criar pipeline analytics end-to-end para monitoramento climático em tempo real de localidades brasileiras, permitindo análise histórica e detecção de anomalias para tomada de decisão baseada em dados.
-
-### Features Principais
-
-#### Feature 1: Ingestão Automatizada de Dados Climáticos
-**Objetivo:** Coletar dados climáticos de múltiplas localidades via API Open-Meteo  
-**Tecnologia:** PostgreSQL + Python + Docker  
-**Resultado:** 295 municípios de SC monitorados, atualização automática 4×/dia
-
-#### Feature 2: Pipeline ELT com Data Quality
-**Objetivo:** Transformar dados brutos em modelo analytics confiável  
-**Tecnologia:** Airflow + BigQuery SDK + dbt  
-**Resultado:**
-- Camadas staging → intermediate → marts
-- 49 testes automatizados (data quality)
-- Freshness checks diários
-
-#### Feature 3: Dashboard Interativo em Produção
-**Objetivo:** Visualização de insights climáticos em tempo real com interatividade  
-**Tecnologia:** Streamlit + BigQuery + Nginx + systemd (AWS Lightsail)  
-**Resultado:** 6 páginas analíticas (Home, Temperatura, Precipitação, Alertas, Horário, Cidades) + página de Análise Comparativa, servidas com SSL via subdomínio dedicado
-
-### Processo de Desenvolvimento
-
-**Sprint Planning:**
-- Definição de Features baseadas em análise de valor (impacto vs esforço)
-- Decomposição em User Stories técnicas
-
-**Development:**
-- TDD approach: testes dbt escritos antes das transformações
-- Code review via Git (branches + pull requests)
-- Documentação inline (schema.yml completo)
-
-**Testing:**
-- 49 testes automatizados (unique, not_null, ranges, freshness)
-- Validação manual do dashboard antes do deploy
-- Smoke tests no CI/CD pipeline
-
-**Deployment:**
-- CI/CD automático via GitHub Actions (Evidence → GitHub Pages)
-- Streamlit gerenciado via systemd com restart automático
-- Deploy incremental (não afeta dados históricos)
-- Rollback automático em caso de falha nos testes dbt
+Este projeto foi desenvolvido seguindo práticas Scrum e BDD (Epic → Features
+→ User Stories), combinando competências de Analytics Engineering e Product
+Ownership. O histórico completo desse planejamento — Epic, Features e User
+Stories originais — está preservado em [`docs/archive/`](docs/archive/).

@@ -80,5 +80,3 @@ Weather-Analytics/postgresql/secrets/
 # ── Compras Públicas específicos ─────────────────────────────────────────────
 compras-publicas/dbt/.user.yml
 compras-publicas/dbt/package-lock.yml
-compras-publicas/evidence/.npmrc
-compras-publicas/evidence/.evidence/customization/.profile.json
