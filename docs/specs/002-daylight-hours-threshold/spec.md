@@ -5,7 +5,17 @@
 weather-pipeline.
 
 ## Status
-[x] draft (achado confirmado; ajuste de threshold ainda não aplicado)
+[x] implementado — `max_value` ajustado para `14.05` em
+`dbt/models/marts/schema/mart_climate.yml:203-210`, com comentário citando
+esta spec. Validação real via `dbt test` **não** foi executada: nenhum
+ambiente dbt estava acessível no momento da implementação (dbt CLI não
+instalado, `~/.dbt/profiles.yml` é uma cópia não preenchida do
+`profiles.yml.example` — sem `POSTGRES_PASSWORD`/`GCP_PROJECT_ID` reais nem
+keyfile —, e o Postgres local rodando no host é de outro projeto, não
+`weather_staging`). A mudança é aritmeticamente equivalente ao requirement
+(threshold sobe de `14` para `14.05`, cobrindo o valor máximo observado em
+produção, `14.0166...`); validação funcional em prod fica pendente do
+próximo `dbt test` rodado em ambiente com acesso real ao BigQuery.
 
 ## Resumo
 O teste `dbt_utils.accepted_range` em `daylight_hours`

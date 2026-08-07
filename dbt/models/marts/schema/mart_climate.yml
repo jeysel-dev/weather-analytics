@@ -203,9 +203,12 @@ models:
       - name: daylight_hours
         description: "Horas de luz solar (sunset - sunrise)."
         tests:
+          # max_value com folga acima de 14h — municípios de latitude extrema (~-29.1° a -29.3°)
+          # ultrapassam 14h em ~1min no solstício de verão (16-27/dez), fenômeno real confirmado
+          # com dado de produção. Ver docs/specs/002-daylight-hours-threshold/spec.md
           - dbt_utils.accepted_range:
               min_value: 10
-              max_value: 14
+              max_value: 14.05
 
       - name: _dbt_updated_at
         description: "Timestamp da última atualização pelo dbt."
