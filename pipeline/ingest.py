@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Retry de disparo de CI 2026-08-07 — path real dentro do filtro (streamlit/pipeline/dbt/workflow), commit vazio anterior não contava por não tocar nenhum path filtrado.
 """
 ingest.py
 ---------
