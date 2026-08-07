@@ -4,7 +4,12 @@
 [x] Melhoria
 
 ## Status
-[x] draft
+[x] implementado — `docs/steering/weather-analytics.md` reescrito refletindo
+o fluxo real (Open-Meteo → `pipeline/ingest.py` → `weather_raw` → dbt →
+Streamlit), cron 1x/dia, Airflow/Postgres documentados como pausados, deploy
+via imagem GHCR (sem detalhe físico do `infra`), e as duas service accounts
+por privilégio mínimo. `EPIC.md`/`FEATURES.md`/`USER-STORIES.md` já estavam
+em `docs/archive/` (movidos por trabalho anterior a esta sessão).
 
 ## Resumo
 `docs/architecture.md` e os artefatos de planejamento (`EPIC.md`, `FEATURES.md`,
