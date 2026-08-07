@@ -39,6 +39,7 @@ arquitetura em regime, não o histórico de como ela chegou lá.
              │   BigQuery — datasets                     │
              │                                          │
              │   staging.*      (views)                 │
+             │   intermediate.* (view — só 1 model)      │
              │   marts.*        (tabelas particionadas) │
              │   seeds.*        (locations)              │
              │                                          │
@@ -65,20 +66,29 @@ acumulado nas marts. Detalhes de por que essa arquitetura existe e o
 incidente que a tornou obrigatória (não só desejável) estão em `CLAUDE.md`,
 não repetidos aqui.
 
-### Camadas dbt não têm 1:1 com datasets BigQuery
+### `intermediate` é dataset real — não segue o default `ephemeral` do projeto
 
-`staging` e `marts` materializam como datasets reais no BigQuery
-(`staging.*` como views, `marts.*` como tabelas particionadas). A camada
-`intermediate` é `materialized: ephemeral` (`dbt_project.yml`) — não existe
-como dataset ou tabela própria; o SQL é inlinado como CTE dentro dos
-models de `marts` que a consomem em tempo de compilação. Quem for procurar
-`intermediate.*` no BigQuery não vai encontrar nada — o lugar certo para
-ler essa lógica é o `.sql` do model em `dbt/models/intermediate/`.
+`dbt_project.yml` define `intermediate: +materialized: ephemeral` como
+default de pasta, mas o único model que existe hoje em
+`dbt/models/intermediate/` (`int_weather__daily_enriched.sql`) sobrescreve
+esse default no próprio `config()` do model:
+
+```sql
+{{ config(materialized = 'view', schema = 'intermediate') }}
+```
+
+Ou seja, `intermediate` **existe como dataset físico no BigQuery**, com
+uma view (`int_weather__daily_enriched`) — não é inlinado como CTE. A
+service account do pipeline precisa de permissão de escrita nesse dataset
+especificamente (não só em `staging`/`marts`). Se um novo model for
+adicionado a `dbt/models/intermediate/` sem `config()` próprio, aí sim ele
+herdaria o default `ephemeral` do projeto — o comportamento atual é
+específico deste model, não da camada como um todo.
 
 ## Lineage dbt
 
 ```
-weather_raw.open_meteo_daily  ──► stg_weather__daily ──► int_weather__daily_enriched (ephemeral)
+weather_raw.open_meteo_daily  ──► stg_weather__daily ──► int_weather__daily_enriched (view, dataset intermediate)
                                                                     │
 seeds.locations ─────────────────────────────────────────────────┤
                                                                     │
@@ -98,10 +108,9 @@ weather_raw.open_meteo_hourly ──► stg_weather__hourly ──► mart_clima
 |---------|--------|----------|
 | `weather_raw` | `pipeline/ingest.py` | Dados brutos diários e horários — só janela recente |
 | `staging` | dbt (view) | Limpeza e padronização, 1:1 com o raw |
+| `intermediate` | dbt (view — 1 model, override do default ephemeral) | `int_weather__daily_enriched` — join com `seeds.locations`, cálculo de `daylight_hours` e médias móveis 30d |
 | `marts` | dbt (table/incremental) | Tabelas analíticas finais, particionadas por mês e clusterizadas por `location_id`/`year_month` |
 | `seeds` | dbt seed | Tabela `locations` — 295 municípios de Santa Catarina |
-
-(`intermediate` não aparece aqui — é ephemeral, ver seção acima.)
 
 ## Agendamento
 
