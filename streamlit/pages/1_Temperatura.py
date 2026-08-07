@@ -102,6 +102,7 @@ if not meso_trend.empty:
         height=360,
     )
     fig.update_layout(
+        xaxis=dict(tickformat="%d/%m"),
         legend=dict(orientation="h", y=1.02, xanchor="right", x=1),
         margin=dict(l=0, r=0, t=30, b=0),
     )
@@ -131,7 +132,7 @@ if not anomaly.empty:
         height=260,
     )
     fig.update_layout(
-        xaxis_title=None,
+        xaxis=dict(title=None, tickformat="%d/%m"),
         yaxis_title=None,
         margin=dict(l=0, r=0, t=10, b=0),
     )

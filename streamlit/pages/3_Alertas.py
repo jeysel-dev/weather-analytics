@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
-from utils.labels import ALERT_TYPE_PT
+from utils.labels import ALERT_TYPE_PT, SEVERITY_PT
 
 SEV_COLORS = {
     "critical": "#D32F2F",
@@ -75,11 +75,12 @@ with col1:
     """)
     if not by_type.empty:
         by_type["tipo"] = by_type["alert_type"].map(ALERT_TYPE_PT).fillna(by_type["alert_type"])
+        by_type["sev_pt"] = by_type["severity"].map(SEVERITY_PT).fillna(by_type["severity"])
         fig = px.bar(
-            by_type, x="qtd", y="tipo", color="severity", orientation="h",
-            color_discrete_map=SEV_COLORS,
+            by_type, x="qtd", y="tipo", color="sev_pt", orientation="h",
+            color_discrete_map={SEVERITY_PT[k]: v for k, v in SEV_COLORS.items()},
             barmode="stack",
-            labels={"qtd": "Ocorrências", "tipo": "", "severity": "Severidade"},
+            labels={"qtd": "Ocorrências", "tipo": "", "sev_pt": "Severidade"},
             height=320,
         )
         fig.update_layout(
@@ -135,7 +136,7 @@ LIMIT 200
 if recent.empty:
     st.info("Nenhum alerta encontrado no período e filtros selecionados.")
 else:
-    recent["sev_label"] = recent["severity"].map(lambda s: f"{SEV_ICON.get(s,'')} {s}")
+    recent["sev_label"] = recent["severity"].map(lambda s: f"{SEV_ICON.get(s,'')} {SEVERITY_PT.get(s, s)}")
     recent["alert_type"] = recent["alert_type"].map(ALERT_TYPE_PT).fillna(recent["alert_type"])
     st.dataframe(
         recent[["date","city_name","mesoregion","alert_type","sev_label",

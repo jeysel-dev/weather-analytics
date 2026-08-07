@@ -70,7 +70,7 @@ with tab_serie:
                 overlaying="y", side="right", range=[0, 105],
             ),
             legend=dict(orientation="h", y=1.02),
-            margin=dict(l=0, r=0, t=30, b=0),
+            margin=dict(l=0, r=60, t=30, b=0),
             height=380,
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -107,7 +107,7 @@ with tab_vento:
                 overlaying="y", side="right",
             ),
             legend=dict(orientation="h", y=1.02),
-            margin=dict(l=0, r=0, t=30, b=0),
+            margin=dict(l=0, r=60, t=30, b=0),
             height=380,
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -154,7 +154,7 @@ with tab_padrao:
         ))
         fig.update_layout(
             title=f"Perfil médio das 24 horas — {city}",
-            xaxis=dict(title="Hora do dia", tickmode="linear", tick0=0, dtick=2),
+            xaxis=dict(title="Hora do dia", tickmode="linear", tick0=0, dtick=2, domain=[0, 0.86]),
             yaxis=dict(title="Temperatura (°C)", titlefont=dict(color="#EF5350")),
             yaxis2=dict(
                 title="Umidade (%)", titlefont=dict(color="#42A5F5"),
@@ -166,7 +166,7 @@ with tab_padrao:
                 showgrid=False,
             ),
             legend=dict(orientation="h", y=1.02),
-            margin=dict(l=0, r=60, t=40, b=0),
+            margin=dict(l=0, r=90, t=40, b=0),
             height=400,
         )
         st.plotly_chart(fig, use_container_width=True)

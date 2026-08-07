@@ -1,6 +1,7 @@
 import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
+from utils.labels import CLASS_LABELS_PT
 
 _meso_df = query(f"""
 SELECT DISTINCT mesoregion
@@ -25,14 +26,6 @@ CLASS_COLORS = {
     "heavy":    "#1565C0",
     "extreme":  "#4A148C",
 }
-CLASS_LABELS_PT = {
-    "dry":      "Seco",
-    "light":    "Leve",
-    "moderate": "Moderado",
-    "heavy":    "Forte",
-    "extreme":  "Extremo",
-}
-
 st.title("🌧️ Precipitação")
 
 col1, col2 = st.columns([3, 1])
@@ -114,7 +107,7 @@ if not heat.empty:
         height=260,
     )
     fig.update_layout(
-        xaxis_title=None,
+        xaxis=dict(title=None, tickformat="%d/%m"),
         yaxis_title=None,
         margin=dict(l=0, r=0, t=10, b=0),
     )

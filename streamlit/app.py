@@ -118,6 +118,7 @@ def home():
         ))
         fig.update_layout(
             title=f"Tendência de temperatura — últimos {days} dias",
+            xaxis=dict(tickformat="%d/%m"),
             yaxis_title="°C",
             legend=dict(orientation="h", y=1.02, xanchor="right", x=1),
             margin=dict(l=0, r=0, t=40, b=0),

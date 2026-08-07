@@ -88,6 +88,7 @@ with tab1:
             height=420,
         )
         fig.update_layout(
+            xaxis=dict(tickformat="%d/%m"),
             legend=dict(orientation="h", y=1.02, xanchor="right", x=1),
             margin=dict(l=0, r=0, t=30, b=0),
         )
@@ -147,6 +148,7 @@ with tab2:
             height=max(320, len(pivot) * 22),
         )
         fig.update_layout(
+            xaxis=dict(tickformat="%d/%m"),
             margin=dict(l=0, r=0, t=10, b=0),
             coloraxis_colorbar=dict(
                 title="mm",
