@@ -76,7 +76,3 @@ pipeline/logs/
 Claude.md
 PENDENCIA.txt
 Weather-Analytics/postgresql/secrets/
-
-# ── Compras Públicas específicos ─────────────────────────────────────────────
-compras-publicas/dbt/.user.yml
-compras-publicas/dbt/package-lock.yml
