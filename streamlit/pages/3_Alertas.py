@@ -2,8 +2,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
-
-st.set_page_config(page_title="Alertas | Weather SC", page_icon="🚨", layout="wide")
+from utils.labels import ALERT_TYPE_PT
 
 SEV_COLORS = {
     "critical": "#D32F2F",
@@ -75,11 +74,12 @@ with col1:
     ORDER BY qtd DESC
     """)
     if not by_type.empty:
+        by_type["tipo"] = by_type["alert_type"].map(ALERT_TYPE_PT).fillna(by_type["alert_type"])
         fig = px.bar(
-            by_type, x="qtd", y="alert_type", color="severity", orientation="h",
+            by_type, x="qtd", y="tipo", color="severity", orientation="h",
             color_discrete_map=SEV_COLORS,
             barmode="stack",
-            labels={"qtd": "Ocorrências", "alert_type": "", "severity": "Severidade"},
+            labels={"qtd": "Ocorrências", "tipo": "", "severity": "Severidade"},
             height=320,
         )
         fig.update_layout(
@@ -136,6 +136,7 @@ if recent.empty:
     st.info("Nenhum alerta encontrado no período e filtros selecionados.")
 else:
     recent["sev_label"] = recent["severity"].map(lambda s: f"{SEV_ICON.get(s,'')} {s}")
+    recent["alert_type"] = recent["alert_type"].map(ALERT_TYPE_PT).fillna(recent["alert_type"])
     st.dataframe(
         recent[["date","city_name","mesoregion","alert_type","sev_label",
                 "temp_max","anomalia","precip","vento_max","uv_index_max"]],

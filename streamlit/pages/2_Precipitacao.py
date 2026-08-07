@@ -2,8 +2,6 @@ import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
 
-st.set_page_config(page_title="Precipitação | Weather SC", page_icon="🌧️", layout="wide")
-
 _meso_df = query(f"""
 SELECT DISTINCT mesoregion
 FROM {tbl('locations', seeds=True)}
@@ -26,6 +24,13 @@ CLASS_COLORS = {
     "moderate": "#0288D1",
     "heavy":    "#1565C0",
     "extreme":  "#4A148C",
+}
+CLASS_LABELS_PT = {
+    "dry":      "Seco",
+    "light":    "Leve",
+    "moderate": "Moderado",
+    "heavy":    "Forte",
+    "extreme":  "Extremo",
 }
 
 st.title("🌧️ Precipitação")
@@ -75,10 +80,12 @@ with col2:
     ORDER BY qtd DESC
     """)
     if not dist.empty:
+        dist["classe"] = dist["precipitation_class"].map(CLASS_LABELS_PT)
         fig = px.pie(
-            dist, names="precipitation_class", values="qtd",
-            color="precipitation_class", color_discrete_map=CLASS_COLORS,
-            labels={"precipitation_class": "Classe", "qtd": "Dias"},
+            dist, names="classe", values="qtd",
+            color="classe",
+            color_discrete_map={CLASS_LABELS_PT[k]: v for k, v in CLASS_COLORS.items()},
+            labels={"classe": "Classe", "qtd": "Dias"},
             height=300,
         )
         fig.update_layout(margin=dict(l=0, r=0, t=10, b=20), showlegend=True)

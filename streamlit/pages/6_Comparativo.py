@@ -3,7 +3,6 @@ import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
 
-st.set_page_config(page_title="Análise Comparativa | Weather SC", page_icon="🔍", layout="wide")
 st.title("🔍 Análise Comparativa")
 
 # ── Dados de referência ────────────────────────────────────────────────────────
@@ -99,6 +98,7 @@ with tab1:
             .agg(Mínimo="min", Máximo="max", Média="mean")
             .round(1)
         )
+        summary.index.name = "Cidade"
         st.dataframe(summary, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -2,8 +2,6 @@ import plotly.graph_objects as go
 import streamlit as st
 from utils.bigquery import query, tbl
 
-st.set_page_config(page_title="Padrão Horário | Weather SC", page_icon="🕐", layout="wide")
-
 st.title("🕐 Padrão Horário")
 
 # Carrega lista de cidades com dados horários disponíveis
@@ -65,6 +63,7 @@ with tab_serie:
             yaxis="y2",
         ))
         fig.update_layout(
+            xaxis=dict(tickformat="%d/%m"),
             yaxis=dict(title="Temperatura (°C)", titlefont=dict(color="#EF5350")),
             yaxis2=dict(
                 title="Umidade (%)", titlefont=dict(color="#42A5F5"),
@@ -101,6 +100,7 @@ with tab_vento:
             yaxis="y2",
         ))
         fig.update_layout(
+            xaxis=dict(tickformat="%d/%m"),
             yaxis=dict(title="Precipitação (mm)", titlefont=dict(color="#0288D1")),
             yaxis2=dict(
                 title="Vento (km/h)", titlefont=dict(color="#66BB6A"),

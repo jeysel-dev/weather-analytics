@@ -2,9 +2,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
-from utils.bigquery import query, tbl, max_date
-
-st.set_page_config(page_title="Perfil por Cidade | Weather SC", page_icon="🏙️", layout="wide")
+from utils.bigquery import query, tbl, max_date, format_temp
+from utils.labels import ALERT_TYPE_PT
 
 st.title("🏙️ Perfil por Município")
 
@@ -73,9 +72,9 @@ agg = climate.agg({
 }).round(1)
 
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Temp Máx Média",  f"{agg['temp_max_c']} °C")
-c2.metric("Temp Mín Média",  f"{agg['temp_min_c']} °C")
-c3.metric("Precip. Acumulada", f"{agg['precipitation_mm']} mm")
+c1.metric("Temp Máx Média",  f"{format_temp(agg['temp_max_c'])} °C")
+c2.metric("Temp Mín Média",  f"{format_temp(agg['temp_min_c'])} °C")
+c3.metric("Precip. Acumulada", f"{format_temp(agg['precipitation_mm'])} mm")
 delta = float(agg["temp_anomaly_c"] or 0)
 c4.metric("Anomalia Média",  f"{delta:+.1f} °C", delta_color="inverse")
 
@@ -183,6 +182,7 @@ with tab_alertas:
     if alerts.empty:
         st.success(f"Nenhum alerta registrado para {city} nos últimos {days} dias.")
     else:
+        alerts["alert_type"] = alerts["alert_type"].map(ALERT_TYPE_PT).fillna(alerts["alert_type"])
         st.dataframe(
             alerts,
             column_config={

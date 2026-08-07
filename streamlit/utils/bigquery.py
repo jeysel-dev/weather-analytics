@@ -1,4 +1,6 @@
 import os
+from decimal import Decimal
+
 import streamlit as st
 import pandas as pd
 from google.cloud import bigquery
@@ -47,9 +49,26 @@ def _client() -> bigquery.Client:
     return bigquery.Client(project=_project(), credentials=creds, location=_location())
 
 
-@st.cache_data(ttl=3600, show_spinner="Consultando BigQuery...")
+@st.cache_data(ttl=3600, show_spinner="Obtendo os dados...")
 def query(sql: str) -> pd.DataFrame:
-    return _client().query(sql).to_dataframe()
+    df = _client().query(sql).to_dataframe()
+    # Colunas BigQuery NUMERIC voltam como decimal.Decimal (escala 9), não
+    # float — sem essa conversão, valores já arredondados via ROUND() no SQL
+    # aparecem como "16.700000000" quando exibidos sem format spec explícito.
+    for col in df.columns:
+        if df[col].dtype == object and df[col].apply(lambda v: isinstance(v, Decimal)).any():
+            df[col] = df[col].astype(float)
+    return df
+
+
+def format_temp(value, decimals: int = 1) -> str:
+    """Formata um valor numérico com casas decimais fixas; retorna '—' se ausente."""
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return "—"
+    try:
+        return f"{float(value):.{decimals}f}"
+    except (TypeError, ValueError):
+        return "—"
 
 
 def max_date(table: str):

@@ -3,8 +3,6 @@ import plotly.express as px
 import streamlit as st
 from utils.bigquery import query, tbl, max_date
 
-st.set_page_config(page_title="Temperatura | Weather SC", page_icon="🌡️", layout="wide")
-
 _meso_df = query(f"""
 SELECT DISTINCT mesoregion
 FROM {tbl('locations', seeds=True)}
@@ -47,7 +45,7 @@ with col1:
             labels={"media_max": "Temp Máx Média (°C)", "city_name": ""},
             height=340,
         )
-        fig.update_traces(texttemplate="%{text}°C", textposition="outside")
+        fig.update_traces(texttemplate="%{text:.1f}°C", textposition="outside", cliponaxis=False)
         fig.update_layout(
             showlegend=False,
             yaxis=dict(autorange="reversed"),
@@ -75,7 +73,7 @@ with col2:
             labels={"media_min": "Temp Mín Média (°C)", "city_name": ""},
             height=340,
         )
-        fig.update_traces(texttemplate="%{text}°C", textposition="outside")
+        fig.update_traces(texttemplate="%{text:.1f}°C", textposition="outside", cliponaxis=False)
         fig.update_layout(
             showlegend=False,
             yaxis=dict(autorange="reversed"),
