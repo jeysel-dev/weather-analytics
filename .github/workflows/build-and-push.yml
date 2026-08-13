@@ -12,7 +12,7 @@ on:
       - ".github/workflows/build-and-push.yml"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -41,6 +41,33 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
             ghcr.io/${{ github.repository }}:latest
+
+      - name: Instala kustomize
+        run: |
+          # Mesmo mecanismo validado na spec 068 (jeysel.dev): download do
+          # tarball de release fixo (v5.8.1) com retry, em vez do script
+          # dinâmico install_kustomize.sh -- dois runs reais do jeysel.dev
+          # falharam com stream truncado/gzip inválido por flakiness de rede
+          # transitória do runner ubuntu-latest, não rate limit de API.
+          curl -fSL --retry 5 --retry-delay 2 --retry-connrefused \
+            -o kustomize.tar.gz \
+            "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.8.1/kustomize_v5.8.1_linux_amd64.tar.gz"
+          tar xzf kustomize.tar.gz
+          rm kustomize.tar.gz
+          sudo mv kustomize /usr/local/bin/kustomize
+
+      - name: Atualiza tag da imagem no overlay de staging
+        run: |
+          cd deploy/k8s/overlays/staging
+          kustomize edit set image \
+            ghcr.io/${{ github.repository }}=ghcr.io/${{ github.repository }}:${{ steps.vars.outputs.sha_short }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kustomization.yaml
+          git diff --cached --quiet && exit 0
+          # [skip ci]: evita loop — este commit também casa com o gatilho push:main
+          git commit -m "deploy(staging): atualiza imagem para ${{ steps.vars.outputs.sha_short }} [skip ci]"
+          git push
 
   build-and-push-pipeline:
     runs-on: ubuntu-latest
