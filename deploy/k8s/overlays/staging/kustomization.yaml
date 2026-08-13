@@ -4,13 +4,13 @@ kind: Kustomization
 namespace: staging
 
 resources:
-  - ../../base
-  - ingress.yaml
+- ../../base
+- ingress.yaml
 
-images:
-  - name: ghcr.io/jeysel-dev/weather-analytics
-    newName: ghcr.io/jeysel-dev/weather-analytics
     # Pull real confirmado na Fase 4 (spec 072) — a partir da Fase 5, este
     # valor passa a ser mantido pelo passo de CI (kustomize edit set image),
     # não editado à mão.
-    newTag: aafde36
+images:
+- name: ghcr.io/jeysel-dev/weather-analytics
+  newName: ghcr.io/jeysel-dev/weather-analytics
+  newTag: ca37ec3
