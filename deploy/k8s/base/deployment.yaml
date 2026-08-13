@@ -42,6 +42,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: weather-analytics-config
+            # GCP_PROJECT_ID isolado num ConfigMap separado, aplicado só via
+            # infra (repo privado) — não commitado neste repo público. Ver
+            # scripts/sync-configmap-weather-analytics-project-k8s.sh no
+            # repo infra.
+            - configMapRef:
+                name: weather-analytics-project-config
           volumeMounts:
             # Service account JSON somente-leitura do dashboard (R3) — Secret
             # criado na Fase 2 (spec 072) via
@@ -76,4 +82,8 @@ spec:
       volumes:
         - name: gcp-dashboard-key
           secret:
-            secretName: weather-analytics-dashboard-key
+            # Corrigido nesta fase: nome real do Secret criado pelo script
+            # da Fase 2 é weather-analytics-sa-key, não
+            # weather-analytics-dashboard-key (divergência não notada até
+            # agora — o Deployment ainda não tinha sido aplicado).
+            secretName: weather-analytics-sa-key

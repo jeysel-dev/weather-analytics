@@ -3,11 +3,9 @@ kind: ConfigMap
 metadata:
   name: weather-analytics-config
 data:
-  # TODO (Fase 2, spec 072): preencher com o mesmo valor de GCP_PROJECT_ID
-  # já usado em /home/ubuntu/secrets/weather-analytics.env em produção —
-  # não é secreto, mas o valor real não foi lido nesta sessão (só o nome da
-  # chave), então não deve ser adivinhado aqui.
-  GCP_PROJECT_ID: "REPLACE_ME"
+  # GCP_PROJECT_ID NÃO fica neste ConfigMap (repo público) — vive em
+  # weather-analytics-project-config, aplicado só via infra (repo privado),
+  # ver deployment.yaml (segundo envFrom) e sync-configmap-weather-analytics-project-k8s.sh.
   # Valores abaixo já confirmados como os defaults em uso (.env.prod.example
   # e utils/bigquery.py do repo weather-analytics) — não secretos.
   BIGQUERY_DATASET: "marts"
