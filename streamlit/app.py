@@ -68,7 +68,6 @@ def home():
 
     st.title("🌤️ Weather Analytics — Santa Catarina")
     st.caption(f"Últimos 7 dias (dados até {_max_daily}) · {meso if meso != 'Todas' else '295 municípios'}")
-    st.caption("🔧 spec 072 — teste de loop GitOps (Fase 5, reversível)")
 
     if not kpi_df.empty:
         r = kpi_df.iloc[0]
