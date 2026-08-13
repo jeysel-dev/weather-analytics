@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: staging
+
+resources:
+  - ../../base
+  # ingress.yaml entra na Fase 5 (spec 072) — Ingress só depois do Secret/
+  # ConfigMap/NetworkPolicy validados (Fases 2-3) e do deploy funcional
+  # (Fase 4).
+
+images:
+  - name: ghcr.io/jeysel-dev/weather-analytics
+    newName: ghcr.io/jeysel-dev/weather-analytics
+    # HEAD atual do repo (aafde36) toca streamlit/ e deveria ter disparado o
+    # build-and-push — não confirmado com pull real ainda (isso acontece na
+    # Fase 4, junto com o resto da validação funcional, não presumido aqui).
+    newTag: aafde36

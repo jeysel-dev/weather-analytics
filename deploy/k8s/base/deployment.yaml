@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-analytics
+  labels:
+    app: weather-analytics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-analytics
+  template:
+    metadata:
+      labels:
+        app: weather-analytics
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: weather-analytics
+          image: ghcr.io/jeysel-dev/weather-analytics:latest
+          securityContext:
+            allowPrivilegeEscalation: false
+            # Tentativa (R11) — Dockerfile do dashboard não escreve nada
+            # conhecido em disco além do que já está copiado na imagem, mas
+            # isso não foi validado com uso real ainda (troca de filtro,
+            # expiração de st.cache_data). Validação real acontece na Fase 4
+            # (spec 072). Se falhar, R12: montar emptyDir gravável só nos
+            # diretórios específicos que precisarem (ex: /tmp,
+            # /home/appuser/.streamlit), não abandonar o hardening inteiro.
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          ports:
+            - name: http
+              containerPort: 8501
+          envFrom:
+            - configMapRef:
+                name: weather-analytics-config
+          volumeMounts:
+            # Service account JSON somente-leitura do dashboard (R3) — Secret
+            # criado na Fase 2 (spec 072) via
+            # scripts/sync-secret-weather-analytics-k8s.sh, arquivo aparece
+            # aqui com o mesmo nome de chave usado no docker-compose.prod.yml
+            # atual (/app/secrets/weather-dashboard-sa-key.json).
+            - name: gcp-dashboard-key
+              mountPath: /app/secrets
+              readOnly: true
+          resources:
+            # Referência (R13): docker-compose.prod.yml atual usa mem_limit
+            # 256m / cpus 0.25 — validado contra o orçamento real do cluster
+            # antes do apply em staging (Fase 4), não presumido aqui.
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          readinessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /_stcore/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+      volumes:
+        - name: gcp-dashboard-key
+          secret:
+            secretName: weather-analytics-dashboard-key
