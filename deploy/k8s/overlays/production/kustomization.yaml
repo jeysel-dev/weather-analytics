@@ -5,13 +5,13 @@ namespace: production
 
 resources:
   - ../../base
-  # ingress.yaml entra na Fase 6 (spec 072), mesmo padrão do staging —
-  # promoção manual de tag já validada em staging, sem CI apontando pra cá
-  # (mesmo padrão do overlay de production do jeysel.dev).
+  - ingress.yaml
 
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics
     newName: ghcr.io/jeysel-dev/weather-analytics
-    # Sem promoção ainda — placeholder até a Fase 6 (spec 072) promover
-    # manualmente uma tag já validada em staging.
-    newTag: latest
+    # Promovido manualmente na Fase 6 (spec 072) — c9f7995 é a tag validada
+    # e Synced em staging no momento da promoção (confirmado ao vivo via
+    # kubectl antes deste commit, não presumido). Promoção deliberada, sem
+    # bump automático de CI (production não tem esse passo, por design).
+    newTag: c9f7995
