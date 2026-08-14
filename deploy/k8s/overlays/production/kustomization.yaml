@@ -7,6 +7,12 @@ resources:
   - ../../base
   - ingress.yaml
 
+patches:
+  - path: patch-browser-address.yaml
+    target:
+      kind: Deployment
+      name: weather-analytics
+
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics
     newName: ghcr.io/jeysel-dev/weather-analytics
