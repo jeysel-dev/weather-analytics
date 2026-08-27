@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir \
     google-cloud-bigquery==3.27.0 \
     dbt-bigquery==1.7.8 \
     db-dtypes==1.3.1 \
-    pyarrow==18.1.0
+    pyarrow==23.0.1
 
 WORKDIR /app
 
