@@ -1,0 +1,30 @@
+# Egress restrito ao necessário para o pod `app: weather-analytics` -- DNS
+# (kube-system) e HTTPS (443, BigQuery/APIs externas; app não usa Postgres
+# nem Redis do cluster). Aplicado manualmente via kubectl desde a spec 072
+# (2026-08-14), nunca versionado até a spec 088 -- mesmo gap encontrado nos
+# outros 2 apps k3s (jeysel.dev, compras-publicas-sc) durante a revisão de
+# disaster-recovery da spec 087. Conteúdo idêntico entre staging e
+# production, confirmado via kubectl antes deste commit.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: weather-analytics-egress-restrict
+spec:
+  podSelector:
+    matchLabels:
+      app: weather-analytics
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - ports:
+        - protocol: TCP
+          port: 443
