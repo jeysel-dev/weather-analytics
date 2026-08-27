@@ -5,6 +5,6 @@
 
 apache-airflow-providers-postgres==5.11.0
 psycopg2-binary==2.9.9
-requests==2.32.3
+requests==2.33.0
 schedule==1.2.2
 dbt-bigquery==1.7.8

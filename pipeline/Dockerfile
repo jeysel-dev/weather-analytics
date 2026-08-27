@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir \
-    requests==2.32.3 \
+    requests==2.33.0 \
     google-cloud-bigquery==3.27.0 \
     dbt-bigquery==1.7.8 \
     db-dtypes==1.3.1 \
