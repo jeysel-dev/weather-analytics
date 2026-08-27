@@ -5,6 +5,19 @@
 # outros 2 apps k3s (jeysel.dev, compras-publicas-sc) durante a revisão de
 # disaster-recovery da spec 087. Conteúdo idêntico entre staging e
 # production, confirmado via kubectl antes deste commit.
+#
+# Porta 443 sem `ipBlock` -- RISCO ACEITO CONSCIENTEMENTE (avaliado
+# 2026-08-27, ver docs/steering/pendencias.md). Destino real é
+# `bigquery.googleapis.com` + `oauth2.googleapis.com` via service account
+# (streamlit/utils/bigquery.py) -- NÃO o pipeline de ingestão do
+# Open-Meteo, que roda fora do k3s e não é selecionado por esta policy.
+# Google publica os CIDRs (gstatic.com/ipranges/goog.json), mas são
+# centenas de faixas, atualizadas sem SLA de cadência -- custo de
+# manutenção desproporcional ao ganho, já que o pod só fala HTTPS com
+# infraestrutura Google, não qualquer host arbitrário. Restrição real só
+# seria viável com um CNI com suporte a política por FQDN/dnsName
+# (Calico/Cilium); o CNI atual (controlador de NetworkPolicy embutido do
+# k3s, baseado em kube-router) não suporta.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
