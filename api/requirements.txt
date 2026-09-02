@@ -1,0 +1,12 @@
+# API (FastAPI) — spec 006. As versões de google-cloud-bigquery / pandas /
+# db-dtypes / pyarrow são FIXADAS iguais às de streamlit/requirements.txt: o
+# acesso a dado (utils/bigquery.py adaptado) precisa se comportar exatamente
+# como o já validado em produção no Streamlit — ex.: o tipo de retorno de
+# max_date() e a conversão de NUMERIC→float dependem dessas versões.
+fastapi==0.115.*
+uvicorn[standard]==0.32.*
+jinja2==3.1.*
+google-cloud-bigquery==3.27.0
+db-dtypes==1.3.1
+pandas==2.2.3
+pyarrow==23.0.1

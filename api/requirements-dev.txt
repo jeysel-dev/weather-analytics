@@ -1,0 +1,5 @@
+# Dependências só de teste (spec 006) — não entram na imagem de produção
+# (Dockerfile instala apenas requirements.txt).
+-r requirements.txt
+pytest==8.*
+httpx==0.27.*

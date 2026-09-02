@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Weather Analytics{% endblock %}</title>
+    {% for css in main_css %}
+    <link rel="stylesheet" href="{{ css }}" />
+    {% endfor %}
+  </head>
+  <body{% if page is defined %} data-page="{{ page }}"{% endif %}>
+    <main>{% block content %}{% endblock %}</main>
+    <script type="module" src="{{ main_js }}"></script>
+  </body>
+</html>
