@@ -7,7 +7,16 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from app.routers import horario
+from app.routers import (
+    alertas,
+    cidades,
+    comparativo,
+    horario,
+    precipitacao,
+    ref,
+    relatorio_cidade,
+    temperatura,
+)
 
 APP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = APP_DIR / "static"
@@ -74,15 +83,61 @@ class Page:
 
 PAGES: tuple[Page, ...] = (
     Page(
+        path="/temperatura",
+        template="temperatura.html",
+        page_id="temperatura",
+        menu_label="Temperatura",
+        menu_icon="🌡️",
+        menu_position=1,
+    ),
+    Page(
+        path="/precipitacao",
+        template="precipitacao.html",
+        page_id="precipitacao",
+        menu_label="Precipitação",
+        menu_icon="🌧️",
+        menu_position=2,
+    ),
+    Page(
+        path="/alertas",
+        template="alertas.html",
+        page_id="alertas",
+        menu_label="Alertas",
+        menu_icon="🚨",
+        menu_position=3,
+    ),
+    Page(
         path="/horario",
         template="horario.html",
         page_id="horario",
         menu_label="Horário",
         menu_icon="🕐",
-        # Posição 4 = mesma do Streamlit (streamlit/pages/4_Horario.py). As
-        # posições 1–3 (Temperatura, Precipitação, Alertas) ainda não existem
-        # aqui; o número já fica certo para quando entrarem.
+        # Posição 4 = mesma do Streamlit (streamlit/pages/4_Horario.py).
         menu_position=4,
+    ),
+    Page(
+        path="/cidades",
+        template="cidades.html",
+        page_id="cidades",
+        menu_label="Cidades",
+        menu_icon="🏙️",
+        menu_position=5,
+    ),
+    Page(
+        path="/comparativo",
+        template="comparativo.html",
+        page_id="comparativo",
+        menu_label="Comparativo",
+        menu_icon="🔍",
+        menu_position=6,
+    ),
+    Page(
+        path="/relatorio-cidade",
+        template="relatorio-cidade.html",
+        page_id="relatorio-cidade",
+        menu_label="Relatório por Cidade",
+        menu_icon="📋",
+        menu_position=7,
     ),
 )
 
@@ -105,7 +160,14 @@ for _page in PAGES:
         include_in_schema=False,
     )
 
+app.include_router(temperatura.router, prefix="/api/v1")
+app.include_router(precipitacao.router, prefix="/api/v1")
+app.include_router(alertas.router, prefix="/api/v1")
 app.include_router(horario.router, prefix="/api/v1")
+app.include_router(cidades.router, prefix="/api/v1")
+app.include_router(comparativo.router, prefix="/api/v1")
+app.include_router(relatorio_cidade.router, prefix="/api/v1")
+app.include_router(ref.router, prefix="/api/v1")
 
 
 @app.get("/health", include_in_schema=False)

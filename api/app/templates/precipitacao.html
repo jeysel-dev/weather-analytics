@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Precipitação — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Precipitação
+</nav>
+
+<h1>🌧️ Precipitação</h1>
+<p id="precip-caption" class="page-caption" hidden></p>
+
+{# Esqueleto apenas (spec 006). web/src/pages/precipitacao.ts popula o
+   select de mesorregião (/api/v1/ref/mesorregioes) e dispara os fetches de
+   /api/v1/precipitacao/*. Rótulo/cor por classe vêm de web/src/labels.ts. #}
+<form class="filter-bar" id="precipitacao-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-mesorregiao">Mesorregião</label>
+    <select id="filtro-mesorregiao" name="mesorregiao">
+      <option value="Todas">Todas</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="7" max="90" step="7" value="30" />
+  </div>
+</form>
+
+<p id="precip-erro" class="page-subtitle" hidden></p>
+
+<div class="precip-grid">
+  <section>
+    <h2 id="ranking-titulo">Maior precipitação acumulada</h2>
+    <p id="msg-ranking-vazio" hidden>Sem dados para esta mesorregião no período.</p>
+    <div id="chart-ranking" class="chart" style="width: 100%; height: 520px"></div>
+  </section>
+  <section>
+    <h2>Intensidade</h2>
+    <p id="msg-intensidade-vazio" hidden>Sem dados de intensidade no período.</p>
+    <div id="chart-intensidade" class="chart" style="width: 100%; height: 320px"></div>
+  </section>
+</div>
+
+<section>
+  <h2 id="heatmap-titulo">Precipitação média diária por mesorregião</h2>
+  <p id="msg-heatmap-vazio" hidden>Sem dados de precipitação no período.</p>
+  <div id="chart-heatmap" class="chart" style="width: 100%; height: 300px"></div>
+</section>
+{% endblock %}

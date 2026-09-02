@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %}Perfil por Município — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Perfil por Município
+</nav>
+
+<h1>🏙️ Perfil por Município</h1>
+
+{# Esqueleto apenas (spec 006). web/src/pages/cidades.ts popula o select a
+   partir de /api/v1/cidades/lista (endpoint próprio, com metadados) e
+   dispara /api/v1/cidades/clima e /api/v1/cidades/alertas. #}
+<form class="filter-bar" id="cidades-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-municipio">Município</label>
+    <select id="filtro-municipio" name="municipio">
+      <option value="">Carregando…</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="30" max="365" step="30" value="90" />
+  </div>
+</form>
+
+<p id="cidade-nome" class="page-subtitle" hidden></p>
+<p id="cidade-caption" class="page-caption" hidden></p>
+<p id="cidades-erro" class="page-subtitle" hidden></p>
+<p id="msg-sem-dados" hidden></p>
+
+<div id="cidade-conteudo" hidden>
+  <div class="kpi-row">
+    <div class="kpi"><span class="kpi-label">Temp Máx Média</span><span class="kpi-value" id="kpi-temp-max">—</span></div>
+    <div class="kpi"><span class="kpi-label">Temp Mín Média</span><span class="kpi-value" id="kpi-temp-min">—</span></div>
+    <div class="kpi"><span class="kpi-label">Precip. Acumulada</span><span class="kpi-value" id="kpi-precip">—</span></div>
+    <div class="kpi"><span class="kpi-label">Anomalia Média</span><span class="kpi-value" id="kpi-anomalia">—</span></div>
+  </div>
+
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab-btn" role="tab" data-tab="temp" aria-selected="true">🌡️ Temperatura</button>
+    <button type="button" class="tab-btn" role="tab" data-tab="precip" aria-selected="false">🌧️ Precipitação</button>
+    <button type="button" class="tab-btn" role="tab" data-tab="vento" aria-selected="false">💨 Vento &amp; UV</button>
+    <button type="button" class="tab-btn" role="tab" data-tab="alertas" aria-selected="false">🚨 Alertas</button>
+  </div>
+
+  <section id="tab-temp" class="tab-panel" role="tabpanel" aria-label="Temperatura">
+    <div id="chart-temp" class="chart" style="width: 100%; height: 400px"></div>
+  </section>
+
+  <section id="tab-precip" class="tab-panel" role="tabpanel" aria-label="Precipitação" hidden>
+    <div id="chart-precip" class="chart" style="width: 100%; height: 360px"></div>
+    <div class="kpi-row">
+      <div class="kpi"><span class="kpi-label">Total acumulado</span><span class="kpi-value" id="kpi-total-chuva">—</span></div>
+      <div class="kpi"><span class="kpi-label">Dias com chuva</span><span class="kpi-value" id="kpi-dias-chuva">—</span></div>
+    </div>
+  </section>
+
+  <section id="tab-vento" class="tab-panel" role="tabpanel" aria-label="Vento e UV" hidden>
+    <div id="chart-vento" class="chart" style="width: 100%; height: 360px"></div>
+  </section>
+
+  <section id="tab-alertas" class="tab-panel" role="tabpanel" aria-label="Alertas" hidden>
+    <p id="msg-sem-alertas" hidden></p>
+    <div class="table-scroll">
+      <table id="tabela-alertas" hidden>
+        <thead>
+          <tr>
+            <th>Data</th><th>Tipo de Alerta</th><th>Severidade</th>
+            <th>Temp Máx (°C)</th><th>Anomalia (°C)</th><th>Precip (mm)</th>
+            <th>Vento (km/h)</th><th>UV Máx</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block title %}Análise Comparativa — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Análise Comparativa
+</nav>
+
+<h1>🔍 Análise Comparativa</h1>
+
+{# Esqueleto apenas (spec 006). Os filtros ficam NO CORPO de cada aba (não
+   numa sidebar) — paridade com a refatoração cf5b614. web/src/pages/
+   comparativo.ts popula os selects (/api/v1/ref/cidades, /ref/mesorregioes)
+   e dispara os fetches de /api/v1/comparativo/*. #}
+<div class="tabs" role="tablist">
+  <button type="button" class="tab-btn" role="tab" data-tab="cidades" aria-selected="true">🌡️ Comparativo de Cidades</button>
+  <button type="button" class="tab-btn" role="tab" data-tab="chuva" aria-selected="false">🌧️ Quando Choveu</button>
+  <button type="button" class="tab-btn" role="tab" data-tab="historico" aria-selected="false">📈 Dia vs Histórico</button>
+</div>
+
+<section id="tab-cidades" class="tab-panel" role="tabpanel" aria-label="Comparativo de Cidades">
+  <h2>Série temporal comparativa entre municípios</h2>
+  <form class="filter-bar" id="cidades-filtros" autocomplete="off">
+    <div class="filter-field">
+      <label for="cmp-cidade-a">Cidade A</label>
+      <select id="cmp-cidade-a"></select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-cidade-b">Cidade B</label>
+      <select id="cmp-cidade-b"></select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-cidade-c">Cidade C (opcional)</label>
+      <select id="cmp-cidade-c"><option value="—">—</option></select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-metrica">Métrica</label>
+      <select id="cmp-metrica">
+        <option value="temp_max">Temp Máxima</option>
+        <option value="temp_min">Temp Mínima</option>
+        <option value="temp_avg">Temp Média</option>
+        <option value="precip">Precipitação Diária</option>
+      </select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-dias">Dias</label>
+      <input type="number" id="cmp-dias" min="7" max="180" step="7" value="30" />
+    </div>
+  </form>
+  <p id="msg-cidades-vazio" hidden>Sem dados para o período selecionado.</p>
+  <div id="chart-cidades" class="chart" style="width: 100%; height: 420px"></div>
+  <div class="table-scroll">
+    <table id="tabela-resumo" hidden>
+      <thead><tr><th>Cidade</th><th>Mínimo</th><th>Máximo</th><th>Média</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="tab-chuva" class="tab-panel" role="tabpanel" aria-label="Quando Choveu" hidden>
+  <h2>Intensidade de chuva diária por município</h2>
+  <form class="filter-bar" id="chuva-filtros" autocomplete="off">
+    <div class="filter-field">
+      <label for="cmp-meso">Mesorregião</label>
+      <select id="cmp-meso"></select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-chuva-dias">Dias</label>
+      <input type="number" id="cmp-chuva-dias" min="14" max="60" step="7" value="30" />
+    </div>
+  </form>
+  <p id="msg-chuva-vazio" hidden></p>
+  <div id="chart-chuva" class="chart" style="width: 100%; height: 320px"></div>
+  <p class="page-caption">
+    Branco = seco (0 mm) · Azul claro = leve (&lt; 5 mm) · Azul = moderado (5–20 mm) ·
+    Azul escuro = forte (20–50 mm) · Roxo = extremo (&gt; 50 mm)
+  </p>
+</section>
+
+<section id="tab-historico" class="tab-panel" role="tabpanel" aria-label="Dia vs Histórico" hidden>
+  <h2>Perfil horário: dia selecionado vs média dos 30 dias anteriores</h2>
+  <form class="filter-bar" id="historico-filtros" autocomplete="off">
+    <div class="filter-field">
+      <label for="cmp-hist-cidade">Município</label>
+      <select id="cmp-hist-cidade"></select>
+    </div>
+    <div class="filter-field">
+      <label for="cmp-hist-data">Data de referência</label>
+      <select id="cmp-hist-data"></select>
+    </div>
+  </form>
+  <p id="msg-hist-sem-cidade" hidden></p>
+  <p id="msg-hist-sem-data" hidden></p>
+  <div id="chart-hist-temp" class="chart" style="width: 100%; height: 380px"></div>
+  <div id="chart-hist-umidade" class="chart" style="width: 100%; height: 340px"></div>
+  <div class="kpi-row" id="hist-deltas" hidden>
+    <div class="kpi"><span class="kpi-label">Desvio médio do dia</span><span class="kpi-value" id="delta-medio">—</span></div>
+    <div class="kpi"><span class="kpi-label">Hora mais quente vs histórico</span><span class="kpi-value" id="delta-max">—</span></div>
+    <div class="kpi"><span class="kpi-label">Hora mais fria vs histórico</span><span class="kpi-value" id="delta-min">—</span></div>
+  </div>
+</section>
+{% endblock %}

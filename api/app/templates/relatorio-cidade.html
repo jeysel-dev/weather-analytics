@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}Relatório do clima por cidade — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Relatório por Cidade
+</nav>
+
+<h1>📋 Relatório do clima por cidade</h1>
+
+{# Esqueleto apenas (spec 006). ÚNICA página com estado na URL (deep link):
+   web/src/pages/relatorio-cidade.ts lê/escreve ?cidades=&inicio=&fim= na
+   query string, valida contra /api/v1/ref/cidades + /api/v1/ref/daily-meta
+   e dispara /api/v1/relatorio-cidade/dados. Sem gráfico (ECharts não é
+   dependência desta página). #}
+<form class="filter-bar" id="relatorio-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-cidades">Cidades</label>
+    <select id="filtro-cidades" name="cidades" multiple size="8"></select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-inicio">Período — início</label>
+    <input type="date" id="filtro-inicio" name="inicio" />
+  </div>
+  <div class="filter-field">
+    <label for="filtro-fim">Período — fim</label>
+    <input type="date" id="filtro-fim" name="fim" />
+  </div>
+</form>
+
+<p id="relatorio-caption" class="page-caption" hidden></p>
+<p id="relatorio-msg">Selecione ao menos uma cidade para gerar o relatório.</p>
+
+<div class="table-scroll">
+  <table id="tabela-relatorio" hidden>
+    <thead>
+      <tr>
+        <th>Cidade</th>
+        <th>Temp. Máxima (°C)</th>
+        <th>Temp. Máxima Média (°C)</th>
+        <th>Temp. Mínima (°C)</th>
+        <th>Temp. Mínima Média (°C)</th>
+        <th>Precip. Acumulada (mm)</th>
+        <th>Vento Máximo (km/h)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<p>
+  <a id="btn-compartilhar" class="share-button" href="#" target="_blank" rel="noopener" hidden>
+    Compartilhar
+  </a>
+</p>
+{% endblock %}

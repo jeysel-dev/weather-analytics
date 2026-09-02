@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block title %}Alertas Climáticos — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Alertas Climáticos
+</nav>
+
+<h1>🚨 Alertas Climáticos</h1>
+<p id="alertas-caption" class="page-caption" hidden></p>
+
+{# Esqueleto apenas (spec 006). web/src/pages/alertas.ts popula o select de
+   mesorregião (/api/v1/ref/mesorregioes) e dispara os fetches de
+   /api/v1/alertas/*. Ordem dos filtros: dias -> mesorregião -> severidade
+   (paridade com o Streamlit). Severidade em valor cru, sem tradução. #}
+<form class="filter-bar" id="alertas-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="7" max="60" step="7" value="30" />
+  </div>
+  <div class="filter-field">
+    <label for="filtro-mesorregiao">Mesorregião</label>
+    <select id="filtro-mesorregiao" name="mesorregiao">
+      <option value="Todas">Todas</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-severidade">Severidade</label>
+    <select id="filtro-severidade" name="severidade">
+      <option value="Todas">Todas</option>
+      <option value="critical">critical</option>
+      <option value="high">high</option>
+      <option value="medium">medium</option>
+      <option value="low">low</option>
+    </select>
+  </div>
+</form>
+
+<p id="alertas-erro" class="page-subtitle" hidden></p>
+
+<div class="kpi-row">
+  <div class="kpi"><span class="kpi-label">Total</span><span class="kpi-value" id="kpi-total">—</span></div>
+  <div class="kpi"><span class="kpi-label">🔴 Críticos</span><span class="kpi-value" id="kpi-critical">—</span></div>
+  <div class="kpi"><span class="kpi-label">🟠 Altos</span><span class="kpi-value" id="kpi-high">—</span></div>
+  <div class="kpi"><span class="kpi-label">🟡 Médios</span><span class="kpi-value" id="kpi-medium">—</span></div>
+  <div class="kpi"><span class="kpi-label">🟢 Baixos</span><span class="kpi-value" id="kpi-low">—</span></div>
+</div>
+
+<div class="alertas-grid">
+  <section>
+    <h2>Por tipo de alerta</h2>
+    <p id="msg-portipo-vazio" hidden>Sem alertas no período e filtros selecionados.</p>
+    <div id="chart-portipo" class="chart" style="width: 100%; height: 320px"></div>
+  </section>
+  <section>
+    <h2>Municípios mais afetados</h2>
+    <p id="msg-municipios-vazio" hidden>Sem alertas no período e filtros selecionados.</p>
+    <div id="chart-municipios" class="chart" style="width: 100%; height: 320px"></div>
+  </section>
+</div>
+
+<section>
+  <h2 id="recentes-titulo">Alertas recentes</h2>
+  <p id="msg-recentes-vazio" hidden>Nenhum alerta encontrado no período e filtros selecionados.</p>
+  <div class="table-scroll">
+    <table id="tabela-recentes" hidden>
+      <thead>
+        <tr>
+          <th>Data</th><th>Município</th><th>Mesorregião</th><th>Tipo</th><th>Severidade</th>
+          <th>Temp Máx (°C)</th><th>Anomalia (°C)</th><th>Precip (mm)</th>
+          <th>Vento (km/h)</th><th>UV Máx</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
