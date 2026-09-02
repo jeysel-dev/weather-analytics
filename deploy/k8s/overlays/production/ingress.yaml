@@ -75,7 +75,18 @@ spec:
                 name: weather-analytics-api
                 port:
                   number: 8000
-          # --- Streamlit (catch-all, inalterado) ---
+          # --- Home nova (FastAPI): só o path exato "/" (spec 090). Antes do
+          #     catch-all: "/" exato -> FastAPI; qualquer outro path que não
+          #     bata numa regra FastAPI acima cai no catch-all Streamlit. ---
+          - path: /
+            pathType: Exact
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          # --- Streamlit (catch-all: tudo que não é "/" exato nem rota FastAPI,
+          #     inclui as páginas antigas em maiúscula /Temperatura etc.) ---
           - path: /
             pathType: Prefix
             backend:
