@@ -157,6 +157,11 @@ embasam esta spec:
   templates Jinja2 (esqueleto por página), routers `/api/v1/*` (endpoints
   JSON, rotas síncronas), `utils/bigquery.py` (adaptado do de `streamlit/`),
   `conftest.py` (stub de manifest para os testes).
+- **Camada de referência compartilhada** — endpoints `/api/v1/ref/*`
+  (municípios, mesorregiões, `min`/`max` de data por mart) e o módulo
+  `web/src/labels.ts` (traduções de enum + cores/ícones). Dado que várias
+  páginas precisam da mesma lista/tradução, isso é definido uma vez, fora
+  das specs de página. Contrato detalhado em [[014-camada-referencia]].
 - `web/` — novo. Frontend Vite + TypeScript: um módulo TS por página,
   `echarts` como única dependência de runtime, um arquivo de CSS
   customizado sem framework, config do Vite gerando `manifest.json`.
@@ -236,6 +241,8 @@ embasam esta spec:
 - [[011-pagina-cidades]] — (a criar).
 - [[012-pagina-comparativo]] — (a criar).
 - [[013-pagina-relatorio-cidade]] — (a criar).
+- [[014-camada-referencia]] — endpoints `/api/v1/ref/*` e `web/src/labels.ts`
+  compartilhados entre as páginas (a criar).
 - [[001-atualizar-docs-arquitetura]] — descreve a arquitetura de dados
   (Open-Meteo → pipeline → `weather_raw` → dbt → dashboard) que esta
   migração mantém intacta; só troca a camada de apresentação.
