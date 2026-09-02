@@ -16,8 +16,11 @@ patches:
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics
     newName: ghcr.io/jeysel-dev/weather-analytics
-    # Promovido manualmente na Fase 6 (spec 072) — c9f7995 é a tag validada
-    # e Synced em staging no momento da promoção (confirmado ao vivo via
-    # kubectl antes deste commit, não presumido). Promoção deliberada, sem
-    # bump automático de CI (production não tem esse passo, por design).
-    newTag: c9f7995
+    # Promovido manualmente em 2026-09-02 — fb3baf2 (página "Relatório por
+    # Cidade") validada em staging via Playwright headless (query real
+    # rodou, tabela com dados reais, wa.me correto, sem regressão em
+    # /Cidades) antes desta promoção. Synced em staging no momento da
+    # promoção (confirmado ao vivo via kubectl antes deste commit, não
+    # presumido). Promoção deliberada, sem bump automático de CI
+    # (production não tem esse passo, por design).
+    newTag: fb3baf2
