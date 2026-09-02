@@ -33,6 +33,48 @@ spec:
                 name: weather-analytics-api
                 port:
                   number: 8000
+          - path: /temperatura
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /precipitacao
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /alertas
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /cidades
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /comparativo
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /relatorio-cidade
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
           # --- Streamlit (catch-all, inalterado) ---
           - path: /
             pathType: Prefix
