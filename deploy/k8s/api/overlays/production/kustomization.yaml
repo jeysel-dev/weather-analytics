@@ -10,4 +10,13 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    newTag: latest
+    # Promovido manualmente em 2026-09-02 — c696a38 (1º deploy da stack
+    # FastAPI: roteamento por path Streamlit↔API, página /horario). Mesma
+    # imagem validada ponta a ponta em staging via Playwright headless:
+    # /horario renderiza os 3 gráficos ECharts com dado real de produção
+    # (BigQuery via chave da weather-dashboard-sa — Opção B, SA dedicada
+    # é pendência registrada na spec 090), roteamento confirmado por
+    # header Server (uvicorn em /horario e /api/v1, TornadoServer em / e
+    # /Temperatura), zero erro de console, Streamlit sem regressão.
+    # weather-analytics-api-staging Synced no momento da promoção.
+    newTag: c696a38
