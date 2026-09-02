@@ -189,5 +189,6 @@ pg = st.navigation([
     st.Page("pages/4_Horario.py", title="Horário", icon="🕐"),
     st.Page("pages/5_Cidades.py", title="Cidades", icon="🏙️"),
     st.Page("pages/6_Comparativo.py", title="Comparativo", icon="🔍"),
+    st.Page("pages/7_Relatorio_Cidade.py", title="Relatório por Cidade", icon="📋"),
 ])
 pg.run()
