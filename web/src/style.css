@@ -1,0 +1,430 @@
+:root {
+  --text: #5b6470;
+  --text-h: #0d1117;
+  --bg: #fff;
+  --bg-card: #fff;
+  --border: #e2e5e9;
+  --accent: #1976d2;
+  --accent-2: #e07a3f;
+  --warning-bg: #fdf1e3;
+  --warning-border: #ecd3ac;
+  --warning-text: #6b4a1f;
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+
+  font: 18px/145% var(--sans);
+  color-scheme: light dark;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #9aa4b2;
+    --text-h: #f3f4f6;
+    --bg: #12151a;
+    --bg-card: #191d24;
+    --border: #2a2f38;
+    --accent: #5ba3e8;
+    --accent-2: #f0985c;
+    --warning-bg: #2b2114;
+    --warning-border: #4a3620;
+    --warning-text: #e0b880;
+  }
+}
+
+body { margin: 0; }
+
+/* `hidden` sempre significa oculto: várias classes abaixo definem `display`
+   (`.share-button`, `.kpi-row`, `.tab-panel`…) e sozinhas venceriam a regra
+   `[hidden]` do user-agent, revelando elementos que os templates marcam
+   como ocultos até o JS liberar. */
+[hidden] { display: none !important; }
+
+main {
+  max-width: 1126px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+}
+
+a { color: var(--accent); }
+
+h1 {
+  font-size: 32px;
+  color: var(--text-h);
+  margin: 24px 0 12px;
+}
+
+h2 {
+  font-size: 22px;
+  color: var(--text-h);
+  margin: 0 0 4px;
+}
+
+section { margin-bottom: 40px; }
+
+/* ── Navbar (renomeado de site-nav*, já usado em layout.html) ────────── */
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-nav__inner {
+  max-width: 1126px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+
+.site-nav__brand {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--text-h);
+  text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.site-nav__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.site-nav__toggle-icon,
+.site-nav__toggle-icon::before,
+.site-nav__toggle-icon::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--text-h);
+  border-radius: 1px;
+}
+
+.site-nav__toggle-icon { position: relative; }
+
+.site-nav__toggle-icon::before,
+.site-nav__toggle-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.site-nav__toggle-icon::before { top: -6px; }
+.site-nav__toggle-icon::after { top: 6px; }
+
+.site-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.site-nav__links a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav__links a[aria-current="page"] {
+  color: var(--text-h);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+/* ── Home ──────────────────────────────────────────────────────────── */
+
+.hero { padding: 48px 0 8px; max-width: 760px; }
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.lead { font-size: 19px; line-height: 1.6; color: var(--text); margin: 0; }
+
+.findings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 36px 0;
+}
+
+.finding-card {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent-2);
+  border-radius: 8px;
+  background: var(--bg-card);
+  padding: 24px;
+}
+
+.finding-card.finding-accent { border-left-color: var(--accent); }
+
+.finding-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+  margin-bottom: 10px;
+}
+
+.finding-accent .finding-label { color: var(--accent); }
+
+.finding-desc { font-size: 14.5px; line-height: 1.6; color: var(--text); margin: 0; }
+
+.section-desc { font-size: 14.5px; color: var(--text); margin: 0 0 20px; }
+
+.link-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.link-card {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  padding: 20px;
+  text-decoration: none;
+}
+
+.link-card-title {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin-bottom: 6px;
+}
+
+.link-card-desc { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+
+/* ── KPIs (usado na home E nas páginas internas: kpi/kpi-row já existem
+   nos templates) ─────────────────────────────────────────────────── */
+
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.kpi {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  padding: 18px;
+  text-align: center;
+}
+
+.kpi-value {
+  display: block;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-h);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.kpi-label { display: block; font-size: 12.5px; color: var(--text); }
+
+/* ── Páginas internas ─────────────────────────────────────────────── */
+
+.breadcrumb { font-size: 13px; color: var(--text); margin: 24px 0 10px; }
+.breadcrumb a { color: var(--accent); text-decoration: none; }
+
+.page-caption { font-size: 14px; color: var(--text); margin: 0 0 20px; }
+.page-subtitle { font-size: 15px; color: var(--text-h); margin: 4px 0 16px; }
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0 0 20px;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.filter-field select,
+.filter-field input[type="number"],
+.filter-field input[type="date"] {
+  font: inherit;
+  color: var(--text-h);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  min-width: 200px;
+}
+
+.filter-field select[multiple] { min-height: 160px; min-width: 240px; }
+.filter-field input[type="date"] { color-scheme: light dark; }
+
+.chart {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-card);
+  margin-bottom: 8px;
+}
+
+/* Grids de 2 colunas reaproveitados por várias páginas (rankings,
+   precipitação, alertas) — mesmo padrão visual, nomes diferentes só
+   porque cada template já foi escrito com um nome próprio. */
+.ranking-grid,
+.precip-grid,
+.alertas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+.ranking-grid h2,
+.precip-grid h2,
+.alertas-grid h2 { font-size: 16px; margin: 0 0 12px; }
+
+/* ── Abas ─────────────────────────────────────────────────────────── */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin: 20px 0 24px;
+}
+
+.tab-btn {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 14px;
+  cursor: pointer;
+  margin-bottom: -1px;
+}
+
+.tab-btn[aria-selected="true"] {
+  color: var(--text-h);
+  border-bottom-color: var(--accent);
+}
+
+.tab-panel[hidden] { display: none; }
+
+/* ── Tabelas ──────────────────────────────────────────────────────── */
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.table-scroll table { width: 100%; border-collapse: collapse; font-size: 14px; }
+
+.table-scroll th,
+.table-scroll td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table-scroll th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.table-scroll td { color: var(--text-h); font-variant-numeric: tabular-nums; }
+.table-scroll tr:last-child td { border-bottom: none; }
+
+/* ── Compartilhar ─────────────────────────────────────────────────── */
+
+.share-button {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 8px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+/* ── Responsivo ───────────────────────────────────────────────────── */
+
+@media (max-width: 720px) {
+  .findings,
+  .link-grid,
+  .ranking-grid,
+  .precip-grid,
+  .alertas-grid { grid-template-columns: 1fr; }
+
+  .site-nav__inner { padding: 0 16px; gap: 12px; }
+  .site-nav__brand { font-size: 14px; }
+  .site-nav__toggle { display: flex; }
+
+  .site-nav__links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    max-height: calc(100vh - 64px);
+    max-height: calc(100dvh - 64px);
+    overflow-y: auto;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 8px;
+  }
+
+  .site-nav__links.open { display: flex; }
+  .site-nav__links > li { width: 100%; }
+  .site-nav__links a { padding: 12px 10px; font-size: 15px; }
+
+  main { padding: 0 16px 32px; }
+  h1 { font-size: 26px; }
+  .chart { height: 300px !important; }
+}

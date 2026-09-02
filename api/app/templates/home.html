@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block title %}Weather Analytics — Clima de Santa Catarina{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Painel de clima · Santa Catarina</p>
+  <p class="lead">
+    Dados climáticos diários e horários dos municípios de Santa Catarina,
+    coletados a partir da API Open-Meteo. Sete visões diferentes do mesmo
+    dado: tendências por região, extremos por cidade, alertas automáticos
+    e comparações lado a lado.
+  </p>
+</section>
+
+<section class="kpi-row" id="home-kpis">
+  <div class="kpi"><span class="kpi-value" id="kpi-municipios">—</span><span class="kpi-label">Municípios monitorados</span></div>
+  <div class="kpi"><span class="kpi-value" id="kpi-mesorregioes">—</span><span class="kpi-label">Mesorregiões</span></div>
+  <div class="kpi"><span class="kpi-value" id="kpi-dias-historico">—</span><span class="kpi-label">Dias de histórico</span></div>
+  <div class="kpi"><span class="kpi-value" id="kpi-ultima-atualizacao">—</span><span class="kpi-label">Última atualização</span></div>
+</section>
+
+<section class="findings">
+  <div class="finding-card finding-accent">
+    <div class="finding-label">Fonte dos dados</div>
+    <p class="finding-desc">
+      Coleta automática via Open-Meteo, processada por um pipeline próprio
+      (BigQuery + dbt) em camadas de staging, intermediate e marts, sem
+      custo de licença de dado.
+    </p>
+  </div>
+  <div class="finding-card">
+    <div class="finding-label">Frequência de atualização</div>
+    <p class="finding-desc">
+      O pipeline roda em lote, normalmente uma vez ao dia. Todos os
+      filtros de período neste site ancoram na última data com dado real
+      — nunca no relógio do servidor.
+    </p>
+  </div>
+</section>
+
+<section>
+  <h2>Explorar o dashboard</h2>
+  <p class="section-desc">Cada página cobre uma pergunta diferente sobre o mesmo dado climático.</p>
+  <div class="link-grid">
+    <a class="link-card" href="/temperatura">
+      <div class="link-card-title">🌡️ Temperatura</div>
+      <div class="link-card-desc">Rankings de calor e frio, tendência por mesorregião, mapa de anomalia térmica.</div>
+    </a>
+    <a class="link-card" href="/precipitacao">
+      <div class="link-card-title">🌧️ Precipitação</div>
+      <div class="link-card-desc">Ranking de chuva acumulada, distribuição por intensidade, mapa de chuva por região.</div>
+    </a>
+    <a class="link-card" href="/alertas">
+      <div class="link-card-title">🚨 Alertas</div>
+      <div class="link-card-desc">Eventos climáticos extremos identificados automaticamente, com histórico filtrável.</div>
+    </a>
+    <a class="link-card" href="/horario">
+      <div class="link-card-title">🕐 Horário</div>
+      <div class="link-card-desc">Padrão de temperatura, umidade, vento e chuva hora a hora, por município.</div>
+    </a>
+    <a class="link-card" href="/cidades">
+      <div class="link-card-title">🏙️ Cidades</div>
+      <div class="link-card-desc">Perfil climático completo de um único município: temperatura, chuva, vento, UV e alertas.</div>
+    </a>
+    <a class="link-card" href="/comparativo">
+      <div class="link-card-title">🔍 Comparativo</div>
+      <div class="link-card-desc">Compare até 3 cidades lado a lado, veja o mapa de chuva por região, ou um dia contra a média histórica.</div>
+    </a>
+    <a class="link-card" href="/relatorio-cidade">
+      <div class="link-card-title">📋 Relatório por Cidade</div>
+      <div class="link-card-desc">Tabela consolidada por período, pronta pra compartilhar via WhatsApp.</div>
+    </a>
+  </div>
+</section>
+{% endblock %}

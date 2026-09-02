@@ -83,6 +83,14 @@ class Page:
 
 PAGES: tuple[Page, ...] = (
     Page(
+        path="/",
+        template="home.html",
+        page_id="home",
+        menu_label="Início",
+        menu_icon="🏠",
+        menu_position=0,
+    ),
+    Page(
         path="/temperatura",
         template="temperatura.html",
         page_id="temperatura",
