@@ -10,18 +10,20 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-02 — 82e4836 (migração completa:
-    # as 6 páginas restantes — Temperatura, Precipitação, Alertas,
-    # Cidades, Comparativo, Relatório por Cidade). Imagem validada em
-    # staging com dado real de produção (BigQuery via chave da
-    # weather-dashboard-sa — Opção B): as 7 rotas HTML respondem 200 com
-    # header Server=uvicorn e menu de 7 itens; cada endpoint JSON das 6
-    # páginas retornou linha real (rankings/tendência/anomalia,
-    # ranking/intensidade/heatmap de chuva, resumo/por-tipo/municípios/
-    # recentes de alertas, lista/clima/alertas de cidades, série/heatmap/
-    # dia-vs-histórico do comparativo, dados do relatório); validação
-    # nativa de parâmetro (422) e cidade inexistente (404) funcionando;
-    # Streamlit sem regressão (/, /Temperatura etc. seguem em
-    # TornadoServer). weather-analytics-api-staging Synced na promoção.
-    # Tag anterior: c696a38 (só /horario).
-    newTag: 82e4836
+    # Promovido manualmente em 2026-09-02 — 2a81817 (home nova com
+    # storytelling + primeiro CSS do projeto: variáveis de tema, dark mode
+    # via prefers-color-scheme, navbar sticky com toggle mobile hambúrguer;
+    # cobre as 8 rotas — home + 7 páginas). Validada em staging (visual
+    # desktop 1280×900 e mobile 375×812 nas 8 rotas via Playwright headless):
+    # navbar com fundo/borda, h1 32px/700, cards com borda+padding, <th>
+    # destacado, filtros alinhados, ECharts com dado real do BigQuery; menu
+    # mobile fechado por padrão, hambúrguer abre lista vertical, clique em
+    # link fecha, Escape fecha, zero overflow horizontal nas 8; KPIs da home
+    # preenchidos com dado real (295 municípios, 6 mesorregiões, 2070 dias,
+    # última atualização 02/09/2026); zero erro de console / asset 404;
+    # Streamlit sem regressão (/_stcore/health + rotas maiúsculas seguem em
+    # TornadoServer). Roteamento "/" exato -> FastAPI validado em staging via
+    # Ingress -home dedicado (router.priority 100000 — Traefik 3.7 ranqueia
+    # por tamanho de regra, Path(/) perde do catch-all PathPrefix(/) sem
+    # isso). Tag anterior: 82e4836 (migração 7/7 das páginas).
+    newTag: 2a81817
