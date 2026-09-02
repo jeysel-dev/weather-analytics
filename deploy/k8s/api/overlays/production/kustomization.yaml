@@ -10,13 +10,18 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-02 — c696a38 (1º deploy da stack
-    # FastAPI: roteamento por path Streamlit↔API, página /horario). Mesma
-    # imagem validada ponta a ponta em staging via Playwright headless:
-    # /horario renderiza os 3 gráficos ECharts com dado real de produção
-    # (BigQuery via chave da weather-dashboard-sa — Opção B, SA dedicada
-    # é pendência registrada na spec 090), roteamento confirmado por
-    # header Server (uvicorn em /horario e /api/v1, TornadoServer em / e
-    # /Temperatura), zero erro de console, Streamlit sem regressão.
-    # weather-analytics-api-staging Synced no momento da promoção.
-    newTag: c696a38
+    # Promovido manualmente em 2026-09-02 — 82e4836 (migração completa:
+    # as 6 páginas restantes — Temperatura, Precipitação, Alertas,
+    # Cidades, Comparativo, Relatório por Cidade). Imagem validada em
+    # staging com dado real de produção (BigQuery via chave da
+    # weather-dashboard-sa — Opção B): as 7 rotas HTML respondem 200 com
+    # header Server=uvicorn e menu de 7 itens; cada endpoint JSON das 6
+    # páginas retornou linha real (rankings/tendência/anomalia,
+    # ranking/intensidade/heatmap de chuva, resumo/por-tipo/municípios/
+    # recentes de alertas, lista/clima/alertas de cidades, série/heatmap/
+    # dia-vs-histórico do comparativo, dados do relatório); validação
+    # nativa de parâmetro (422) e cidade inexistente (404) funcionando;
+    # Streamlit sem regressão (/, /Temperatura etc. seguem em
+    # TornadoServer). weather-analytics-api-staging Synced na promoção.
+    # Tag anterior: c696a38 (só /horario).
+    newTag: 82e4836
