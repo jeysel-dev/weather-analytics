@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import date, timedelta
 from urllib.parse import quote, urlencode
 
 import streamlit as st
-from utils.bigquery import query, tbl, max_date
+from utils.bigquery import query, tbl, max_date, min_date
 
 st.title("📋 Relatório do clima por cidade")
 
@@ -13,38 +13,55 @@ SELECT city_name FROM {tbl('locations', seeds=True)} ORDER BY city_name
 _city_list = _cities_df["city_name"].tolist() if not _cities_df.empty else []
 
 _max_daily = max_date("mart_climate__daily_facts")
+_min_daily = min_date("mart_climate__daily_facts")
 
-# ── Defaults a partir da URL (primeiro uso de st.query_params no projeto) ──────
+# ── Defaults a partir da URL ──────────────────────────────────────────────────
 _qp_cidades = st.query_params.get("cidades")
 _default_cities = (
     [c for c in _qp_cidades.split(",") if c in _city_list] if _qp_cidades else []
 )
 
-_qp_dias = st.query_params.get("dias")
-try:
-    _default_days = int(_qp_dias)
-    if not 7 <= _default_days <= 180:
-        _default_days = 30
-except (TypeError, ValueError):
-    _default_days = 30
+_default_fim = _max_daily
+# clamp ao min: date_input recusa um value fora de [min_value, max_value]
+_default_inicio = max(_min_daily, _max_daily - timedelta(days=30))
+
+_qp_inicio = st.query_params.get("inicio")
+_qp_fim = st.query_params.get("fim")
+if _qp_inicio and _qp_fim:
+    try:
+        _p_inicio = date.fromisoformat(_qp_inicio)
+        _p_fim = date.fromisoformat(_qp_fim)
+        if _min_daily <= _p_inicio <= _p_fim <= _max_daily:
+            _default_inicio, _default_fim = _p_inicio, _p_fim
+    except ValueError:
+        pass
 
 # ── Filtros ──────────────────────────────────────────────────────────────────
-with st.sidebar:
-    st.header("Filtros")
+col_cidades, col_periodo = st.columns([3, 2])
+with col_cidades:
     selected_cities = st.multiselect("Cidades", _city_list, default=_default_cities)
-    days = st.slider("Dias", 7, 180, _default_days, step=7)
+with col_periodo:
+    periodo = st.date_input(
+        "Período",
+        value=(_default_inicio, _default_fim),
+        min_value=_min_daily,
+        max_value=_max_daily,
+        format="DD/MM/YYYY",
+    )
 
 if not selected_cities:
     st.info("Selecione ao menos uma cidade para gerar o relatório.")
     st.stop()
 
-data_fim = _max_daily
-data_inicio = data_fim - timedelta(days=days)
+if not (isinstance(periodo, (list, tuple)) and len(periodo) == 2):
+    st.info("Selecione a data final do período.")
+    st.stop()
+
+data_inicio, data_fim = periodo
 
 st.caption(
     f"Cidades: {', '.join(selected_cities)} | "
-    f"Período: últimos {days} dias "
-    f"({data_inicio.strftime('%d/%m/%Y')} a {data_fim.strftime('%d/%m/%Y')})"
+    f"Período: {data_inicio.strftime('%d/%m/%Y')} a {data_fim.strftime('%d/%m/%Y')}"
 )
 
 # ── Query ────────────────────────────────────────────────────────────────────
@@ -61,7 +78,7 @@ SELECT
   ROUND(MAX(wind_speed_max_kmh), 1) AS vento_maximo
 FROM {tbl('mart_climate__daily_facts')}
 WHERE city_name IN ({cities_sql})
-  AND date >= DATE_SUB(DATE '{_max_daily}', INTERVAL {days} DAY)
+  AND date BETWEEN DATE '{data_inicio}' AND DATE '{data_fim}'
 GROUP BY city_name
 ORDER BY city_name
 """)
@@ -87,12 +104,15 @@ else:
     st.divider()
 
     # ── Compartilhar ─────────────────────────────────────────────────────────
-    share_params = urlencode({"cidades": ",".join(selected_cities), "dias": days})
+    share_params = urlencode({
+        "cidades": ",".join(selected_cities),
+        "inicio": data_inicio.isoformat(),
+        "fim": data_fim.isoformat(),
+    })
     share_url = f"https://weather.jeysel.dev/Relatorio_Cidade?{share_params}"
     message = (
         f"Relatório de clima - {', '.join(selected_cities)} - "
-        f"Período: últimos {days} dias "
-        f"({data_inicio.strftime('%d/%m/%Y')} a {data_fim.strftime('%d/%m/%Y')}). "
+        f"Período: {data_inicio.strftime('%d/%m/%Y')} a {data_fim.strftime('%d/%m/%Y')}. "
         f"Veja o relatório completo: {share_url}"
     )
     wa_url = f"https://wa.me/?text={quote(message)}"

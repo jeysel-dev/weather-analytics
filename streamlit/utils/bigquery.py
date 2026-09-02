@@ -79,6 +79,14 @@ def max_date(table: str):
     return df["max_date"].iloc[0] if not df.empty else None
 
 
+def min_date(table: str):
+    """Primeira data disponível na tabela — usada para evitar que o usuário
+    escolha uma data de início anterior a qualquer dado existente (o range
+    de dados varia por tabela, não é fixo desde o início do projeto)."""
+    df = query(f"SELECT MIN(date) AS min_date FROM {tbl(table)}")
+    return df["min_date"].iloc[0] if not df.empty else None
+
+
 MESOREGIONS = [
     "Grande Florianópolis",
     "Norte Catarinense",
