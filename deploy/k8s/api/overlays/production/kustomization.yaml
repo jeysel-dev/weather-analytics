@@ -10,20 +10,23 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-02 — 28863ca (reskin visual
-    # "enterprise": só web/src/style.css — paleta quase monocromática com
-    # accent azul escuro reservado a link/estado ativo, border-radius 8px
-    # -> 2-3px, rótulos de KPI e <th> em uppercase/700/letter-spacing
-    # 0.08em, padding de card ~24px -> ~14-16px). Nenhuma mudança de HTML,
-    # TS, rota ou Ingress. Validada em staging via Playwright headless
-    # (desktop 1440×900 + mobile 390×844 nas 8 rotas): tokens confirmados
-    # ao vivo com dado real do BigQuery (card radius 3px, th uppercase/700/
-    # 0.96px, texto rgb(75,85,99)); ECharts + tabelas + KPIs renderizando
-    # com dado real (alertas 2493/0/23/860/1610 + tabela 200 linhas;
-    # cidades 21.8°C/12.0°C/372.5mm/-0.1°C; home 295/6/2070/02-09-2026);
-    # 16/16 loads HTTP 200, zero erro de console, zero request falha (ex-
-    # favicon), zero overflow horizontal (scrollW==clientW em 1440 e 390);
-    # hambúrguer nas 8 rotas mobile: aria-expanded false->true ao abrir,
-    # lista vertical visível, Escape volta a false, sem overflow com menu
-    # aberto. Tag anterior: 2a81817 (home nova + 1º CSS).
-    newTag: 28863ca
+    # Promovido manualmente em 2026-09-02 — 2620c14 (= conteúdo de 5923d72:
+    # navbar sem emoji + footer compartilhado; 2620c14 é só um commit de
+    # doc por cima, sem mudança de web/api. layout.html deixa de renderizar
+    # item.menu_icon nos links do menu — só menu_label; <footer> novo
+    # compartilhado pelas 8 rotas com link pro Open-Meteo. style.css:
+    # navbar 64px -> 56px + calc(100vh/100dvh - 56px) no dropdown mobile.
+    # Fora do escopo (mantêm emoji): brand ".site-nav__brand" (🌤️), H1 de
+    # cada página, cards da home. Validada em staging via Playwright
+    # headless (desktop 1440×900 + mobile 390×844 nas 8 rotas): navHcss
+    # 56px em todas; 8 links de menu text-only (Início/Temperatura/.../
+    # Relatório por Cidade), zero emoji; footer presente com <a> Open-Meteo
+    # nas 8; dado real do BigQuery (home 295/6/2070/02-09-2026; alertas
+    # 2493/0/23/860/1610 + tabela 200 linhas; cidades Abdon Batista
+    # 21.8°C/12.0°C/372.5mm/-0.1°C); 16/16 loads HTTP 200, zero erro de
+    # console, zero request falha (ex-favicon), zero overflow horizontal
+    # (scrollW==clientW em 1440 e 390); hambúrguer mobile nas 8 rotas:
+    # aria-expanded false->true ao abrir, lista vertical text-only visível,
+    # Escape volta a false, clique em link navega e fecha (->false), sem
+    # overflow com menu aberto. Tag anterior: 28863ca (reskin CSS enterprise).
+    newTag: 2620c14
