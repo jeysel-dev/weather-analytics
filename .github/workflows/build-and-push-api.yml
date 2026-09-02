@@ -1,0 +1,107 @@
+name: Build e publica imagem da API (FastAPI + web)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "api/**"
+      - "web/**"
+      - "Dockerfile"
+      - ".github/workflows/build-and-push-api.yml"
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  test:
+    name: Suíte de testes da API (spec 006)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instala dependências (runtime + teste)
+        run: pip install -r api/requirements-dev.txt
+      - name: pytest
+        working-directory: api
+        run: pytest -v
+
+  build-api:
+    name: Imagem da API + frontend
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: vars
+        run: echo "sha_short=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Build (local, sem push ainda)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          load: true
+          tags: ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.sha_short }}
+
+      - name: Sobe container efêmero para smoke test
+        run: |
+          docker run -d --name weather-api-smoke -p 8000:8000 \
+            ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.sha_short }}
+
+      - name: Aguarda /health responder
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8000/health >/dev/null 2>&1; then
+              echo "Container pronto após ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "Timeout aguardando /health"; docker logs weather-api-smoke; exit 1
+
+      - name: Smoke test da rota /health
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8000/health)
+          if [ "$code" != "200" ]; then
+            echo "FALHA: /health retornou ${code} (esperado 200)"
+            docker logs weather-api-smoke; exit 1
+          fi
+          echo "OK: /health -> 200"
+
+      - name: Limpa container de smoke test
+        if: always()
+        run: docker rm -f weather-api-smoke || true
+
+      - name: Publica imagem no GHCR
+        run: |
+          docker tag ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.sha_short }} \
+                     ghcr.io/${{ github.repository }}/api:latest
+          docker push ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.sha_short }}
+          docker push ghcr.io/${{ github.repository }}/api:latest
+
+      - name: Instala kustomize
+        run: |
+          curl -fSL --retry 5 --retry-delay 2 --retry-connrefused \
+            -o kustomize.tar.gz \
+            "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.8.1/kustomize_v5.8.1_linux_amd64.tar.gz"
+          tar xzf kustomize.tar.gz && rm kustomize.tar.gz
+          sudo mv kustomize /usr/local/bin/kustomize
+
+      - name: Atualiza tag da imagem no overlay de staging
+        run: |
+          cd deploy/k8s/api/overlays/staging
+          kustomize edit set image \
+            ghcr.io/${{ github.repository }}/api=ghcr.io/${{ github.repository }}/api:${{ steps.vars.outputs.sha_short }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kustomization.yaml
+          git diff --cached --quiet && exit 0
+          git commit -m "deploy(staging): atualiza imagem weather-analytics-api para ${{ steps.vars.outputs.sha_short }} [skip ci]"
+          git push

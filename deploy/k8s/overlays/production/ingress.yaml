@@ -11,6 +11,29 @@ spec:
     - host: weather-analytics-production.internal
       http:
         paths:
+          # --- FastAPI (spec 090). Uma linha nova por página migrada. ---
+          - path: /horario
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          - path: /static/api
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000
+          # --- Streamlit (catch-all, inalterado) ---
           - path: /
             pathType: Prefix
             backend:

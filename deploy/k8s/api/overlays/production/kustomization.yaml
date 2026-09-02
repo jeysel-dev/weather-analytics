@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: production
+
+resources:
+  - ../../base
+
+# Promoção manual (spec 090) — bump deliberado desta tag + commit, ou
+# kubectl patch application weather-analytics-api-production -n argocd.
+images:
+  - name: ghcr.io/jeysel-dev/weather-analytics/api
+    newTag: latest

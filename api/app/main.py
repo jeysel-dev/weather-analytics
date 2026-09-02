@@ -39,8 +39,8 @@ def _load_main_entry() -> dict:
 
 
 _main_entry = _load_main_entry()
-STATIC_MAIN_JS = f"/static/{_main_entry['file']}"
-STATIC_MAIN_CSS = [f"/static/{css}" for css in _main_entry.get("css", [])]
+STATIC_MAIN_JS = f"/static/api/{_main_entry['file']}"
+STATIC_MAIN_CSS = [f"/static/api/{css}" for css in _main_entry.get("css", [])]
 
 
 app = FastAPI(
@@ -49,7 +49,7 @@ app = FastAPI(
     version="0.1.0",
 )
 
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/static/api", StaticFiles(directory=STATIC_DIR), name="static")
 
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
 templates.env.globals["main_js"] = STATIC_MAIN_JS

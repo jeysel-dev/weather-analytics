@@ -1,0 +1,28 @@
+# Egress restrito — igual à weather-analytics-egress-restrict da stack
+# Streamlit (spec 088), só muda o podSelector. DNS (kube-system) + HTTPS 443
+# (bigquery.googleapis.com / oauth2.googleapis.com via service account).
+# Porta 443 sem ipBlock: mesmo risco aceito conscientemente já documentado
+# para a stack Streamlit (CNI do k3s não suporta política por FQDN).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: weather-analytics-api-egress-restrict
+spec:
+  podSelector:
+    matchLabels:
+      app: weather-analytics-api
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - ports:
+        - protocol: TCP
+          port: 443
