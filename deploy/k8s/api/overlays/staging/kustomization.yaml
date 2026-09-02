@@ -4,9 +4,10 @@ kind: Kustomization
 namespace: staging
 
 resources:
-  - ../../base
+- ../../base
 
 # Mantido pelo passo de CI (kustomize edit set image) a partir do 1º build.
 images:
-  - name: ghcr.io/jeysel-dev/weather-analytics/api
-    newTag: latest
+- name: ghcr.io/jeysel-dev/weather-analytics/api
+  newName: ghcr.io/jeysel-dev/weather-analytics/api
+  newTag: c696a38
