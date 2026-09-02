@@ -25,13 +25,16 @@
           <li>
             <a href="{{ item.path }}"
                {% if page is defined and page == item.page_id %}aria-current="page"{% endif %}
-            >{{ item.menu_icon }} {{ item.menu_label }}</a>
+            >{{ item.menu_label }}</a>
           </li>
           {% endfor %}
         </ul>
       </div>
     </nav>
     <main>{% block content %}{% endblock %}</main>
+    <footer class="site-footer">
+      <p>Weather Analytics · Dados climáticos via <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · Projeto de portfólio</p>
+    </footer>
     <script type="module" src="{{ main_js }}"></script>
   </body>
 </html>
