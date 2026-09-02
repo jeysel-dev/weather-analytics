@@ -9,6 +9,22 @@
     {% endfor %}
   </head>
   <body{% if page is defined %} data-page="{{ page }}"{% endif %}>
+    {# Menu gerado da estrutura central de páginas (spec 006) — ver `MENU` em
+       api/app/main.py. Lista simples de links por enquanto; o refino visual
+       da navegação fica para quando houver mais de uma página. #}
+    <nav class="site-nav" aria-label="Navegação principal">
+      <a class="site-nav__brand" href="/">🌤️ Weather Analytics</a>
+      <ul class="site-nav__links">
+        {% for item in menu %}
+        <li>
+          <a
+            href="{{ item.path }}"
+            {% if page is defined and page == item.page_id %}aria-current="page"{% endif %}
+          >{{ item.menu_icon }} {{ item.menu_label }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
     <main>{% block content %}{% endblock %}</main>
     <script type="module" src="{{ main_js }}"></script>
   </body>

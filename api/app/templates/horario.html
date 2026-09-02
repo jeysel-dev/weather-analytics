@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block title %}Padrão Horário — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Padrão Horário
+</nav>
+
+<h1>🕐 Padrão Horário</h1>
+
+{# Esqueleto apenas — nenhum dado renderizado no servidor (spec 006). O
+   módulo web/src/pages/horario.ts popula o select, dispara os fetches de
+   /api/v1/horario/* e alterna a visibilidade das mensagens abaixo. #}
+<form class="filter-bar" id="horario-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-municipio">Município</label>
+    <select id="filtro-municipio" name="municipio">
+      <option value="">Selecione…</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="3" max="30" step="1" value="7" />
+  </div>
+</form>
+
+<p id="horario-subtitulo" class="page-subtitle" hidden></p>
+<p id="horario-caption" class="page-caption" hidden></p>
+
+<p id="msg-sem-municipio">Selecione um município na barra lateral.</p>
+<p id="msg-sem-cidade" hidden>Sem dados horários para este município.</p>
+
+<div class="tabs" role="tablist">
+  <button type="button" class="tab-btn" role="tab" data-tab="serie" aria-selected="true">
+    🌡️ Temperatura &amp; Umidade
+  </button>
+  <button type="button" class="tab-btn" role="tab" data-tab="vento" aria-selected="false">
+    💨 Vento &amp; Chuva
+  </button>
+  <button type="button" class="tab-btn" role="tab" data-tab="padrao" aria-selected="false">
+    📊 Padrão 24h
+  </button>
+</div>
+
+<section id="tab-serie" class="tab-panel" role="tabpanel" aria-label="Temperatura & Umidade">
+  <p id="msg-serie-vazia" hidden>Sem dados horários para este município no período.</p>
+  <div id="chart-serie" class="chart" style="width: 100%; height: 380px"></div>
+</section>
+
+<section id="tab-vento" class="tab-panel" role="tabpanel" aria-label="Vento & Chuva" hidden>
+  <p id="msg-vento-vazia" hidden>Sem dados horários para este município no período.</p>
+  <div id="chart-vento" class="chart" style="width: 100%; height: 380px"></div>
+</section>
+
+<section id="tab-padrao" class="tab-panel" role="tabpanel" aria-label="Padrão 24h" hidden>
+  <p id="msg-padrao-vazio" hidden>Sem dados suficientes para calcular o padrão horário.</p>
+  <div id="chart-padrao" class="chart" style="width: 100%; height: 400px"></div>
+  <p id="padrao-caption" class="page-caption" hidden></p>
+</section>
+{% endblock %}

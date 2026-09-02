@@ -1,7 +1,13 @@
 // Entrypoint do frontend (Vite + TypeScript), spec 006.
 //
-// O dispatch por página (`document.body.dataset.page` → função de render de
-// cada gráfico) entra a partir da spec 010, junto com a primeira página
-// migrada. Por enquanto só existe para o build do Vite gerar o manifest que
-// o backend lê em nível de módulo (`_load_main_entry` em api/app/main.py).
-console.log("weather-analytics: bundle do frontend carregado");
+// Dispatch por página: `document.body.dataset.page` (definido no layout.html
+// a partir da estrutura central de páginas em api/app/main.py) seleciona o
+// módulo de render. Uma entrada por página migrada.
+
+import { initHorario } from "./pages/horario";
+
+const page = document.body.dataset.page;
+
+if (page === "horario") {
+  initHorario();
+}

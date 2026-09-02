@@ -1,10 +1,13 @@
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+from app.routers import horario
 
 APP_DIR = Path(__file__).resolve().parent
 STATIC_DIR = APP_DIR / "static"
@@ -53,13 +56,65 @@ templates.env.globals["main_js"] = STATIC_MAIN_JS
 templates.env.globals["main_css"] = STATIC_MAIN_CSS
 
 
+# ── Estrutura central de páginas (spec 006) ──────────────────────────────────
+# Fonte única: as rotas de página E o menu de navegação saem daqui. Ao
+# contrário de compras-publicas-sc (onde o menu é hardcoded no layout.html,
+# separado das rotas — o que já produziu páginas órfãs de menu), aqui não é
+# possível registrar uma rota e esquecer o item de menu: os dois campos são
+# obrigatórios na dataclass.
+@dataclass(frozen=True)
+class Page:
+    path: str
+    template: str
+    page_id: str  # vira document.body.dataset.page -> dispatch em web/src/main.ts
+    menu_label: str
+    menu_icon: str
+    menu_position: int
+
+
+PAGES: tuple[Page, ...] = (
+    Page(
+        path="/horario",
+        template="horario.html",
+        page_id="horario",
+        menu_label="Horário",
+        menu_icon="🕐",
+        # Posição 4 = mesma do Streamlit (streamlit/pages/4_Horario.py). As
+        # posições 1–3 (Temperatura, Precipitação, Alertas) ainda não existem
+        # aqui; o número já fica certo para quando entrarem.
+        menu_position=4,
+    ),
+)
+
+MENU: tuple[Page, ...] = tuple(sorted(PAGES, key=lambda p: p.menu_position))
+templates.env.globals["menu"] = MENU
+
+
+def _make_page_view(template: str, page_id: str):
+    def _view(request: Request):
+        return templates.TemplateResponse(request, template, {"page": page_id})
+
+    return _view
+
+
+for _page in PAGES:
+    app.add_api_route(
+        _page.path,
+        _make_page_view(_page.template, _page.page_id),
+        methods=["GET"],
+        include_in_schema=False,
+    )
+
+app.include_router(horario.router, prefix="/api/v1")
+
+
 @app.get("/health", include_in_schema=False)
 def health() -> JSONResponse:
-    """Liveness/readiness. A checagem de BigQuery entra junto com a primeira
-    página de dado migrada (spec 010) — por enquanto só confirma que a app
-    subiu (o que já implica manifest do Vite válido, via `_load_main_entry`)."""
+    """Liveness. Só confirma que a app subiu (o que já implica manifest do
+    Vite válido, via `_load_main_entry`).
+
+    Deliberadamente NÃO testa o BigQuery: a suíte de testes importa a app sem
+    credencial (spec 006) e um probe que dependesse do BigQuery daria 503 no
+    CI. Uma checagem de readiness contra o BigQuery, se necessária, entra
+    como endpoint separado."""
     return JSONResponse(status_code=200, content={"status": "ok"})
-
-
-# Nenhuma rota de página aqui ainda. A estrutura central (tupla → rotas +
-# menu) e os routers /api/v1/* entram a partir da spec 010.
