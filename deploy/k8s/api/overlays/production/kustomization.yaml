@@ -11,23 +11,16 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-02 — 2620c14 (= conteúdo de 5923d72:
-    # navbar sem emoji + footer compartilhado; 2620c14 é só um commit de
-    # doc por cima, sem mudança de web/api. layout.html deixa de renderizar
-    # item.menu_icon nos links do menu — só menu_label; <footer> novo
-    # compartilhado pelas 8 rotas com link pro Open-Meteo. style.css:
-    # navbar 64px -> 56px + calc(100vh/100dvh - 56px) no dropdown mobile.
-    # Fora do escopo (mantêm emoji): brand ".site-nav__brand" (🌤️), H1 de
-    # cada página, cards da home. Validada em staging via Playwright
-    # headless (desktop 1440×900 + mobile 390×844 nas 8 rotas): navHcss
-    # 56px em todas; 8 links de menu text-only (Início/Temperatura/.../
-    # Relatório por Cidade), zero emoji; footer presente com <a> Open-Meteo
-    # nas 8; dado real do BigQuery (home 295/6/2070/02-09-2026; alertas
-    # 2493/0/23/860/1610 + tabela 200 linhas; cidades Abdon Batista
-    # 21.8°C/12.0°C/372.5mm/-0.1°C); 16/16 loads HTTP 200, zero erro de
-    # console, zero request falha (ex-favicon), zero overflow horizontal
-    # (scrollW==clientW em 1440 e 390); hambúrguer mobile nas 8 rotas:
-    # aria-expanded false->true ao abrir, lista vertical text-only visível,
-    # Escape volta a false, clique em link navega e fecha (->false), sem
-    # overflow com menu aberto. Tag anterior: 28863ca (reskin CSS enterprise).
-    newTag: 2620c14
+    # Promovido manualmente em 2026-09-03 — a9065da (feat!: corte do
+    # Streamlit, dashboard 100% FastAPI, spec 015). Corrige regressão real
+    # encontrada na validação do teardown do Streamlit: produção estava
+    # pinada em 2620c14, uma versão ANTES de a9065da — que é o commit que
+    # introduziu os 7 redirects 308 das URLs legacy em maiúscula
+    # (/Temperatura -> /temperatura etc.). Com o catch-all do Streamlit
+    # removido nesta mesma rodada de corte, esses redirects passaram a ser
+    # a única forma de as URLs legacy funcionarem; sem eles, 404 em vez de
+    # 308. a9065da validado em staging por ~16h, todos os probes verdes:
+    # 8/8 rotas HTTP 200, 7/7 redirects 308, /_stcore/health 404 (Streamlit
+    # de fato fora). Tag anterior: 2620c14 (navbar sem emoji + footer
+    # compartilhado; ver histórico do git para os detalhes de validação).
+    newTag: a9065da
