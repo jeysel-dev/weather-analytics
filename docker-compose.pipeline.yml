@@ -1,3 +1,11 @@
+# ⚠️  MORTO EM PRODUÇÃO (descoberto 2026-09-03) — este arquivo não é mais o
+#     que roda no servidor. Spec 041 do repo infra (mover compose files pra
+#     fora de checkouts individuais) já foi aplicada: o checkout
+#     /home/ubuntu/app_weather não existe mais, e o compose real do pipeline
+#     vive em /home/ubuntu/infra/docker-compose.pipeline.yml, usando a tag
+#     `:latest` (não uma tag pinada como abaixo). Mantido aqui só como
+#     referência/histórico do que o container espera (volumes, env_file) —
+#     NÃO editar a tag esperando que produção use este arquivo.
 services:
   weather-pipeline:
     image: ghcr.io/jeysel-dev/weather-pipeline:81fe368

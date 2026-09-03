@@ -32,18 +32,24 @@
 --
 -- PRÉ-REQUISITO
 -- ------------
--- 1. A imagem `ghcr.io/jeysel-dev/weather-pipeline` com o `dbt/` novo já
---    publicada (push em `main` tocando `dbt/**` dispara isso sozinho via
---    `build-and-push.yml`) e a tag pinada em `docker-compose.pipeline.yml`
---    (raiz deste repo) já bumped para ela.
+-- IMPORTANTE: `docker-compose.pipeline.yml` NA RAIZ DESTE REPO ESTÁ MORTO —
+-- não é mais o que roda em produção (spec 041 do repo infra, já aplicada:
+-- checkout /home/ubuntu/app_weather removido do servidor). O compose real
+-- vive em `/home/ubuntu/infra/docker-compose.pipeline.yml` e usa a tag
+-- `:latest` (não pinada) — confirmar com `cat` no servidor antes de assumir.
+--
+-- 1. A imagem `ghcr.io/jeysel-dev/weather-pipeline:latest` com o `dbt/` novo
+--    já publicada (push em `main` tocando `dbt/**` dispara isso sozinho via
+--    `build-and-push.yml`) e já puxada no servidor.
 -- 2. O seed recarregado no BigQuery com os valores novos. Não existe
 --    serviço `dbt` separado no compose (só `weather-pipeline`) — sobrescrever
---    o CMD:
---     cd /home/ubuntu/app_weather
---     git pull
+--    o CMD, e `dbt deps` antes (dbt_packages não persiste entre `run`s):
+--     ssh -i ~/.ssh/hostinger ubuntu@2.25.173.125
+--     cd /home/ubuntu/infra
 --     docker compose -f docker-compose.pipeline.yml pull weather-pipeline
---     docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline \
---         dbt seed --project-dir /app/dbt --profiles-dir /app/pipeline --select locations
+--     docker compose -f docker-compose.pipeline.yml run --rm --entrypoint bash weather-pipeline -c \
+--         "dbt deps --project-dir /app/dbt --profiles-dir /app/pipeline && \
+--          dbt seed --project-dir /app/dbt --profiles-dir /app/pipeline --select locations"
 --
 -- Rodar os blocos abaixo no console do BigQuery (projeto weather-analytics-490113)
 -- ou via `bq query --use_legacy_sql=false < deploy/reconcile_mesoregion.sql`.
@@ -91,8 +97,10 @@ WHERE h.location_id = s.location_id
 -- `mart_climate__alerts` é `materialized='table'` e lê `mesoregion` de
 -- daily_facts. Rebuild é seguro (lê de uma mart, não do raw). Rodar via dbt:
 --
---     docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline \
---         dbt run --project-dir /app/dbt --profiles-dir /app/pipeline --select mart_climate__alerts
+-- (cd /home/ubuntu/infra primeiro; dbt deps de novo — não persiste entre runs):
+--     docker compose -f docker-compose.pipeline.yml run --rm --entrypoint bash weather-pipeline -c \
+--         "dbt deps --project-dir /app/dbt --profiles-dir /app/pipeline && \
+--          dbt run --project-dir /app/dbt --profiles-dir /app/pipeline --select mart_climate__alerts"
 --
 -- (ou deixar o próximo run agendado do pipeline reconstruir — alerts é refeita
 -- a cada run de qualquer forma.)
@@ -121,3 +129,16 @@ GROUP BY location_id, mesoregion
 ORDER BY location_id;
 -- Esperado: uma linha por location_id (não duas), com a macrorregião correta
 -- cobrindo todo o range de datas.
+
+
+-- ── 6. Reiniciar os pods da API (cache em processo) ─────────────────────────
+-- `/api/v1/ref/mesorregioes` e `/api/v1/ref/cidades` (api/app/routers/ref.py,
+-- cidades.py) são `@lru_cache(maxsize=1)` SEM TTL — um pod que já respondeu
+-- essas rotas antes deste runbook rodar fica servindo a lista antiga até
+-- reiniciar (visto em produção 2026-09-03: checar o endpoint antes da
+-- reconciliação populou o cache errado, sobrevivendo à reconciliação até o
+-- restart). Depois dos passos 2-4, reiniciar staging e produção:
+--     sudo k3s kubectl rollout restart deployment/weather-analytics-api -n staging
+--     sudo k3s kubectl rollout restart deployment/weather-analytics-api -n production
+-- Confirmar: `curl https://weather.jeysel.dev/api/v1/ref/mesorregioes` retorna
+-- as 8 macrorregiões, não as 6 antigas.
