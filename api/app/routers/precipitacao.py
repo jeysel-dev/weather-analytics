@@ -26,7 +26,7 @@ _DAILY = "mart_climate__daily_facts"
 @router.get("/ranking", response_model=RankingResponse)
 def get_ranking(
     meso: str | None = Query(None, description="Mesorregião (omitir ou 'Todas' = sem filtro)"),
-    days: int = Query(30, ge=7, le=90, description="Janela em dias (7–90, default 30)"),
+    days: int = Query(7, ge=7, le=90, description="Janela em dias (7–90, default 7)"),
 ) -> RankingResponse:
     """`SUM(precipitation_mm)` + contagem de dias com chuva por município.
     WHEN sem mesorregião: 20 resultados; WHEN mesorregião específica: todos
@@ -56,7 +56,7 @@ def get_ranking(
 @router.get("/intensidade", response_model=IntensidadeResponse)
 def get_intensidade(
     meso: str | None = Query(None, description="Mesorregião (omitir ou 'Todas' = sem filtro)"),
-    days: int = Query(30, ge=7, le=90, description="Janela em dias (7–90, default 30)"),
+    days: int = Query(7, ge=7, le=90, description="Janela em dias (7–90, default 7)"),
 ) -> IntensidadeResponse:
     """`COUNT(*)` por `precipitation_class` (valor cru — o rótulo PT e a cor
     vêm de `web/src/labels.ts` no cliente, spec 014)."""
@@ -80,7 +80,7 @@ def get_intensidade(
 
 @router.get("/heatmap-mesorregiao", response_model=HeatmapResponse)
 def get_heatmap(
-    days: int = Query(30, ge=7, le=90, description="Janela em dias (7–90, default 30)"),
+    days: int = Query(7, ge=7, le=90, description="Janela em dias (7–90, default 7)"),
 ) -> HeatmapResponse:
     """`AVG(precipitation_mm)` por `date` × `mesoregion` para **todas** as
     mesorregiões — ignora `meso` de propósito (paridade com o Streamlit)."""

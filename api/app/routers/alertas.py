@@ -49,7 +49,7 @@ def _base_where(days: int, meso: str | None, severity: str | None) -> tuple[str,
 
 @router.get("/resumo", response_model=ResumoResponse)
 def get_resumo(
-    days: int = Query(30, ge=7, le=60),
+    days: int = Query(7, ge=7, le=60),
     meso: str | None = Query(None),
     severity: Severity | None = Query(None),
 ) -> ResumoResponse:
@@ -75,7 +75,7 @@ def get_resumo(
 
 @router.get("/por-tipo", response_model=PorTipoResponse)
 def get_por_tipo(
-    days: int = Query(30, ge=7, le=60),
+    days: int = Query(7, ge=7, le=60),
     meso: str | None = Query(None),
     severity: Severity | None = Query(None),
 ) -> PorTipoResponse:
@@ -109,7 +109,7 @@ def get_por_tipo(
 
 @router.get("/municipios", response_model=MunicipiosResponse)
 def get_municipios(
-    days: int = Query(30, ge=7, le=60),
+    days: int = Query(7, ge=7, le=60),
     meso: str | None = Query(None),
     severity: Severity | None = Query(None),
 ) -> MunicipiosResponse:
@@ -134,7 +134,7 @@ def get_municipios(
 
 @router.get("/recentes", response_model=RecentesResponse)
 def get_recentes(
-    days: int = Query(30, ge=7, le=60),
+    days: int = Query(7, ge=7, le=60),
     meso: str | None = Query(None),
     severity: Severity | None = Query(None),
 ) -> RecentesResponse:

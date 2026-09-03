@@ -1,7 +1,7 @@
 // Página Temperatura (spec 007) — migração de streamlit/pages/1_Temperatura.py.
 //
 // 3 blocos lendo /api/v1/temperatura/*:
-//   - Rankings quente/frio (janela FIXA 7d, sensível a `meso`)  -> /rankings
+//   - Rankings quente/frio (janela `days`, sensível a `meso`)   -> /rankings
 //   - Tendência média por mesorregião (janela `days`)           -> /tendencia-mesorregiao
 //   - Heatmap de anomalia térmica (janela `days`, ignora `meso`) -> /anomalia
 //
@@ -197,13 +197,16 @@ function renderAnomalia(rows: AnomaliaRow[]): void {
 // ── Orquestração ────────────────────────────────────────────────────────────
 function clampDias(raw: string): number {
   const n = Number.parseInt(raw, 10);
-  if (Number.isNaN(n)) return 30;
+  if (Number.isNaN(n)) return 7;
   return Math.min(90, Math.max(7, n));
 }
 
-async function carregarRankings(meso: string): Promise<void> {
-  const qs = meso === "Todas" ? "" : `?meso=${encodeURIComponent(meso)}`;
-  const resposta = await fetch(`/api/v1/temperatura/rankings${qs}`);
+async function carregarRankings(meso: string, days: number): Promise<void> {
+  setText("quentes-titulo", `🔥 Municípios mais quentes — últimos ${days} dias`);
+  setText("frios-titulo", `❄️ Municípios mais frios — últimos ${days} dias`);
+  const params = new URLSearchParams({ days: String(days) });
+  if (meso !== "Todas") params.set("meso", meso);
+  const resposta = await fetch(`/api/v1/temperatura/rankings?${params.toString()}`);
   if (!resposta.ok) {
     setText("temp-erro", `Erro ao carregar rankings (HTTP ${resposta.status})`);
     return;
@@ -245,7 +248,7 @@ async function carregarAnomalia(days: number): Promise<void> {
 }
 
 function carregar(meso: string, days: number): void {
-  void carregarRankings(meso);
+  void carregarRankings(meso, days);
   void carregarTendencia(meso, days);
   void carregarAnomalia(days);
 }

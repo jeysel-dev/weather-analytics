@@ -4,7 +4,7 @@
 //   - 5 KPIs (tiles HTML)                       -> /api/v1/alertas/resumo
 //   - Por tipo de alerta (bar horizontal stack) -> /api/v1/alertas/por-tipo
 //   - Municípios mais afetados (bar horizontal) -> /api/v1/alertas/municipios
-//   - Alertas recentes (tabela HTML, ≤200)      -> /api/v1/alertas/recentes
+//   - Alertas recentes (tabela HTML, ≤200; 5 linhas + "Exibir mais") -> /api/v1/alertas/recentes
 //
 // Tradução de alert_type/severity vem PRONTA do backend (spec 009/014);
 // cor/ícone por severidade vêm de web/src/labels.ts.
@@ -47,6 +47,14 @@ interface RecenteRow {
 
 const SEV_ORDER = ["critical", "high", "medium", "low"] as const;
 const MESO_PALETTE = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272"];
+
+// Tabela "Alertas recentes" — paginação client-side (mesmo padrão da aba
+// Alertas em /cidades, spec 018): renderiza só as primeiras `recentesMax`
+// linhas; "Exibir mais" revela +5 sem refazer o fetch (lista completa em
+// `ultimoRecentes`). Trocar qualquer filtro volta pra 5.
+const RECENTES_PAGE = 5;
+let recentesMax = RECENTES_PAGE;
+let ultimoRecentes: RecenteRow[] = [];
 
 async function popularMesorregioes(select: HTMLSelectElement): Promise<void> {
   const resposta = await fetch("/api/v1/ref/mesorregioes");
@@ -151,19 +159,21 @@ function renderMunicipios(rows: MunicipioRow[]): void {
 }
 
 // ── Tabela de alertas recentes ─────────────────────────────────────────────
-function renderRecentes(rows: RecenteRow[]): void {
+function renderRecentes(rows: RecenteRow[], maxDisplayed = RECENTES_PAGE): void {
   const tabela = byId<HTMLTableElement>("tabela-recentes");
   const tbody = tabela?.querySelector("tbody");
+  const btnMais = byId<HTMLButtonElement>("btn-mais-recentes");
   if (tabela === null || tbody === undefined || tbody === null) return;
   tbody.replaceChildren();
   if (rows.length === 0) {
     toggle(tabela, false);
+    toggle(btnMais, false);
     toggle(byId("msg-recentes-vazio"), true);
     return;
   }
   toggle(byId("msg-recentes-vazio"), false);
   toggle(tabela, true);
-  for (const r of rows) {
+  for (const r of rows.slice(0, maxDisplayed)) {
     const tr = document.createElement("tr");
     const celulas = [
       formatarDataISO(r.date),
@@ -184,12 +194,18 @@ function renderRecentes(rows: RecenteRow[]): void {
     }
     tbody.appendChild(tr);
   }
+
+  const restantes = Math.max(0, rows.length - maxDisplayed);
+  if (btnMais !== null) {
+    btnMais.hidden = restantes <= 0;
+    btnMais.textContent = `Exibir mais (${restantes} restantes)`;
+  }
 }
 
 // ── Orquestração ────────────────────────────────────────────────────────────
 function clampDias(raw: string): number {
   const n = Number.parseInt(raw, 10);
-  if (Number.isNaN(n)) return 30;
+  if (Number.isNaN(n)) return 7;
   return Math.min(60, Math.max(7, n));
 }
 
@@ -201,6 +217,8 @@ function buildParams(dias: number, meso: string, severidade: string): string {
 }
 
 async function carregar(dias: number, meso: string, severidade: string): Promise<void> {
+  setText("portipo-titulo", `Por tipo de alerta — últimos ${dias} dias`);
+  setText("municipios-titulo", `Municípios mais afetados — últimos ${dias} dias`);
   setText("recentes-titulo", `Alertas recentes — últimos ${dias} dias`);
   const qs = buildParams(dias, meso, severidade);
   const [resumo, porTipo, municipios, recentes] = await Promise.all([
@@ -219,7 +237,8 @@ async function carregar(dias: number, meso: string, severidade: string): Promise
   renderResumo((await resumo.json()) as Resumo);
   renderPorTipo(((await porTipo.json()) as { rows: PorTipoRow[] }).rows);
   renderMunicipios(((await municipios.json()) as { rows: MunicipioRow[] }).rows);
-  renderRecentes(((await recentes.json()) as { rows: RecenteRow[] }).rows);
+  ultimoRecentes = ((await recentes.json()) as { rows: RecenteRow[] }).rows;
+  renderRecentes(ultimoRecentes, recentesMax);
 }
 
 export function initAlertas(): void {
@@ -233,6 +252,16 @@ export function initAlertas(): void {
     carregar(clampDias(dias.value), meso.value, sev.value),
   );
 
-  const rerender = (): void => void carregar(clampDias(dias.value), meso.value, sev.value);
+  // Mexer em qualquer filtro é uma lista nova — volta a exibir só 5 linhas.
+  const rerender = (): void => {
+    recentesMax = RECENTES_PAGE;
+    void carregar(clampDias(dias.value), meso.value, sev.value);
+  };
   for (const el of [dias, meso, sev]) el.addEventListener("change", rerender);
+
+  const btnMais = byId<HTMLButtonElement>("btn-mais-recentes");
+  btnMais?.addEventListener("click", () => {
+    recentesMax += RECENTES_PAGE;
+    renderRecentes(ultimoRecentes, recentesMax);
+  });
 }

@@ -112,7 +112,8 @@ function renderRanking(rows: RankItem[], meso: string, days: number): void {
 }
 
 // ── Distribuição por intensidade ────────────────────────────────────────────
-function renderIntensidade(rows: IntRow[]): void {
+function renderIntensidade(rows: IntRow[], days: number): void {
+  setText("intensidade-titulo", `Distribuição por intensidade — últimos ${days} dias`);
   const chart = chartFor("chart-intensidade");
   if (chart === null) return;
   if (rows.length === 0) {
@@ -124,12 +125,14 @@ function renderIntensidade(rows: IntRow[]): void {
   chart.setOption(
     {
       tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-      legend: { bottom: 0 },
+      legend: { orient: "vertical", right: "6%", top: "middle" },
       series: [
         {
           type: "pie",
-          radius: "68%",
-          center: ["50%", "45%"],
+          radius: ["38%", "72%"],
+          center: ["38%", "50%"],
+          avoidLabelOverlap: true,
+          label: { formatter: "{b}\n{d}%" },
           data: rows.map((r) => {
             const cru = r.precipitation_class ?? "—";
             return {
@@ -192,7 +195,7 @@ function renderHeatmap(rows: HeatRow[], days: number): void {
 // ── Orquestração ────────────────────────────────────────────────────────────
 function clampDias(raw: string): number {
   const n = Number.parseInt(raw, 10);
-  if (Number.isNaN(n)) return 30;
+  if (Number.isNaN(n)) return 7;
   return Math.min(90, Math.max(7, n));
 }
 
@@ -210,7 +213,7 @@ async function carregar(meso: string, days: number): Promise<void> {
   }
   toggle(byId("precip-erro"), false);
   renderRanking(((await rankResp.json()) as { rows: RankItem[] }).rows, meso, days);
-  renderIntensidade(((await intResp.json()) as { rows: IntRow[] }).rows);
+  renderIntensidade(((await intResp.json()) as { rows: IntRow[] }).rows, days);
   renderHeatmap(((await heatResp.json()) as { rows: HeatRow[] }).rows, days);
 }
 
