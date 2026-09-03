@@ -11,26 +11,22 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — 7418b90 (feat(web): seletor de
-    # município com busca / Tom Select nos filtros, spec 020).
+    # Promovido manualmente em 2026-09-03 — 81fe368 (merge PR #1: mesoregion
+    # vira macrorregião / crosswalk SAS-SC, ver CLAUDE.md; inclui também
+    # dbe3ac2, filtro de dias unificado default 7 em
+    # temperatura/precipitação/alertas — ainda não tinha sido promovido).
+    # Produção rodava 7418b90 (spec 020, Tom Select) até este bump. Entrega
+    # de uma vez:
+    #   - dbe3ac2: filtro de dias unificado (default 7)
+    #   - rótulos "Mesorregião" -> "Macrorregião" nas páginas
+    #     temperatura/precipitação/alertas/comparativo/home (mudança
+    #     visual; os dados em si só corrigem depois do runbook
+    #     deploy/reconcile_mesoregion.sql rodar no pipeline/BigQuery — até
+    #     lá a API segue servindo o mesoregion antigo do BigQuery, só com
+    #     rótulo novo)
+    # Build da imagem passou: pytest + smoke test /health (run 33777000465).
     #
-    # ATENÇÃO: a promoção anterior desta linha para 9a7ca2e (commit dfe491d,
-    # 2026-09-03 10:24) foi commitada mas NUNCA sincronizada — a Application
-    # é de sync manual e o último sync real de produção foi ~08:55 -03, antes
-    # de dfe491d. Produção rodava a9065da (spec 015, corte do Streamlit) até
-    # este bump. Portanto a9065da → 7418b90 entrega de uma vez:
-    #   - spec 013: Relatório por Cidade — linhas diárias + subtotal por
-    #     cidade + total geral (mudança real de resposta da API)
-    #   - re-home do ConfigMap weather-analytics-config para api/base/
-    #     (commit 3133691 — muda manifesto base, não só a tag da imagem)
-    #   - spec 017 (submenu "Relatórios"), spec 018 ("Ver mais" nos alertas
-    #     de /cidades), spec 019 (footer 3 colunas), spec 020 (Tom Select)
-    # Todas as 6 rodaram em staging (staging: a9065da → 9a7ca2e → 7418b90) e
-    # foram validadas lá em 2026-09-03 (headless Playwright: 3 páginas sem
-    # erro de console, combobox com busca funcional, deep-link reidratando
-    # tags + tabela).
-    #
-    # Rollback: última versão boa em produção é a9065da (NÃO 9a7ca2e — essa
-    # nunca rodou aqui). `kustomize edit set image
-    # ghcr.io/jeysel-dev/weather-analytics/api=...:a9065da` + commit + sync.
-    newTag: 7418b90
+    # Rollback: última versão boa em produção é 7418b90. `kustomize edit set
+    # image ghcr.io/jeysel-dev/weather-analytics/api=...:7418b90` + commit +
+    # sync.
+    newTag: 81fe368
