@@ -133,7 +133,7 @@ docker compose run --rm --service-ports dbt-docs
 |--------|------|-----------|
 | `location_id` | string | Slug do município (ex: `florianopolis`) |
 | `city_name` | string | Nome completo |
-| `mesoregion` | string | Mesorregião de SC (ex: `Grande Florianópolis`) |
+| `mesoregion` | string | Macrorregião de SC — 8 macrorregiões socioassistenciais / FECAM (ex: `Meio Oeste`, `Grande Oeste`). Nome da coluna é histórico; não é a mesorregião do IBGE. |
 | `region` | string | Macrorregião brasileira (sempre `Sul` para SC) |
 | `year_month` | string | Formato `YYYY-MM` (pré-computado para filtros no Evidence) |
 

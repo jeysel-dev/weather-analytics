@@ -6,8 +6,12 @@ seeds:
   - name: locations
     description: >
       Cadastro de todos os 295 municípios de Santa Catarina monitorados.
-      Fonte: IBGE (lista de municípios) + Nominatim/OpenStreetMap (coordenadas).
-      Carregado via `dbt seed` na camada seeds do BigQuery.
+      Fontes: IBGE (lista de municípios) + Nominatim/OpenStreetMap (coordenadas)
+      + Secretaria de Estado da Assistência Social de SC / FECAM (macrorregião —
+      ver `mesoregion` abaixo). Carregado via `dbt seed` na camada seeds do
+      BigQuery. Ao editar `mesoregion` aqui, seguir o runbook de reconciliação
+      em `deploy/reconcile_mesoregion.sql` (as marts são incrementais e não
+      refazem sozinhas mudanças de dimensão no histórico).
     tags: ["seed", "geography"]
     meta:
       owner: analytics-engineering
@@ -53,17 +57,24 @@ seeds:
               values: [Sul]
 
       - name: mesoregion
-        description: "Mesorregião de Santa Catarina (IBGE)."
+        description: >
+          Macrorregião de Santa Catarina — as 8 macrorregiões da divisão
+          socioassistencial do Estado (SAS/SC), que coincidem com o vocabulário
+          regional consagrado (FECAM / associações de municípios). NÃO é a
+          mesorregião do IBGE (o nome da coluna é histórico; ver CLAUDE.md).
+          Crosswalk: sas.sc.gov.br — "Lista de Municípios por Macrorregião".
         tests:
           - not_null
           - accepted_values:
               values:
+                - Foz do Rio Itajaí / Nordeste
                 - Grande Florianópolis
-                - Norte Catarinense
-                - Vale do Itajaí
-                - Serrana
-                - Oeste Catarinense
+                - Grande Oeste
+                - Meio Oeste
+                - Planalto Norte
+                - Serra Catarinense
                 - Sul Catarinense
+                - Vale do Itajaí
 
       - name: latitude
         description: "Latitude em graus decimais (negativo = Sul)."

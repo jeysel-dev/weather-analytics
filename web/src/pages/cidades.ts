@@ -2,7 +2,7 @@
 // migração de streamlit/pages/5_Cidades.py.
 //
 // Cabeçalho + 4 KPIs + 4 abas lendo /api/v1/cidades/*:
-//   - lista (municípios COM metadados: lat/lon/altitude/mesorregião)
+//   - lista (municípios COM metadados: lat/lon/altitude/macrorregião)
 //   - clima (linhas diárias + resumo agregado para os KPIs)
 //   - alertas (tabela HTML, ≤100)
 //
@@ -79,7 +79,7 @@ function renderCabecalho(info: CidadeMeta): void {
       : "";
   setText(
     "cidade-caption",
-    `Mesorregião: ${info.mesoregion ?? "—"} · Altitude: ${alt}${coords}`,
+    `Macrorregião: ${info.mesoregion ?? "—"} · Altitude: ${alt}${coords}`,
   );
 }
 

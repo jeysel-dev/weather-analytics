@@ -1,12 +1,12 @@
 // Página Precipitação (spec 008) — migração de streamlit/pages/2_Precipitacao.py.
 //
 // 3 blocos lendo /api/v1/precipitacao/*:
-//   - Ranking de chuvosos (bar horizontal, cor por mesorregião)  -> /ranking
+//   - Ranking de chuvosos (bar horizontal, cor por macrorregião)  -> /ranking
 //   - Distribuição por intensidade (pizza)                       -> /intensidade
-//   - Heatmap de chuva média por mesorregião (ignora `meso`)     -> /heatmap-mesorregiao
+//   - Heatmap de chuva média por macrorregião (ignora `meso`)     -> /heatmap-mesorregiao
 //
 // Rótulo/cor por precipitation_class vêm de web/src/labels.ts (spec 014);
-// lista de mesorregiões e caption de data, da camada de referência.
+// lista de macrorregiões e caption de data, da camada de referência.
 
 import { fmt1, formatarDataISO } from "../format";
 import { CLASS_COLORS, CLASS_LABELS_PT } from "../labels";
@@ -28,7 +28,7 @@ interface HeatRow {
   avg_precip: number | null;
 }
 
-// Paleta categórica para as mesorregiões no ranking (o Streamlit deixa o
+// Paleta categórica para as macrorregiões no ranking (o Streamlit deixa o
 // Plotly escolher; aqui fixamos para o resultado ser estável entre runs).
 const MESO_PALETTE = [
   "#5470c6",
@@ -112,7 +112,8 @@ function renderRanking(rows: RankItem[], meso: string, days: number): void {
 }
 
 // ── Distribuição por intensidade ────────────────────────────────────────────
-function renderIntensidade(rows: IntRow[]): void {
+function renderIntensidade(rows: IntRow[], days: number): void {
+  setText("intensidade-titulo", `Distribuição por intensidade — últimos ${days} dias`);
   const chart = chartFor("chart-intensidade");
   if (chart === null) return;
   if (rows.length === 0) {
@@ -124,12 +125,14 @@ function renderIntensidade(rows: IntRow[]): void {
   chart.setOption(
     {
       tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-      legend: { bottom: 0 },
+      legend: { orient: "vertical", right: "6%", top: "middle" },
       series: [
         {
           type: "pie",
-          radius: "68%",
-          center: ["50%", "45%"],
+          radius: ["38%", "72%"],
+          center: ["38%", "50%"],
+          avoidLabelOverlap: true,
+          label: { formatter: "{b}\n{d}%" },
           data: rows.map((r) => {
             const cru = r.precipitation_class ?? "—";
             return {
@@ -145,9 +148,9 @@ function renderIntensidade(rows: IntRow[]): void {
   );
 }
 
-// ── Heatmap por mesorregião ─────────────────────────────────────────────────
+// ── Heatmap por macrorregião ─────────────────────────────────────────────────
 function renderHeatmap(rows: HeatRow[], days: number): void {
-  setText("heatmap-titulo", `Precipitação média diária por mesorregião — últimos ${days} dias`);
+  setText("heatmap-titulo", `Precipitação média diária por macrorregião — últimos ${days} dias`);
   const chart = chartFor("chart-heatmap");
   if (chart === null) return;
   if (rows.length === 0) {
@@ -192,7 +195,7 @@ function renderHeatmap(rows: HeatRow[], days: number): void {
 // ── Orquestração ────────────────────────────────────────────────────────────
 function clampDias(raw: string): number {
   const n = Number.parseInt(raw, 10);
-  if (Number.isNaN(n)) return 30;
+  if (Number.isNaN(n)) return 7;
   return Math.min(90, Math.max(7, n));
 }
 
@@ -210,7 +213,7 @@ async function carregar(meso: string, days: number): Promise<void> {
   }
   toggle(byId("precip-erro"), false);
   renderRanking(((await rankResp.json()) as { rows: RankItem[] }).rows, meso, days);
-  renderIntensidade(((await intResp.json()) as { rows: IntRow[] }).rows);
+  renderIntensidade(((await intResp.json()) as { rows: IntRow[] }).rows, days);
   renderHeatmap(((await heatResp.json()) as { rows: HeatRow[] }).rows, days);
 }
 

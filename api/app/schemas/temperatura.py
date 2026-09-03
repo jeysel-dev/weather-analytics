@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 
 
 class RankingItem(BaseModel):
-    """Um município num dos rankings de 7 dias."""
+    """Um município num dos rankings da janela `days`."""
 
     city_name: str
     mesoregion: str | None = None
@@ -21,8 +21,7 @@ class RankingItem(BaseModel):
 
 
 class RankingsResponse(BaseModel):
-    """Os dois rankings fixos de 7 dias (não afetados pelo filtro `days`,
-    paridade com o Streamlit)."""
+    """Os dois rankings (quentes / frios) na janela `days` da página."""
 
     quentes: list[RankingItem] = Field(default_factory=list)
     frios: list[RankingItem] = Field(default_factory=list)

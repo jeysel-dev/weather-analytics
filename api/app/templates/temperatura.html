@@ -9,19 +9,19 @@
 <p id="temp-caption" class="page-caption" hidden></p>
 
 {# Esqueleto apenas — nenhum dado renderizado no servidor (spec 006). O
-   módulo web/src/pages/temperatura.ts popula o select de mesorregião a
+   módulo web/src/pages/temperatura.ts popula o select de macrorregião a
    partir de /api/v1/ref/mesorregioes e dispara os fetches de
    /api/v1/temperatura/*. #}
 <form class="filter-bar" id="temperatura-filtros" autocomplete="off">
   <div class="filter-field">
-    <label for="filtro-mesorregiao">Mesorregião</label>
+    <label for="filtro-mesorregiao">Macrorregião</label>
     <select id="filtro-mesorregiao" name="mesorregiao">
       <option value="Todas">Todas</option>
     </select>
   </div>
   <div class="filter-field">
     <label for="filtro-dias">Período (dias)</label>
-    <input type="number" id="filtro-dias" name="dias" min="7" max="90" step="7" value="30" />
+    <input type="number" id="filtro-dias" name="dias" min="7" max="90" step="7" value="7" />
   </div>
 </form>
 
@@ -29,25 +29,25 @@
 
 <div class="ranking-grid">
   <section>
-    <h2>🔥 Municípios mais quentes — 7 dias</h2>
-    <p id="msg-quentes-vazio" hidden>Sem dados para esta mesorregião no período.</p>
+    <h2 id="quentes-titulo">🔥 Municípios mais quentes — últimos 7 dias</h2>
+    <p id="msg-quentes-vazio" hidden>Sem dados para esta macrorregião no período.</p>
     <div id="chart-quentes" class="chart" style="width: 100%; height: 340px"></div>
   </section>
   <section>
-    <h2>❄️ Municípios mais frios — 7 dias</h2>
-    <p id="msg-frios-vazio" hidden>Sem dados para esta mesorregião no período.</p>
+    <h2 id="frios-titulo">❄️ Municípios mais frios — últimos 7 dias</h2>
+    <p id="msg-frios-vazio" hidden>Sem dados para esta macrorregião no período.</p>
     <div id="chart-frios" class="chart" style="width: 100%; height: 340px"></div>
   </section>
 </div>
 
 <section>
-  <h2 id="tendencia-titulo">Temperatura média por mesorregião</h2>
-  <p id="msg-tendencia-vazio" hidden>Sem dados para esta mesorregião no período.</p>
+  <h2 id="tendencia-titulo">Temperatura média por macrorregião</h2>
+  <p id="msg-tendencia-vazio" hidden>Sem dados para esta macrorregião no período.</p>
   <div id="chart-tendencia" class="chart" style="width: 100%; height: 360px"></div>
 </section>
 
 <section>
-  <h2 id="anomalia-titulo">Anomalia térmica por mesorregião</h2>
+  <h2 id="anomalia-titulo">Anomalia térmica por macrorregião</h2>
   <p id="msg-anomalia-vazio" hidden>Sem dados de anomalia no período.</p>
   <div id="chart-anomalia" class="chart" style="width: 100%; height: 300px"></div>
   <p class="page-caption">
