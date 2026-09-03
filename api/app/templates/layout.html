@@ -53,7 +53,39 @@
     </nav>
     <main>{% block content %}{% endblock %}</main>
     <footer class="site-footer">
-      <p>Weather Analytics · Dados climáticos via <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> · Projeto de portfólio</p>
+      <div class="site-footer__grid">
+        <div>
+          <h3 class="site-footer__title">Weather Analytics</h3>
+          <p class="site-footer__desc">
+            Painel de análise climática para Santa Catarina.
+            Dados de 295 municípios com insights em tempo real.
+          </p>
+        </div>
+        <div>
+          <h3 class="site-footer__title site-footer__title--caps">Navegação</h3>
+          <ul class="site-footer__links">
+            <li><a href="/temperatura">Temperatura</a></li>
+            <li><a href="/precipitacao">Precipitação</a></li>
+            <li><a href="/alertas">Alertas</a></li>
+            <li><a href="/cidades">Cidades</a></li>
+            <li><a href="/relatorio-cidade">Relatório por Cidade</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="site-footer__title site-footer__title--caps">Contato</h3>
+          <ul class="site-footer__links">
+            <li><a href="mailto:contato@jeysel.dev">contato@jeysel.dev</a></li>
+            <li><a href="https://jeysel.dev">Desenvolvido por jeysel.dev</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <p>© 2026 Weather Analytics. Todos os direitos reservados.</p>
+        <p>
+          <a href="#">Privacidade</a>
+          <a href="#">Termos de Uso</a>
+        </p>
+      </div>
     </footer>
     <script type="module" src="{{ main_js }}"></script>
   </body>
