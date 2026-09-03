@@ -79,6 +79,24 @@ class Page:
     menu_label: str
     menu_icon: str
     menu_position: int
+    # Rótulo do submenu ao qual este item pertence ("Relatórios"). None = item
+    # de topo. Ver `_build_menu` — a rota continua saindo de `path`, o submenu
+    # é só agrupamento visual (spec 017).
+    menu_group: str | None = None
+
+
+@dataclass(frozen=True)
+class MenuGroup:
+    """Item de navegação que não é uma página: agrupa `children` num submenu.
+    `menu_position` = a do primeiro filho, pra o grupo ordenar junto com os
+    itens de topo (spec 017)."""
+
+    label: str
+    children: tuple[Page, ...]
+
+    @property
+    def menu_position(self) -> int:
+        return min(child.menu_position for child in self.children)
 
 
 PAGES: tuple[Page, ...] = (
@@ -146,10 +164,29 @@ PAGES: tuple[Page, ...] = (
         menu_label="Relatório por Cidade",
         menu_icon="📋",
         menu_position=7,
+        menu_group="Relatórios",
     ),
 )
 
-MENU: tuple[Page, ...] = tuple(sorted(PAGES, key=lambda p: p.menu_position))
+
+def _build_menu(pages: tuple[Page, ...]) -> tuple[Page | MenuGroup, ...]:
+    """Achata `PAGES` na árvore de navegação: itens sem `menu_group` ficam no
+    topo; os que têm um `menu_group` são recolhidos num `MenuGroup` com aquele
+    rótulo. Tudo ordenado por `menu_position` (o grupo herda a do 1º filho).
+    Estende a "estrutura central" da spec 006 — segue sendo impossível ter
+    rota sem item de menu (spec 017)."""
+    top: list[Page | MenuGroup] = []
+    groups: dict[str, list[Page]] = {}
+    for page in sorted(pages, key=lambda p: p.menu_position):
+        if page.menu_group is None:
+            top.append(page)
+        else:
+            groups.setdefault(page.menu_group, []).append(page)
+    top.extend(MenuGroup(label=label, children=tuple(children)) for label, children in groups.items())
+    return tuple(sorted(top, key=lambda item: item.menu_position))
+
+
+MENU: tuple[Page | MenuGroup, ...] = _build_menu(PAGES)
 templates.env.globals["menu"] = MENU
 
 

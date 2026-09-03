@@ -22,11 +22,31 @@
         </button>
         <ul class="site-nav__links" id="navbar-links">
           {% for item in menu %}
+          {% if item.children is defined %}
+          {# Item de submenu (spec 017) — "Relatórios". Não navega; o toggle
+             abre a lista de filhos. web/src/nav.ts liga o aria-expanded. #}
+          <li class="site-nav__has-sub">
+            <button type="button" class="site-nav__sub-toggle"
+                    aria-haspopup="true" aria-expanded="false">
+              {{ item.label }}<span class="site-nav__sub-caret" aria-hidden="true"></span>
+            </button>
+            <ul class="site-nav__sub">
+              {% for child in item.children %}
+              <li>
+                <a href="{{ child.path }}"
+                   {% if page is defined and page == child.page_id %}aria-current="page"{% endif %}
+                >{{ child.menu_label }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </li>
+          {% else %}
           <li>
             <a href="{{ item.path }}"
                {% if page is defined and page == item.page_id %}aria-current="page"{% endif %}
             >{{ item.menu_label }}</a>
           </li>
+          {% endif %}
           {% endfor %}
         </ul>
       </div>

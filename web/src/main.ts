@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { initNavbarToggle } from "./nav";
+import { initNavSubmenu, initNavbarToggle } from "./nav";
 import { initAlertas } from "./pages/alertas";
 import { initCidades } from "./pages/cidades";
 import { initComparativo } from "./pages/comparativo";
@@ -31,6 +31,7 @@ const DISPATCH: Record<string, () => void> = {
 
 // Roda em toda página (o toggle só faz algo onde o CSS mostra o hambúrguer).
 initNavbarToggle();
+initNavSubmenu();
 
 if (page !== undefined && page in DISPATCH) {
   DISPATCH[page]();

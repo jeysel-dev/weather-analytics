@@ -152,6 +152,74 @@ section { margin-bottom: 40px; }
   background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
+/* ── Navbar: submenu ("Relatórios", spec 017) ──────────────────────── */
+
+.site-nav__has-sub {
+  position: relative;
+}
+
+.site-nav__sub-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.site-nav__sub-caret {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.site-nav__sub {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 200px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 21;
+}
+
+.site-nav__has-sub:focus-within .site-nav__sub,
+.site-nav__sub-toggle[aria-expanded="true"] + .site-nav__sub {
+  display: block;
+}
+
+.site-nav__sub a {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-nav__sub a:hover,
+.site-nav__sub a[aria-current="page"] {
+  color: var(--text-h);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
 /* ── Home ──────────────────────────────────────────────────────────── */
 
 .hero { padding: 48px 0 8px; max-width: 760px; }
@@ -461,6 +529,23 @@ section { margin-bottom: 40px; }
   .site-nav__links.open { display: flex; }
   .site-nav__links > li { width: 100%; }
   .site-nav__links a { padding: 12px 10px; font-size: 15px; }
+
+  /* Submenu (spec 017): no drawer mobile vira lista aninhada estática,
+     recolhida até o toggle abrir. */
+  .site-nav__sub-toggle {
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px 10px;
+    font-size: 15px;
+  }
+
+  .site-nav__sub {
+    position: static;
+    min-width: 0;
+    padding: 0 0 0 12px;
+    border: none;
+    box-shadow: none;
+  }
 
   main { padding: 0 16px 32px; }
   h1 { font-size: 26px; }
