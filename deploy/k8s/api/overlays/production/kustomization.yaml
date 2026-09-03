@@ -11,16 +11,26 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — 9a7ca2e (feat(api): Relatório
-    # por Cidade — linhas diárias + subtotal por cidade + total geral,
-    # spec 013). Mesma classe de correção do bump anterior: produção estava
-    # pinada em a9065da, 3 commits ANTES de 9a7ca2e (a9065da..9a7ca2e =
-    # 004d716, 3133691, 9a7ca2e). O redesenho está em main e validado em
-    # staging desde então (o overlay de staging aponta pra 9a7ca2e, bump do
-    # CI no commit 41fa306), mas a promoção pra produção ficou pendente —
-    # o dashboard servia o relatório agregado antigo (1 linha/cidade, sem
-    # coluna Data). Diagnóstico completo em
-    # docs/specs/016-diagnostico-relatorio-cidade-producao/spec.md.
-    # Tag anterior: a9065da (corte do Streamlit, spec 015; ver histórico do
-    # git para os detalhes de validação daquela promoção).
-    newTag: 9a7ca2e
+    # Promovido manualmente em 2026-09-03 — 7418b90 (feat(web): seletor de
+    # município com busca / Tom Select nos filtros, spec 020).
+    #
+    # ATENÇÃO: a promoção anterior desta linha para 9a7ca2e (commit dfe491d,
+    # 2026-09-03 10:24) foi commitada mas NUNCA sincronizada — a Application
+    # é de sync manual e o último sync real de produção foi ~08:55 -03, antes
+    # de dfe491d. Produção rodava a9065da (spec 015, corte do Streamlit) até
+    # este bump. Portanto a9065da → 7418b90 entrega de uma vez:
+    #   - spec 013: Relatório por Cidade — linhas diárias + subtotal por
+    #     cidade + total geral (mudança real de resposta da API)
+    #   - re-home do ConfigMap weather-analytics-config para api/base/
+    #     (commit 3133691 — muda manifesto base, não só a tag da imagem)
+    #   - spec 017 (submenu "Relatórios"), spec 018 ("Ver mais" nos alertas
+    #     de /cidades), spec 019 (footer 3 colunas), spec 020 (Tom Select)
+    # Todas as 6 rodaram em staging (staging: a9065da → 9a7ca2e → 7418b90) e
+    # foram validadas lá em 2026-09-03 (headless Playwright: 3 páginas sem
+    # erro de console, combobox com busca funcional, deep-link reidratando
+    # tags + tabela).
+    #
+    # Rollback: última versão boa em produção é a9065da (NÃO 9a7ca2e — essa
+    # nunca rodou aqui). `kustomize edit set image
+    # ghcr.io/jeysel-dev/weather-analytics/api=...:a9065da` + commit + sync.
+    newTag: 7418b90
