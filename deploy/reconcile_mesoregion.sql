@@ -32,11 +32,18 @@
 --
 -- PRÉ-REQUISITO
 -- ------------
--- O seed já recarregado no BigQuery com os valores novos:
+-- 1. A imagem `ghcr.io/jeysel-dev/weather-pipeline` com o `dbt/` novo já
+--    publicada (push em `main` tocando `dbt/**` dispara isso sozinho via
+--    `build-and-push.yml`) e a tag pinada em `docker-compose.pipeline.yml`
+--    (raiz deste repo) já bumped para ela.
+-- 2. O seed recarregado no BigQuery com os valores novos. Não existe
+--    serviço `dbt` separado no compose (só `weather-pipeline`) — sobrescrever
+--    o CMD:
 --     cd /home/ubuntu/app_weather
 --     git pull
---     DBT_TARGET=prod docker compose -f docker-compose.pipeline.yml run --rm dbt \
---         seed --select locations
+--     docker compose -f docker-compose.pipeline.yml pull weather-pipeline
+--     docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline \
+--         dbt seed --project-dir /app/dbt --profiles-dir /app/pipeline --select locations
 --
 -- Rodar os blocos abaixo no console do BigQuery (projeto weather-analytics-490113)
 -- ou via `bq query --use_legacy_sql=false < deploy/reconcile_mesoregion.sql`.
@@ -84,8 +91,8 @@ WHERE h.location_id = s.location_id
 -- `mart_climate__alerts` é `materialized='table'` e lê `mesoregion` de
 -- daily_facts. Rebuild é seguro (lê de uma mart, não do raw). Rodar via dbt:
 --
---     DBT_TARGET=prod docker compose -f docker-compose.pipeline.yml run --rm dbt \
---         run --select mart_climate__alerts
+--     docker compose -f docker-compose.pipeline.yml run --rm weather-pipeline \
+--         dbt run --project-dir /app/dbt --profiles-dir /app/pipeline --select mart_climate__alerts
 --
 -- (ou deixar o próximo run agendado do pipeline reconstruir — alerts é refeita
 -- a cada run de qualquer forma.)
