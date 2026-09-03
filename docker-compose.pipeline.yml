@@ -1,6 +1,6 @@
 services:
   weather-pipeline:
-    image: ghcr.io/jeysel-dev/weather-pipeline:f7e3ba8
+    image: ghcr.io/jeysel-dev/weather-pipeline:81fe368
     container_name: weather-pipeline
     restart: "no"
     volumes:
