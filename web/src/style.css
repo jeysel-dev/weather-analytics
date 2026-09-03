@@ -738,17 +738,13 @@ section { margin-bottom: 40px; }
   margin: 0;
 }
 
-.site-footer__bottom p:last-child {
-  margin-top: 8px;
-}
-
 .site-footer__bottom a {
   color: var(--accent);
-  margin-right: 16px;
+  text-decoration: none;
 }
 
-.site-footer__bottom a:last-child {
-  margin-right: 0;
+.site-footer__bottom a:hover {
+  text-decoration: underline;
 }
 
 /* ── Responsivo ───────────────────────────────────────────────────── */
