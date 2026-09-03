@@ -20,6 +20,7 @@ import { initPrecipitacao } from "./pages/precipitacao";
 import { initRelatorioChuvaAcumulada } from "./pages/relatorio-chuva-acumulada";
 import { initRelatorioCidade } from "./pages/relatorio-cidade";
 import { initRelatorioExtremos } from "./pages/relatorio-extremos";
+import { initRelatorioHorario } from "./pages/relatorio-horario";
 import { initRelatorioMacrorregiao } from "./pages/relatorio-macrorregiao";
 import { initRelatorioMensal } from "./pages/relatorio-mensal";
 import { initTemperatura } from "./pages/temperatura";
@@ -39,6 +40,7 @@ const DISPATCH: Record<string, () => void> = {
   "relatorio-macrorregiao": initRelatorioMacrorregiao,
   "relatorio-extremos": initRelatorioExtremos,
   "relatorio-chuva-acumulada": initRelatorioChuvaAcumulada,
+  "relatorio-horario": initRelatorioHorario,
 };
 
 // Roda em toda página (o toggle só faz algo onde o CSS mostra o hambúrguer).

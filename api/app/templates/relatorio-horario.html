@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}Detalhamento Horário — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Detalhamento Horário
+</nav>
+
+<h1>🕐 Detalhamento do clima horário</h1>
+
+{# Esqueleto apenas (spec 006/023). web/src/pages/relatorio-horario.ts popula
+   o select (/api/v1/horario/cidades — só municípios com dado horário) e
+   dispara /api/v1/relatorio-horario/dados. Duas tabelas no padrão
+   .data-table (spec 021): extremos do período + resumo diário. #}
+<form class="filter-bar" id="relatorio-horario-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-municipio">Município</label>
+    <select id="filtro-municipio" name="municipio">
+      <option value="">Selecione…</option>
+    </select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="3" max="30" step="1" value="7" />
+  </div>
+</form>
+
+<p id="horario-rel-subtitulo" class="page-subtitle" hidden></p>
+<p id="horario-rel-caption" class="page-caption" hidden></p>
+<p id="horario-rel-msg">Selecione um município para gerar o relatório.</p>
+
+<h2>Extremos do período</h2>
+<div class="data-table">
+  <table id="tabela-extremos-horario" hidden>
+    <thead>
+      <tr>
+        <th>Indicador</th>
+        <th class="col-num">Valor</th>
+        <th>Quando</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<h2>Resumo diário</h2>
+<div class="data-table">
+  <table id="tabela-resumo-horario" hidden>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th class="col-num">Temp. Mín. (°C)</th>
+        <th class="col-num">Temp. Média (°C)</th>
+        <th class="col-num">Temp. Máx. (°C)</th>
+        <th class="col-num">Umid. Mín. (%)</th>
+        <th class="col-num">Umid. Média (%)</th>
+        <th class="col-num">Umid. Máx. (%)</th>
+        <th class="col-num">Precip. Total (mm)</th>
+        <th class="col-num">Vento Máx. (km/h)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+{% endblock %}

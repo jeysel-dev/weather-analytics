@@ -17,6 +17,7 @@ from app.routers import (
     relatorio_chuva_acumulada,
     relatorio_cidade,
     relatorio_extremos,
+    relatorio_horario,
     relatorio_macrorregiao,
     relatorio_mensal,
     temperatura,
@@ -206,6 +207,15 @@ PAGES: tuple[Page, ...] = (
         menu_position=11,
         menu_group="Relatórios",
     ),
+    Page(
+        path="/relatorio-horario",
+        template="relatorio-horario.html",
+        page_id="relatorio-horario",
+        menu_label="Detalhamento Horário",
+        menu_icon="🕐",
+        menu_position=12,
+        menu_group="Relatórios",
+    ),
 )
 
 
@@ -295,6 +305,7 @@ app.include_router(relatorio_mensal.router, prefix="/api/v1")
 app.include_router(relatorio_macrorregiao.router, prefix="/api/v1")
 app.include_router(relatorio_extremos.router, prefix="/api/v1")
 app.include_router(relatorio_chuva_acumulada.router, prefix="/api/v1")
+app.include_router(relatorio_horario.router, prefix="/api/v1")
 app.include_router(ref.router, prefix="/api/v1")
 
 
