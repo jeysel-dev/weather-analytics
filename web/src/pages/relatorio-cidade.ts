@@ -10,6 +10,7 @@
 
 import { enhanceCitySelect } from "../citypicker";
 import { fmt1, formatarDataISO } from "../format";
+import { renderTable, type RowDef } from "../table";
 
 // Esta página NÃO importa de ../ui de propósito. O bundle é único (um só
 // entry em vite.config.ts, sem code splitting), então o ECharts já entra
@@ -114,31 +115,31 @@ function escreverURL(cidades: string[], inicio: string, fim: string): void {
 // ── Tabela + compartilhamento ─────────────────────────────────────────────
 // Uma linha por dia do período, agrupadas por cidade; após os dias de cada
 // cidade, a linha de SUBTOTAL dela; no fim da tabela, SEMPRE (mesmo com uma
-// cidade só) a linha TOTAL GERAL. "Temp. * Média" não se aplica a um dia
-// isolado — célula vazia ("—") nas linhas diárias.
+// cidade só) a linha TOTAL GERAL. As linhas de fecho dobram a média na
+// célula de temperatura ("28.6 · méd 23.5") — a média não é coluna própria
+// (spec 021), já que não se aplica a um dia isolado.
+function foldMedia(valor: number | null, media: number | null): string {
+  if (valor === null) return "—";
+  return `${fmt1(valor)} · méd ${fmt1(media)}`;
+}
+
+function linhaFecho(rotulo: string, s: SubtotalRow, variant: "subtotal" | "total"): RowDef {
+  return {
+    cells: [
+      "",
+      rotulo,
+      foldMedia(s.temp_maxima, s.temp_maxima_media),
+      foldMedia(s.temp_minima, s.temp_minima_media),
+      fmt1(s.precip_acumulada),
+      fmt1(s.vento_maximo),
+    ],
+    variant,
+  };
+}
+
 function renderTabela(dados: RelatorioResponse): void {
   const tabela = byId<HTMLTableElement>("tabela-relatorio");
-  const tbody = tabela?.querySelector("tbody");
-  if (tabela === null || tbody === undefined || tbody === null) return;
-  tbody.replaceChildren();
-  if (dados.dias.length === 0) {
-    toggle(tabela, false);
-    setText("relatorio-msg", "Sem dados para o período selecionado.");
-    return;
-  }
-  toggle(byId("relatorio-msg"), false);
-  toggle(tabela, true);
-
-  const addRow = (celulas: string[], cls?: string): void => {
-    const tr = document.createElement("tr");
-    if (cls !== undefined) tr.className = cls;
-    for (const texto of celulas) {
-      const td = document.createElement("td");
-      td.textContent = texto;
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-  };
+  if (tabela === null) return;
 
   const subtotalPorCidade = new Map<string, SubtotalRow>();
   for (const s of dados.subtotais) subtotalPorCidade.set(s.city_name, s);
@@ -152,53 +153,32 @@ function renderTabela(dados: RelatorioResponse): void {
     diasPorCidade.set(d.city_name, lista);
   }
 
+  const rows: RowDef[] = [];
   for (const [cidade, dias] of diasPorCidade) {
     for (const d of dias) {
-      addRow([
-        formatarDataISO(d.date),
-        cidade,
-        fmt1(d.temp_max_c),
-        "—",
-        fmt1(d.temp_min_c),
-        "—",
-        fmt1(d.precipitation_mm),
-        fmt1(d.wind_speed_max_kmh),
-      ]);
+      rows.push({
+        cells: [
+          formatarDataISO(d.date),
+          cidade,
+          fmt1(d.temp_max_c),
+          fmt1(d.temp_min_c),
+          fmt1(d.precipitation_mm),
+          fmt1(d.wind_speed_max_kmh),
+        ],
+      });
     }
     const sub = subtotalPorCidade.get(cidade);
-    if (sub !== undefined) {
-      addRow(
-        [
-          "",
-          `Subtotal — ${cidade}`,
-          fmt1(sub.temp_maxima),
-          fmt1(sub.temp_maxima_media),
-          fmt1(sub.temp_minima),
-          fmt1(sub.temp_minima_media),
-          fmt1(sub.precip_acumulada),
-          fmt1(sub.vento_maximo),
-        ],
-        "row-subtotal",
-      );
-    }
+    if (sub !== undefined) rows.push(linhaFecho(`Subtotal — ${cidade}`, sub, "subtotal"));
   }
 
-  const tg = dados.total_geral;
-  if (tg !== null) {
-    addRow(
-      [
-        "",
-        "Total Geral",
-        fmt1(tg.temp_maxima),
-        fmt1(tg.temp_maxima_media),
-        fmt1(tg.temp_minima),
-        fmt1(tg.temp_minima_media),
-        fmt1(tg.precip_acumulada),
-        fmt1(tg.vento_maximo),
-      ],
-      "row-total",
-    );
+  if (dados.total_geral !== null) {
+    rows.push(linhaFecho("Total Geral", dados.total_geral, "total"));
   }
+
+  const ok = renderTable(tabela, rows, {
+    onEmpty: () => setText("relatorio-msg", "Sem dados para o período selecionado."),
+  });
+  if (ok) toggle(byId("relatorio-msg"), false);
 }
 
 function atualizarCompartilhar(cidades: string[], inicio: string, fim: string): void {

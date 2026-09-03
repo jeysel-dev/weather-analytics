@@ -13,6 +13,7 @@
 import { enhanceCitySelect } from "../citypicker";
 import { fmt1, fmtN, fmtSigned, formatarDataISO } from "../format";
 import { CLASS_COLORS, CLASS_LABELS_PT, SEV_ICON } from "../labels";
+import { renderTable } from "../table";
 import { byId, chartFor, initTabs, setText, toggle } from "../ui";
 
 interface CidadeMeta {
@@ -196,38 +197,34 @@ function renderAlertas(
   maxDisplayed = ALERTAS_PAGE,
 ): void {
   const tabela = byId<HTMLTableElement>("tabela-alertas");
-  const tbody = tabela?.querySelector("tbody");
   const btnMais = byId<HTMLButtonElement>("btn-mais-alertas");
-  if (tabela === null || tbody === undefined || tbody === null) return;
-  tbody.replaceChildren();
-  if (rows.length === 0) {
-    toggle(tabela, false);
-    toggle(btnMais, false);
-    setText("msg-sem-alertas", `Nenhum alerta registrado para ${city} nos últimos ${days} dias.`);
-    return;
-  }
-  toggle(byId("msg-sem-alertas"), false);
-  toggle(tabela, true);
-  for (const r of rows.slice(0, maxDisplayed)) {
-    const tr = document.createElement("tr");
-    const celulas = [
-      formatarDataISO(r.date),
-      r.alert_type_pt,
-      `${SEV_ICON[r.severity] ?? ""} ${r.severity_pt}`.trim(),
-      fmtN(r.temp_max, 1),
-      fmtN(r.anomalia, 1),
-      fmtN(r.precip, 1),
-      fmtN(r.vento, 1),
-      fmtN(r.uv_index_max, 0),
-    ];
-    for (const texto of celulas) {
-      const td = document.createElement("td");
-      td.textContent = texto;
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-  }
+  if (tabela === null) return;
 
+  const ok = renderTable(
+    tabela,
+    rows.map((r) => ({
+      cells: [
+        formatarDataISO(r.date),
+        r.alert_type_pt,
+        `${SEV_ICON[r.severity] ?? ""} ${r.severity_pt}`.trim(),
+        fmtN(r.temp_max, 1),
+        fmtN(r.anomalia, 1),
+        fmtN(r.precip, 1),
+        fmtN(r.vento, 1),
+        fmtN(r.uv_index_max, 0),
+      ],
+    })),
+    {
+      limit: maxDisplayed,
+      onEmpty: () => {
+        toggle(btnMais, false);
+        setText("msg-sem-alertas", `Nenhum alerta registrado para ${city} nos últimos ${days} dias.`);
+      },
+    },
+  );
+  if (!ok) return;
+
+  toggle(byId("msg-sem-alertas"), false);
   const restantes = Math.max(0, rows.length - maxDisplayed);
   if (btnMais !== null) {
     btnMais.hidden = restantes <= 0;

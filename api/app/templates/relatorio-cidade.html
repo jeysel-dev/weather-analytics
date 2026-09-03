@@ -30,18 +30,19 @@
 <p id="relatorio-caption" class="page-caption" hidden></p>
 <p id="relatorio-msg">Selecione ao menos uma cidade para gerar o relatório.</p>
 
-<div class="table-scroll">
+{# 6 colunas (spec 021): as antigas "Temp. * Média" saíram — só faziam
+   sentido no subtotal, onde a média agora entra dobrada na célula de
+   temperatura ("28.6 · méd 23.5"). #}
+<div class="data-table">
   <table id="tabela-relatorio" hidden>
     <thead>
       <tr>
         <th>Data</th>
         <th>Cidade</th>
-        <th>Temp. Máxima (°C)</th>
-        <th>Temp. Máxima Média (°C)</th>
-        <th>Temp. Mínima (°C)</th>
-        <th>Temp. Mínima Média (°C)</th>
-        <th>Precip. (mm)</th>
-        <th>Vento Máximo (km/h)</th>
+        <th class="col-num">Temp. Máxima (°C)</th>
+        <th class="col-num">Temp. Mínima (°C)</th>
+        <th class="col-num">Precip. (mm)</th>
+        <th class="col-num">Vento Máx. (km/h)</th>
       </tr>
     </thead>
     <tbody></tbody>

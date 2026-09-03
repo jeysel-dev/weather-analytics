@@ -11,6 +11,7 @@
 
 import { fmtN, formatarDataISO } from "../format";
 import { SEV_COLORS, SEV_ICON } from "../labels";
+import { renderTable } from "../table";
 import { byId, chartFor, setText, toggle } from "../ui";
 
 interface Resumo {
@@ -171,40 +172,36 @@ function renderMunicipios(rows: MunicipioRow[]): void {
 // ── Tabela de alertas recentes ─────────────────────────────────────────────
 function renderRecentes(rows: RecenteRow[], maxDisplayed = RECENTES_PAGE): void {
   const tabela = byId<HTMLTableElement>("tabela-recentes");
-  const tbody = tabela?.querySelector("tbody");
   const btnMais = byId<HTMLButtonElement>("btn-mais-recentes");
-  if (tabela === null || tbody === undefined || tbody === null) return;
-  tbody.replaceChildren();
-  if (rows.length === 0) {
-    toggle(tabela, false);
-    toggle(btnMais, false);
-    toggle(byId("msg-recentes-vazio"), true);
-    return;
-  }
-  toggle(byId("msg-recentes-vazio"), false);
-  toggle(tabela, true);
-  for (const r of rows.slice(0, maxDisplayed)) {
-    const tr = document.createElement("tr");
-    const celulas = [
-      formatarDataISO(r.date),
-      r.city_name,
-      r.mesoregion ?? "—",
-      r.alert_type_pt,
-      `${SEV_ICON[r.severity] ?? ""} ${r.severity_pt}`.trim(),
-      fmtN(r.temp_max, 1),
-      fmtN(r.anomalia, 1),
-      fmtN(r.precip, 1),
-      fmtN(r.vento_max, 1),
-      fmtN(r.uv_index_max, 0),
-    ];
-    for (const texto of celulas) {
-      const td = document.createElement("td");
-      td.textContent = texto;
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-  }
+  if (tabela === null) return;
 
+  const ok = renderTable(
+    tabela,
+    rows.map((r) => ({
+      cells: [
+        formatarDataISO(r.date),
+        r.city_name,
+        r.mesoregion ?? "—",
+        r.alert_type_pt,
+        `${SEV_ICON[r.severity] ?? ""} ${r.severity_pt}`.trim(),
+        fmtN(r.temp_max, 1),
+        fmtN(r.anomalia, 1),
+        fmtN(r.precip, 1),
+        fmtN(r.vento_max, 1),
+        fmtN(r.uv_index_max, 0),
+      ],
+    })),
+    {
+      limit: maxDisplayed,
+      onEmpty: () => {
+        toggle(btnMais, false);
+        toggle(byId("msg-recentes-vazio"), true);
+      },
+    },
+  );
+  if (!ok) return;
+
+  toggle(byId("msg-recentes-vazio"), false);
   const restantes = Math.max(0, rows.length - maxDisplayed);
   if (btnMais !== null) {
     btnMais.hidden = restantes <= 0;

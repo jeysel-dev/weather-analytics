@@ -493,26 +493,31 @@ section { margin-bottom: 40px; }
 
 .tab-panel[hidden] { display: none; }
 
-/* ── Tabelas ──────────────────────────────────────────────────────── */
+/* ── Tabela de dados — padrão dos relatórios (spec 021) ─────────────
+   Uso: <div class="data-table"><table>… <thead> com <th>, numéricas
+   marcadas class="col-num" …</table></div>. web/src/table.ts (renderTable)
+   preenche o <tbody>, copia data-label de cada <th> para o <td>
+   correspondente (habilita o cartão no mobile) e a classe .col-num.
+   Linhas de fecho: <tr class="row-subtotal"> / <tr class="row-total">. */
 
-.table-scroll {
+.data-table {
   overflow-x: auto;
   border: 1px solid var(--border);
   border-radius: 3px;
   margin-bottom: 20px;
 }
 
-.table-scroll table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
-.table-scroll th,
-.table-scroll td {
+.data-table th,
+.data-table td {
   padding: 10px 14px;
   text-align: left;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
 
-.table-scroll th {
+.data-table th {
   font-size: 12px;
   font-weight: 700;
   color: var(--text);
@@ -521,19 +526,92 @@ section { margin-bottom: 40px; }
   background: color-mix(in srgb, var(--border) 40%, transparent);
 }
 
-.table-scroll td { color: var(--text-h); font-variant-numeric: tabular-nums; }
-.table-scroll tr:last-child td { border-bottom: none; }
+.data-table td { color: var(--text-h); font-variant-numeric: tabular-nums; }
+.data-table tr:last-child td { border-bottom: none; }
 
-/* Linhas de subtotal (por cidade) e total geral — não são dias normais. */
-.table-scroll tr.row-subtotal td,
-.table-scroll tr.row-total td {
+.data-table .col-num { text-align: right; }
+.data-table td[data-empty] { color: var(--text); }
+
+/* 1ª coluna ancorada durante o scroll horizontal (Data / Cidade não somem). */
+.data-table th:first-child,
+.data-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg);
+}
+.data-table th:first-child {
+  z-index: 2;
+  background: color-mix(in srgb, var(--border) 40%, var(--bg));
+}
+
+/* Linhas de subtotal (por grupo) e total geral — não são linhas normais. */
+.data-table tr.row-subtotal td,
+.data-table tr.row-total td {
   font-weight: 700;
   color: var(--text);
   background: var(--bg-card);
 }
+.data-table tr.row-subtotal td:first-child,
+.data-table tr.row-total td:first-child { background: var(--bg-card); }
 
-.table-scroll tr.row-subtotal td { border-top: 2px solid var(--border); }
-.table-scroll tr.row-total td { border-top: 3px solid var(--text); }
+.data-table tr.row-subtotal td { border-top: 2px solid var(--border); }
+.data-table tr.row-total td { border-top: 3px solid var(--text); }
+
+/* ── Mobile: cada linha vira um cartão rótulo/valor (sem rolagem lateral). */
+@media (max-width: 720px) {
+  .data-table {
+    overflow-x: visible;
+    border: none;
+    border-radius: 0;
+  }
+  .data-table table,
+  .data-table tbody,
+  .data-table tr,
+  .data-table td { display: block; width: auto; }
+  .data-table thead { display: none; }
+
+  .data-table tr {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: var(--bg);
+  }
+
+  .data-table td {
+    position: static;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 8px 14px;
+    text-align: right;
+    white-space: normal;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table tr td:last-child { border-bottom: none; }
+  .data-table td[data-empty] { display: none; }
+
+  .data-table td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-align: left;
+  }
+
+  .data-table tr.row-subtotal,
+  .data-table tr.row-total {
+    border-width: 2px;
+    border-color: var(--text);
+    background: var(--bg-card);
+  }
+  .data-table tr.row-subtotal td,
+  .data-table tr.row-total td { background: transparent; }
+}
 
 /* ── Compartilhar ─────────────────────────────────────────────────── */
 

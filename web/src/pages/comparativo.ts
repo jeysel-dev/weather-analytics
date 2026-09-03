@@ -10,6 +10,7 @@
 
 import { enhanceCitySelect } from "../citypicker";
 import { fmt1, fmtSigned, formatarDataISO } from "../format";
+import { renderTable } from "../table";
 import { byId, chartFor, initTabs, setText, toggle } from "../ui";
 
 interface SerieRow {
@@ -111,23 +112,11 @@ function renderSerie(rows: SerieRow[], ylabel: string): void {
 
 function renderResumo(resumo: ResumoCidade[]): void {
   const tabela = byId<HTMLTableElement>("tabela-resumo");
-  const tbody = tabela?.querySelector("tbody");
-  if (tabela === null || tbody === undefined || tbody === null) return;
-  tbody.replaceChildren();
-  if (resumo.length === 0) {
-    toggle(tabela, false);
-    return;
-  }
-  toggle(tabela, true);
-  for (const r of resumo) {
-    const tr = document.createElement("tr");
-    for (const texto of [r.city_name, fmt1(r.min), fmt1(r.max), fmt1(r.mean)]) {
-      const td = document.createElement("td");
-      td.textContent = texto;
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-  }
+  if (tabela === null) return;
+  renderTable(
+    tabela,
+    resumo.map((r) => ({ cells: [r.city_name, fmt1(r.min), fmt1(r.max), fmt1(r.mean)] })),
+  );
 }
 
 async function carregarCidades(): Promise<void> {
