@@ -11,4 +11,4 @@ resources:
 images:
 - name: ghcr.io/jeysel-dev/weather-analytics/api
   newName: ghcr.io/jeysel-dev/weather-analytics/api
-  newTag: 7418b90
+  newTag: 81fe368
