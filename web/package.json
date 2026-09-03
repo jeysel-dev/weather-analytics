@@ -13,6 +13,7 @@
     "vite": "^8.2.0"
   },
   "dependencies": {
-    "echarts": "^6.1.0"
+    "echarts": "^6.1.0",
+    "tom-select": "^2.6.2"
   }
 }

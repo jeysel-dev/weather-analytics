@@ -8,6 +8,7 @@
 //
 // Listas de referência: /api/v1/ref/cidades e /api/v1/ref/mesorregioes (spec 014).
 
+import { enhanceCitySelect } from "../citypicker";
 import { fmt1, fmtSigned, formatarDataISO } from "../format";
 import { byId, chartFor, initTabs, setText, toggle } from "../ui";
 
@@ -398,6 +399,11 @@ export function initComparativo(): void {
     selecionarSePresente(b, "Lages");
     selecionarSePresente(cSel, "Chapecó");
     selecionarSePresente(histCidade, "Florianópolis");
+
+    // Comboboxes pesquisáveis (spec 020) — depois de popular e de aplicar a
+    // seleção inicial no <select> nativo. #cmp-meso fica nativo (~6 itens);
+    // a <option value="—"> de #cmp-cidade-c segue como opção normal.
+    for (const s of [a, b, cSel, histCidade]) enhanceCitySelect(s);
 
     for (const id of ["cmp-cidade-a", "cmp-cidade-b", "cmp-cidade-c", "cmp-metrica", "cmp-dias"]) {
       byId(id)?.addEventListener("change", () => void carregarCidades());

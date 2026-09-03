@@ -4,6 +4,10 @@
 // a partir da estrutura central de páginas em api/app/main.py) seleciona o
 // módulo de render. Uma entrada por página migrada.
 
+// CSS base do Tom Select ANTES do nosso style.css: a re-tematização (tokens
+// --bg-card/--border/--accent/…) vive em style.css e precisa vencer a
+// cascata. Ver web/src/citypicker.ts e spec 020.
+import "tom-select/dist/css/tom-select.css";
 import "./style.css";
 
 import { initNavSubmenu, initNavbarToggle } from "./nav";

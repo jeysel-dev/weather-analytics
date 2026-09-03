@@ -8,6 +8,7 @@
 // Referência: /api/v1/ref/cidades + /api/v1/ref/daily-meta (spec 014).
 // Dados: /api/v1/relatorio-cidade/dados.
 
+import { enhanceCitySelect } from "../citypicker";
 import { fmt1, formatarDataISO } from "../format";
 
 // Esta página NÃO importa de ../ui de propósito. O bundle é único (um só
@@ -277,6 +278,9 @@ export function initRelatorioCidade(): void {
         select.appendChild(opt);
       }
     }
+    // Combobox pesquisável múltiplo (spec 020) — depois de popular as
+    // options, antes de aplicar a seleção da URL.
+    const picker = enhanceCitySelect(select);
     if (metaResp.ok) {
       const meta = (await metaResp.json()) as { min_date: string | null; max_date: string | null };
       if (meta.min_date !== null && meta.max_date !== null) {
@@ -297,7 +301,10 @@ export function initRelatorioCidade(): void {
 
     inicioInput.value = urlState.inicio ?? defInicio;
     fimInput.value = urlState.fim ?? defFim;
-    for (const opt of select.options) opt.selected = urlState.cidades.includes(opt.value);
+    // `true` = silencioso: não dispara `change` (atualizar() é chamado
+    // explicitamente no fim). O Tom Select sincroniza `option.selected`,
+    // então `cidadesSelecionadas()` segue lendo `select.selectedOptions`.
+    picker.setValue(urlState.cidades, true);
 
     select.addEventListener("change", () => void atualizar());
     inicioInput.addEventListener("change", () => void atualizar());

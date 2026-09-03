@@ -366,6 +366,79 @@ section { margin-bottom: 40px; }
 .filter-field select[multiple] { min-height: 160px; min-width: 240px; }
 .filter-field input[type="date"] { color-scheme: light dark; }
 
+/* ── Tom Select (seletor de município com busca, spec 020) ─────────────
+   O CSS base entra pelo import em main.ts; aqui só re-tematiza com os
+   tokens do projeto — nenhuma cor literal, então tema escuro sai de graça
+   do @media já existente. Alvo visual: os `.filter-field select` acima. */
+
+.filter-field .ts-wrapper { min-width: 200px; max-width: 100%; }
+.filter-field .ts-wrapper.multi { min-width: 240px; }
+
+.ts-control,
+.ts-control input,
+.ts-dropdown { font: inherit; color: var(--text-h); }
+
+.ts-control {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 5px 8px;
+}
+
+.ts-wrapper.single.input-active .ts-control { background: var(--bg-card); }
+.ts-wrapper.multi.has-items .ts-control { padding: 3px 4px; }
+
+.ts-wrapper.focus .ts-control {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.ts-control input::placeholder { color: var(--text); }
+
+/* Caret do modo único */
+.ts-wrapper.single .ts-control:after {
+  border-color: var(--text) transparent transparent transparent;
+}
+
+/* Tags (modo múltiplo) + botão de remover (plugin remove_button) */
+.ts-wrapper.multi .ts-control > .item {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--text-h);
+  border: none;
+  border-radius: 2px;
+}
+.ts-wrapper.multi .ts-control > .item.active {
+  background: color-mix(in srgb, var(--accent) 26%, transparent);
+  color: var(--text-h);
+}
+.plugin-remove_button .item .remove {
+  border-left-color: color-mix(in srgb, var(--text) 30%, transparent);
+}
+.plugin-remove_button .item .remove:hover {
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+/* Dropdown */
+.ts-dropdown {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+}
+.ts-dropdown .option { color: var(--text-h); padding: 6px 10px; }
+.ts-dropdown .active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--text-h);
+}
+.ts-dropdown .selected {
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+.ts-dropdown .selected.active {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.ts-dropdown .no-results { color: var(--text); padding: 6px 10px; }
+
 .chart {
   width: 100%;
   border: 1px solid var(--border);

@@ -10,6 +10,7 @@
 // robustez, spec 011). Rótulo/cor de classe e tradução de alerta: labels.ts
 // (spec 014) — clima devolve o valor cru; alertas já vêm traduzidos.
 
+import { enhanceCitySelect } from "../citypicker";
 import { fmt1, fmtN, fmtSigned, formatarDataISO } from "../format";
 import { CLASS_COLORS, CLASS_LABELS_PT, SEV_ICON } from "../labels";
 import { byId, chartFor, initTabs, setText, toggle } from "../ui";
@@ -301,6 +302,10 @@ export function initCidades(): void {
       opt.textContent = c.city_name;
       select.appendChild(opt);
     }
+    // Combobox pesquisável (spec 020) — depois de popular, antes do 1º
+    // carregar(). `select.value` (1ª opção) segue válido; o listener de
+    // `change` em initCidades continua disparando.
+    enhanceCitySelect(select);
     if (cidades.length > 0) void carregar(select.value, clampDias(diasInput.value));
   })();
 
