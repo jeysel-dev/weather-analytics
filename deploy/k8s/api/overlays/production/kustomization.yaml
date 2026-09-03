@@ -11,19 +11,17 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — fa5fa49 (spec 024, adendo 1).
-    # Versão anterior em produção: 07ace8f.
-    # Entrega deste bump: filtro "Cidade" no /relatorio-chuva-acumulada
-    #   (combobox pesquisável via /api/v1/ref/cidades, deep link ?cidade=…,
-    #   endpoint aceita cidade opcional combinado com meso via AND).
-    # Toca API (novo query param `cidade` em GET
-    #   /api/v1/relatorio-chuva-acumulada/dados, helper cidade_filter() em
-    #   routers/ref.py), template e frontend. Não muda seed / mart_* / cache
-    #   de referência → não precisa reiniciar pods além do rollout do bump.
-    # Validado: CI verde (run 33795712454 — pytest + smoke /health), staging
-    #   sincronizado com fa5fa49.
+    # Promovido manualmente em 2026-09-03 — 4d95143 (adendo spec 019).
+    # Versão anterior em produção: fa5fa49.
+    # Entrega deste bump: footer linka o LICENSE (MIT, novo na raiz) via
+    #   "Código e dados sob licença aberta" e perde os links placeholder
+    #   Privacidade / Termos de Uso. Só layout.html + web/src/style.css.
+    #   Não muda seed / mart_* / cache de referência → não precisa reiniciar
+    #   pods além do rollout do bump.
+    # Validado: CI verde (run 33808831043 — pytest 27 passed + smoke
+    #   /health), staging sincronizado com 4d95143 e footer conferido no ar.
     #
-    # Rollback: última versão boa em produção é 07ace8f. `kustomize edit set
-    # image ghcr.io/jeysel-dev/weather-analytics/api=...:07ace8f` + commit +
+    # Rollback: última versão boa em produção é fa5fa49. `kustomize edit set
+    # image ghcr.io/jeysel-dev/weather-analytics/api=...:fa5fa49` + commit +
     # sync.
-    newTag: fa5fa49
+    newTag: 4d95143
