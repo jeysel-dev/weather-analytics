@@ -11,25 +11,28 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — e895852 (specs 021/022/023, todas
-    # aditivas, sem mudança de seed / migração de dado / mudança em mart_*).
-    # Versão anterior em produção: 81fe368. Entrega deste bump:
-    #   - spec 021: padrão de tabela responsiva .data-table + renderTable;
-    #     refatora as 4 tabelas existentes (alertas, cidades, comparativo,
-    #     relatorio-cidade). Só front, sem mudança de endpoint.
-    #   - spec 022: 4 relatórios novos no submenu "Relatórios" —
-    #     /relatorio-mensal, /relatorio-macrorregiao, /relatorio-extremos,
-    #     /relatorio-chuva-acumulada (cada um com router +
-    #     /api/v1/relatorio-*/dados).
-    #   - spec 023: 5º relatório /relatorio-horario
-    #     (/api/v1/relatorio-horario/dados, lê mart_climate__hourly_facts).
-    # Validado em staging contra BigQuery real: 5 páginas 200 + data-table,
-    # submenu "Relatórios" com 6 itens, os 5 endpoints /api/v1/relatorio-*
-    # respondem 200 com payload coerente (MAX_BY/MIN_BY(STRUCT(...)) e
-    # FORMAT_TIMESTAMP(..., 'America/Sao_Paulo') conferidos ao vivo).
-    # CI verde: run 33787610758 (pytest + smoke test /health).
+    # Promovido manualmente em 2026-09-03 — 07ace8f (spec 024, ajustes de
+    # revisão sobre as specs 022/023; só frontend + templates, nenhuma rota,
+    # endpoint ou query SQL muda em relação a e895852).
+    # Versão anterior em produção: e895852. Entrega deste bump:
+    #   - Botão "Compartilhar no WhatsApp" nos 5 relatórios novos +
+    #     /relatorio-cidade (novo templates/_share_button.html + web/src/share.ts).
+    #     Cada relatório lê/escreve os filtros na query string (deep link) para
+    #     o link compartilhado abrir a mesma visão.
+    #   - .share-button global agora é verde WhatsApp (#25d366) + ícone.
+    #   - /relatorio-mensal: <input type="month"> ganha o CSS da filter-bar
+    #     (era bug visual — seletor só cobria number/date).
+    #   - /relatorio-chuva-acumulada: ranking limitado a 10 linhas + botão
+    #     "Ver mais" (paginação client-side, sem tocar no endpoint).
+    # Sem mudança de seed / mart_* / endpoint — não precisa reiniciar pods.
+    # Validado em staging (Playwright headless via túnel SSH): 6 páginas de
+    # relatório com botão verde + ícone; wa.me/?text= com resumo + URL pública
+    # https://weather.jeysel.dev/relatorio-…?<filtros>; deep links restauram
+    # os filtros (dias/city/cidades); mensal com campos de mês estilizados;
+    # chuva-acumulada 10 linhas + "Ver mais (285 restantes)" → +10 por clique.
+    # CI verde: run 33791838636 (pytest + smoke test /health).
     #
-    # Rollback: última versão boa em produção é 81fe368. `kustomize edit set
-    # image ghcr.io/jeysel-dev/weather-analytics/api=...:81fe368` + commit +
+    # Rollback: última versão boa em produção é e895852. `kustomize edit set
+    # image ghcr.io/jeysel-dev/weather-analytics/api=...:e895852` + commit +
     # sync.
-    newTag: e895852
+    newTag: 07ace8f
