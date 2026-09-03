@@ -2,9 +2,11 @@
 //
 // Uma linha por macrorregião (as 8 do seed) + total geral do estado:
 // nº de municípios, médias de temperatura, chuva média/acumulada e nº de
-// alertas na janela. Filtro único: período em dias.
+// alertas na janela. Filtro único: período em dias. Deep link ?dias=N +
+// botão Compartilhar (spec 024).
 
 import { fmt1, formatarDataISO } from "../format";
+import { compartilharWhatsapp, esconderCompartilhar, escreverURL, lerURL } from "../share";
 import { renderTable, type RowDef } from "../table";
 import { byId, setText, toggle } from "../ui";
 
@@ -34,8 +36,8 @@ function celulas(nome: string, r: MacroRow): string[] {
   ];
 }
 
-function clampDias(raw: string): number {
-  const n = Number.parseInt(raw, 10);
+function clampDias(raw: string | null): number {
+  const n = Number.parseInt(raw ?? "", 10);
   if (Number.isNaN(n)) return 30;
   return Math.min(365, Math.max(7, n));
 }
@@ -52,6 +54,10 @@ async function carregarCaption(): Promise<void> {
 async function atualizar(dias: number): Promise<void> {
   const tabela = byId<HTMLTableElement>("tabela-macro");
   if (tabela === null) return;
+  const params = new URLSearchParams({ dias: String(dias) });
+  escreverURL(params);
+  esconderCompartilhar();
+
   const resposta = await fetch(`/api/v1/relatorio-macrorregiao/dados?dias=${dias}`);
   if (!resposta.ok) {
     setText("macro-msg", `Erro ao carregar o relatório (HTTP ${resposta.status})`);
@@ -66,13 +72,20 @@ async function atualizar(dias: number): Promise<void> {
   const ok = renderTable(tabela, rows, {
     onEmpty: () => setText("macro-msg", "Sem dados para o período selecionado."),
   });
-  if (ok) toggle(byId("macro-msg"), false);
+  if (ok) {
+    toggle(byId("macro-msg"), false);
+    compartilharWhatsapp(`Relatório por macrorregião — últimos ${dias} dias.`, params);
+  }
 }
 
 export function initRelatorioMacrorregiao(): void {
   const diasInput = byId<HTMLInputElement>("filtro-dias");
   if (diasInput === null) return;
   void carregarCaption();
+
+  const dias = clampDias(lerURL().get("dias") ?? diasInput.value);
+  diasInput.value = String(dias);
+
   diasInput.addEventListener("change", () => void atualizar(clampDias(diasInput.value)));
-  void atualizar(clampDias(diasInput.value));
+  void atualizar(dias);
 }

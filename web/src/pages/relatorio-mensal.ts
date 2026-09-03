@@ -2,11 +2,12 @@
 //
 // Cidade(s) × mês: médias de temperatura, amplitude, chuva acumulada, dias
 // com chuva e vento máximo. Agrupado por cidade com subtotal + total geral
-// (mesmo formato de 3 partes do /relatorio-cidade). Sem estado na URL, sem
-// gráfico, sem botão de compartilhar.
+// (mesmo formato de 3 partes do /relatorio-cidade). Deep link
+// ?cidades=A,B&inicio=YYYY-MM&fim=YYYY-MM + botão Compartilhar (spec 024).
 
 import { enhanceCitySelect } from "../citypicker";
 import { fmt1, formatarMesISO } from "../format";
+import { compartilharWhatsapp, esconderCompartilhar, escreverURL, lerURL } from "../share";
 import { renderTable, type RowDef } from "../table";
 import { byId, setText, toggle } from "../ui";
 
@@ -35,6 +36,7 @@ interface MensalResponse {
   total_geral: MensalAgg | null;
 }
 
+const MES_RE = /^\d{4}-\d{2}$/;
 let MIN_MES = "";
 let MAX_MES = "";
 
@@ -45,6 +47,10 @@ function subtrairMeses(ym: string, n: number): string {
   const y = Math.floor(total / 12);
   const m = (total % 12) + 1;
   return `${String(y).padStart(4, "0")}-${String(m).padStart(2, "0")}`;
+}
+
+function mesValido(m: string | null): m is string {
+  return m !== null && MES_RE.test(m) && MIN_MES <= m && m <= MAX_MES;
 }
 
 function celulasAgg(rotuloMes: string, cidade: string, a: MensalAgg): string[] {
@@ -125,7 +131,14 @@ async function atualizar(): Promise<void> {
   const inicio = inicioInput.value;
   const fim = fimInput.value;
 
+  const urlParams = new URLSearchParams();
+  if (cidades.length > 0) urlParams.set("cidades", cidades.join(","));
+  if (inicio !== "") urlParams.set("inicio", inicio);
+  if (fim !== "") urlParams.set("fim", fim);
+  escreverURL(urlParams);
+  esconderCompartilhar();
   toggle(byId("tabela-mensal"), false);
+
   if (cidades.length === 0) {
     setText("mensal-msg", "Selecione ao menos uma cidade para gerar o relatório.");
     return;
@@ -139,14 +152,21 @@ async function atualizar(): Promise<void> {
     return;
   }
 
-  const params = new URLSearchParams({ inicio, fim });
-  for (const c of cidades) params.append("cidades", c);
-  const resposta = await fetch(`/api/v1/relatorio-mensal/dados?${params.toString()}`);
+  const apiParams = new URLSearchParams({ inicio, fim });
+  for (const c of cidades) apiParams.append("cidades", c);
+  const resposta = await fetch(`/api/v1/relatorio-mensal/dados?${apiParams.toString()}`);
   if (!resposta.ok) {
     setText("mensal-msg", `Erro ao carregar o relatório (HTTP ${resposta.status})`);
     return;
   }
-  renderTabela((await resposta.json()) as MensalResponse);
+  const dados = (await resposta.json()) as MensalResponse;
+  renderTabela(dados);
+  if (dados.meses.length > 0) {
+    compartilharWhatsapp(
+      `Consolidado mensal — ${cidades.join(", ")}, ${formatarMesISO(inicio)} a ${formatarMesISO(fim)}.`,
+      urlParams,
+    );
+  }
 }
 
 export function initRelatorioMensal(): void {
@@ -169,7 +189,7 @@ export function initRelatorioMensal(): void {
         select.appendChild(opt);
       }
     }
-    enhanceCitySelect(select);
+    const picker = enhanceCitySelect(select);
 
     if (metaResp.ok) {
       const meta = (await metaResp.json()) as { min_date: string | null; max_date: string | null };
@@ -182,9 +202,20 @@ export function initRelatorioMensal(): void {
         }
       }
     }
-    fimInput.value = MAX_MES;
+
+    // Defaults + estado da URL.
+    const url = lerURL();
+    const uInicio = url.get("inicio");
+    const uFim = url.get("fim");
+    fimInput.value = mesValido(uFim) ? uFim : MAX_MES;
     const menos12 = MAX_MES !== "" ? subtrairMeses(MAX_MES, 11) : "";
-    inicioInput.value = menos12 !== "" && menos12 < MIN_MES ? MIN_MES : menos12;
+    const defInicio = menos12 !== "" && menos12 < MIN_MES ? MIN_MES : menos12;
+    inicioInput.value = mesValido(uInicio) ? uInicio : defInicio;
+
+    const cidadesURL = (url.get("cidades") ?? "")
+      .split(",")
+      .filter((c) => c !== "" && [...select.options].some((o) => o.value === c));
+    picker.setValue(cidadesURL, true);
 
     select.addEventListener("change", () => void atualizar());
     inicioInput.addEventListener("change", () => void atualizar());

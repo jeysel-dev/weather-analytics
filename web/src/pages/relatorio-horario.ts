@@ -6,6 +6,7 @@
 // resumo diário (com linha de total). Sem gráfico, sem estado na URL.
 
 import { fmt1, formatarDataISO } from "../format";
+import { compartilharWhatsapp, esconderCompartilhar, escreverURL, lerURL } from "../share";
 import { renderTable, type RowDef } from "../table";
 import { byId, setText, toggle } from "../ui";
 
@@ -32,8 +33,8 @@ interface RelHorarioResponse {
   total: DiaHorario | null;
 }
 
-function clampDias(raw: string): number {
-  const n = Number.parseInt(raw, 10);
+function clampDias(raw: string | null): number {
+  const n = Number.parseInt(raw ?? "", 10);
   if (Number.isNaN(n)) return 7;
   return Math.min(30, Math.max(3, n));
 }
@@ -76,12 +77,16 @@ async function atualizar(city: string, days: number): Promise<void> {
   toggle(byId("horario-rel-subtitulo"), false);
   toggle(byId("horario-rel-caption"), false);
   esconderTabelas();
+  esconderCompartilhar();
 
   if (city === "") {
+    escreverURL(new URLSearchParams());
     setText("horario-rel-msg", "Selecione um município para gerar o relatório.");
     return;
   }
 
+  const params = new URLSearchParams({ city, days: String(days) });
+  escreverURL(params);
   const resposta = await fetch(
     `/api/v1/relatorio-horario/dados?city=${encodeURIComponent(city)}&days=${days}`,
   );
@@ -115,6 +120,8 @@ async function atualizar(city: string, days: number): Promise<void> {
     rows.push({ cells: celulasDia("Total do período", dados.total), variant: "total" });
   }
   renderTable(tResumo, rows);
+
+  compartilharWhatsapp(`Detalhamento horário — ${city}, últimos ${days} dias.`, params);
 }
 
 export function initRelatorioHorario(): void {
@@ -122,8 +129,19 @@ export function initRelatorioHorario(): void {
   const diasInput = byId<HTMLInputElement>("filtro-dias");
   if (select === null || diasInput === null) return;
 
-  void popularMunicipios(select);
+  const url = lerURL();
+  const days = clampDias(url.get("days") ?? diasInput.value);
+  diasInput.value = String(days);
+
   const rerender = (): void => void atualizar(select.value, clampDias(diasInput.value));
   select.addEventListener("change", rerender);
   diasInput.addEventListener("change", rerender);
+
+  void popularMunicipios(select).then(() => {
+    const cidade = url.get("city");
+    if (cidade !== null && [...select.options].some((o) => o.value === cidade)) {
+      select.value = cidade;
+      void atualizar(select.value, clampDias(diasInput.value));
+    }
+  });
 }
