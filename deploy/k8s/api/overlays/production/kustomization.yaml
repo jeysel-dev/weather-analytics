@@ -11,16 +11,16 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — a9065da (feat!: corte do
-    # Streamlit, dashboard 100% FastAPI, spec 015). Corrige regressão real
-    # encontrada na validação do teardown do Streamlit: produção estava
-    # pinada em 2620c14, uma versão ANTES de a9065da — que é o commit que
-    # introduziu os 7 redirects 308 das URLs legacy em maiúscula
-    # (/Temperatura -> /temperatura etc.). Com o catch-all do Streamlit
-    # removido nesta mesma rodada de corte, esses redirects passaram a ser
-    # a única forma de as URLs legacy funcionarem; sem eles, 404 em vez de
-    # 308. a9065da validado em staging por ~16h, todos os probes verdes:
-    # 8/8 rotas HTTP 200, 7/7 redirects 308, /_stcore/health 404 (Streamlit
-    # de fato fora). Tag anterior: 2620c14 (navbar sem emoji + footer
-    # compartilhado; ver histórico do git para os detalhes de validação).
-    newTag: a9065da
+    # Promovido manualmente em 2026-09-03 — 9a7ca2e (feat(api): Relatório
+    # por Cidade — linhas diárias + subtotal por cidade + total geral,
+    # spec 013). Mesma classe de correção do bump anterior: produção estava
+    # pinada em a9065da, 3 commits ANTES de 9a7ca2e (a9065da..9a7ca2e =
+    # 004d716, 3133691, 9a7ca2e). O redesenho está em main e validado em
+    # staging desde então (o overlay de staging aponta pra 9a7ca2e, bump do
+    # CI no commit 41fa306), mas a promoção pra produção ficou pendente —
+    # o dashboard servia o relatório agregado antigo (1 linha/cidade, sem
+    # coluna Data). Diagnóstico completo em
+    # docs/specs/016-diagnostico-relatorio-cidade-producao/spec.md.
+    # Tag anterior: a9065da (corte do Streamlit, spec 015; ver histórico do
+    # git para os detalhes de validação daquela promoção).
+    newTag: 9a7ca2e
