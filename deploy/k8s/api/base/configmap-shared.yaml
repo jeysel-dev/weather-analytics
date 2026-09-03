@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  # Mesmo name das ConfigMaps já vivas em staging/production (valores
+  # idênticos) — proposital: o ArgoCD adota o recurso existente no 1º sync
+  # em vez de recriar. Herdada da árvore do Streamlit (spec 015), que nunca
+  # a possuiu de fato; a API sempre dependeu dela (deployment.yaml).
+  name: weather-analytics-config
+data:
+  # GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD omitida de propósito: fallback
+  # morto, a API sempre recebe GOOGLE_APPLICATION_CREDENTIALS_API via
+  # weather-analytics-api-config (configmap.yaml).
+  BIGQUERY_DATASET: marts
+  BIGQUERY_LOCATION: southamerica-east1
+  BIGQUERY_SEEDS_DATASET: seeds
