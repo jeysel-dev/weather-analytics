@@ -383,6 +383,17 @@ section { margin-bottom: 40px; }
 .table-scroll td { color: var(--text-h); font-variant-numeric: tabular-nums; }
 .table-scroll tr:last-child td { border-bottom: none; }
 
+/* Linhas de subtotal (por cidade) e total geral — não são dias normais. */
+.table-scroll tr.row-subtotal td,
+.table-scroll tr.row-total td {
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg-card);
+}
+
+.table-scroll tr.row-subtotal td { border-top: 2px solid var(--border); }
+.table-scroll tr.row-total td { border-top: 3px solid var(--text); }
+
 /* ── Compartilhar ─────────────────────────────────────────────────── */
 
 .share-button {

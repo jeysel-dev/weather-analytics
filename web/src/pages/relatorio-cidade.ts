@@ -32,7 +32,16 @@ function setText(id: string, text: string): void {
   }
 }
 
-interface RelatorioRow {
+interface DiaRow {
+  date: string;
+  city_name: string;
+  temp_max_c: number | null;
+  temp_min_c: number | null;
+  precipitation_mm: number | null;
+  wind_speed_max_kmh: number | null;
+}
+
+interface SubtotalRow {
   city_name: string;
   temp_maxima: number | null;
   temp_maxima_media: number | null;
@@ -40,6 +49,12 @@ interface RelatorioRow {
   temp_minima_media: number | null;
   precip_acumulada: number | null;
   vento_maximo: number | null;
+}
+
+interface RelatorioResponse {
+  dias: DiaRow[];
+  subtotais: SubtotalRow[];
+  total_geral: SubtotalRow | null;
 }
 
 const DOMINIO_PUBLICO = "https://weather.jeysel.dev/relatorio-cidade";
@@ -96,35 +111,92 @@ function escreverURL(cidades: string[], inicio: string, fim: string): void {
 }
 
 // ── Tabela + compartilhamento ─────────────────────────────────────────────
-function renderTabela(rows: RelatorioRow[]): void {
+// Uma linha por dia do período, agrupadas por cidade; após os dias de cada
+// cidade, a linha de SUBTOTAL dela; no fim da tabela, SEMPRE (mesmo com uma
+// cidade só) a linha TOTAL GERAL. "Temp. * Média" não se aplica a um dia
+// isolado — célula vazia ("—") nas linhas diárias.
+function renderTabela(dados: RelatorioResponse): void {
   const tabela = byId<HTMLTableElement>("tabela-relatorio");
   const tbody = tabela?.querySelector("tbody");
   if (tabela === null || tbody === undefined || tbody === null) return;
   tbody.replaceChildren();
-  if (rows.length === 0) {
+  if (dados.dias.length === 0) {
     toggle(tabela, false);
     setText("relatorio-msg", "Sem dados para o período selecionado.");
     return;
   }
   toggle(byId("relatorio-msg"), false);
   toggle(tabela, true);
-  for (const r of rows) {
+
+  const addRow = (celulas: string[], cls?: string): void => {
     const tr = document.createElement("tr");
-    const celulas = [
-      r.city_name,
-      fmt1(r.temp_maxima),
-      fmt1(r.temp_maxima_media),
-      fmt1(r.temp_minima),
-      fmt1(r.temp_minima_media),
-      fmt1(r.precip_acumulada),
-      fmt1(r.vento_maximo),
-    ];
+    if (cls !== undefined) tr.className = cls;
     for (const texto of celulas) {
       const td = document.createElement("td");
       td.textContent = texto;
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
+  };
+
+  const subtotalPorCidade = new Map<string, SubtotalRow>();
+  for (const s of dados.subtotais) subtotalPorCidade.set(s.city_name, s);
+
+  // Ordem de aparição das cidades nas linhas diárias (backend já ordena
+  // por city_name, date).
+  const diasPorCidade = new Map<string, DiaRow[]>();
+  for (const d of dados.dias) {
+    const lista = diasPorCidade.get(d.city_name) ?? [];
+    lista.push(d);
+    diasPorCidade.set(d.city_name, lista);
+  }
+
+  for (const [cidade, dias] of diasPorCidade) {
+    for (const d of dias) {
+      addRow([
+        formatarDataISO(d.date),
+        cidade,
+        fmt1(d.temp_max_c),
+        "—",
+        fmt1(d.temp_min_c),
+        "—",
+        fmt1(d.precipitation_mm),
+        fmt1(d.wind_speed_max_kmh),
+      ]);
+    }
+    const sub = subtotalPorCidade.get(cidade);
+    if (sub !== undefined) {
+      addRow(
+        [
+          "",
+          `Subtotal — ${cidade}`,
+          fmt1(sub.temp_maxima),
+          fmt1(sub.temp_maxima_media),
+          fmt1(sub.temp_minima),
+          fmt1(sub.temp_minima_media),
+          fmt1(sub.precip_acumulada),
+          fmt1(sub.vento_maximo),
+        ],
+        "row-subtotal",
+      );
+    }
+  }
+
+  const tg = dados.total_geral;
+  if (tg !== null) {
+    addRow(
+      [
+        "",
+        "Total Geral",
+        fmt1(tg.temp_maxima),
+        fmt1(tg.temp_maxima_media),
+        fmt1(tg.temp_minima),
+        fmt1(tg.temp_minima_media),
+        fmt1(tg.precip_acumulada),
+        fmt1(tg.vento_maximo),
+      ],
+      "row-total",
+    );
   }
 }
 
@@ -179,9 +251,9 @@ async function atualizar(): Promise<void> {
     setText("relatorio-msg", `Erro ao carregar o relatório (HTTP ${resposta.status})`);
     return;
   }
-  const dados = (await resposta.json()) as { rows: RelatorioRow[] };
-  renderTabela(dados.rows);
-  if (dados.rows.length > 0) atualizarCompartilhar(cidades, inicio, fim);
+  const dados = (await resposta.json()) as RelatorioResponse;
+  renderTabela(dados);
+  if (dados.dias.length > 0) atualizarCompartilhar(cidades, inicio, fim);
 }
 
 export function initRelatorioCidade(): void {
