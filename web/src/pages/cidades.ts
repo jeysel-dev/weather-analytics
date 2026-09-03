@@ -58,6 +58,13 @@ interface AlertaRow {
 
 const meta = new Map<string, CidadeMeta>();
 
+// Paginação client-side da tabela de alertas (spec 018). Estado de módulo, não
+// global: quantas linhas mostrar e a última resposta de /alertas, pra o botão
+// "Ver mais" re-renderizar sem refazer a busca.
+const ALERTAS_PAGE = 10;
+let alertasMax = ALERTAS_PAGE;
+let ultimoAlertas: { rows: AlertaRow[]; city: string; days: number } | null = null;
+
 function hemisferio(valor: number, neg: string, pos: string): string {
   return `${Math.abs(valor).toFixed(2)}°${valor < 0 ? neg : pos}`;
 }
@@ -178,19 +185,29 @@ function renderVento(rows: ClimaRow[]): void {
 }
 
 // ── Aba Alertas ───────────────────────────────────────────────────────────
-function renderAlertas(rows: AlertaRow[], city: string, days: number): void {
+// Renderiza só as primeiras `maxDisplayed` linhas (spec 018). O botão
+// "Ver mais" chama de novo com um valor maior — sem refazer a busca, a lista
+// completa fica em `ultimoAlertas`.
+function renderAlertas(
+  rows: AlertaRow[],
+  city: string,
+  days: number,
+  maxDisplayed = ALERTAS_PAGE,
+): void {
   const tabela = byId<HTMLTableElement>("tabela-alertas");
   const tbody = tabela?.querySelector("tbody");
+  const btnMais = byId<HTMLButtonElement>("btn-mais-alertas");
   if (tabela === null || tbody === undefined || tbody === null) return;
   tbody.replaceChildren();
   if (rows.length === 0) {
     toggle(tabela, false);
+    toggle(btnMais, false);
     setText("msg-sem-alertas", `Nenhum alerta registrado para ${city} nos últimos ${days} dias.`);
     return;
   }
   toggle(byId("msg-sem-alertas"), false);
   toggle(tabela, true);
-  for (const r of rows) {
+  for (const r of rows.slice(0, maxDisplayed)) {
     const tr = document.createElement("tr");
     const celulas = [
       formatarDataISO(r.date),
@@ -208,6 +225,12 @@ function renderAlertas(rows: AlertaRow[], city: string, days: number): void {
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
+  }
+
+  const restantes = Math.max(0, rows.length - maxDisplayed);
+  if (btnMais !== null) {
+    btnMais.hidden = restantes <= 0;
+    btnMais.textContent = `Ver mais alertas (${restantes} restantes)`;
   }
 }
 
@@ -248,7 +271,9 @@ async function carregar(city: string, days: number): Promise<void> {
   renderTemp(clima.rows);
   renderPrecip(clima.rows);
   renderVento(clima.rows);
-  renderAlertas(((await alertasResp.json()) as { rows: AlertaRow[] }).rows, city, days);
+  const alertaRows = ((await alertasResp.json()) as { rows: AlertaRow[] }).rows;
+  ultimoAlertas = { rows: alertaRows, city, days };
+  renderAlertas(alertaRows, city, days, alertasMax);
 }
 
 export function initCidades(): void {
@@ -280,6 +305,19 @@ export function initCidades(): void {
   })();
 
   const rerender = (): void => void carregar(select.value, clampDias(diasInput.value));
-  select.addEventListener("change", rerender);
+  // Trocar de município é uma lista de alertas nova — volta pra 10. Mexer só
+  // no nº de dias mantém quantas linhas o usuário já revelou (spec 018).
+  select.addEventListener("change", () => {
+    alertasMax = ALERTAS_PAGE;
+    rerender();
+  });
   diasInput.addEventListener("change", rerender);
+
+  const btnMais = byId<HTMLButtonElement>("btn-mais-alertas");
+  btnMais?.addEventListener("click", () => {
+    alertasMax += ALERTAS_PAGE;
+    if (ultimoAlertas !== null) {
+      renderAlertas(ultimoAlertas.rows, ultimoAlertas.city, ultimoAlertas.days, alertasMax);
+    }
+  });
 }

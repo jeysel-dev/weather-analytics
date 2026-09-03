@@ -475,6 +475,29 @@ section { margin-bottom: 40px; }
   text-decoration: none;
 }
 
+/* ── "Ver mais alertas" (paginação client-side, spec 018) ────────── */
+
+.btn-mais-alertas {
+  display: block;
+  margin: 16px auto 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.btn-mais-alertas:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.btn-mais-alertas[hidden] {
+  display: none !important;
+}
+
 /* ── Footer (compartilhado em layout.html) ───────────────────────── */
 
 .site-footer {

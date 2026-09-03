@@ -73,6 +73,9 @@
         <tbody></tbody>
       </table>
     </div>
+    {# Paginação client-side (spec 018): web/src/pages/cidades.ts mostra 10
+       linhas por vez e revela mais 10 a cada clique. #}
+    <button type="button" id="btn-mais-alertas" class="btn-mais-alertas" hidden></button>
   </section>
 </div>
 {% endblock %}
