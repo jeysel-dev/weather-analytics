@@ -5,7 +5,7 @@
 comportamento atual da página Streamlit antes de replicá-lo)
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito.
+[x] implementado — página Precipitação no FastAPI, validada em produção.
 
 ## Resumo
 Migrar `streamlit/pages/2_Precipitacao.py` para a rota FastAPI

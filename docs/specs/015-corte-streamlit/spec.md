@@ -6,9 +6,9 @@
 para "uma spec de corte própria, no fim da sequência".
 
 ## Status
-[x] proposta — nenhum arquivo removido ou editado ainda. Esta spec fixa o
-alvo do corte e as invariantes de validação; a execução é um passo
-seguinte.
+[x] implementado — corte executado e validado: `streamlit/` removido, CI e
+infra k8s do Streamlit cortados, Ingress colapsado numa regra única e as 7
+URLs antigas redirecionando `308`.
 
 ## Resumo
 Remoção completa do Streamlit como sistema de serving do dashboard: o

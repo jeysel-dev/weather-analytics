@@ -1,6 +1,6 @@
 # Weather Analytics Pipeline
 
-Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`staging` → `intermediate` → `marts`) → Streamlit
+Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`staging` → `intermediate` → `marts`) → dashboard FastAPI (`api/` + `web/`)
 
 ## Arquitetura em Camadas
 
@@ -9,7 +9,7 @@ Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`s
 | Ingestão | `pipeline/ingest.py` (Python) | Busca API Open-Meteo → grava direto em `weather_raw.*` no BigQuery (sem staging intermediário) |
 | Transform | dbt | Lê `weather_raw` → materializa `staging` → `intermediate` → `marts` |
 | Warehouse | BigQuery | Dataset `marts` com as tabelas analíticas finais (`mart_climate__daily_facts`, `mart_climate__hourly_facts`, `mart_climate__alerts`) |
-| Visualização | **Streamlit** | 6 páginas analíticas + análise comparativa; deploy via imagem Docker publicada no GHCR, pull/recreate gerenciados pelo repositório `infra` |
+| Serving / Dashboard | **FastAPI + Jinja2 + Vite/ECharts** (`api/`, `web/`) | 8 rotas (home + 7 páginas analíticas) + endpoints JSON em `/api/v1`; deploy via imagem Docker publicada no GHCR, pull/recreate gerenciados pelo repositório `infra` |
 | Agendamento | cron (host) | `pipeline/run_pipeline.sh` 1×/dia via `docker compose -f docker-compose.pipeline.yml run` |
 
 `weather_raw` guarda só uma janela recente de dias (não o histórico completo — decisão de custo). O histórico completo vive acumulado nas marts, que são `materialized='incremental'` por isso mesmo.
@@ -20,8 +20,9 @@ Open-Meteo API → `pipeline/ingest.py` → BigQuery (`weather_raw`) → dbt (`s
 Weather-Analytics/
 ├── pipeline/       # Ingestão (Open-Meteo → BigQuery weather_raw) + orquestração do run diário
 ├── dbt/            # Transformações: staging → intermediate → marts
-├── streamlit/       # Dashboard interativo em Python; deploy via imagem GHCR (repo infra)
-├── deploy/         # crontab.example do host + delegação para deploy centralizado (repo infra)
+├── api/            # Dashboard: FastAPI (páginas Jinja2 + endpoints JSON /api/v1); deploy via imagem GHCR (repo infra)
+├── web/            # Frontend do dashboard: Vite + TypeScript + ECharts (build copiado para api/app/static)
+├── deploy/         # crontab.example do host + manifests k8s (deploy/k8s/api/) + delegação para deploy centralizado (repo infra)
 ├── docs/           # Specs (docs/specs/), steering e memória de decisões
 ├── airflow/        # Arquitetura anterior, pausada — ver nota abaixo
 └── postgresql/     # Arquitetura anterior, pausada — ver nota abaixo
@@ -74,138 +75,108 @@ compartilhe a mesma chave entre pipeline e dashboard:
 | Variável | Usada por | Onde configurar |
 |----------|-----------|------------------|
 | `GOOGLE_APPLICATION_CREDENTIALS_PIPELINE` | `pipeline/` (ingest + dbt) | `pipeline/dbt_profiles.yml.example` → copiar e preencher |
-| `GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD` | `streamlit/` | `streamlit/.env.example` → copiar para `.env` |
+| `GOOGLE_APPLICATION_CREDENTIALS_API` | `api/` (dashboard, só leitura) | `api/.env.example` → copiar para `api/.env` (cai para `_DASHBOARD` como fallback) |
 
 Substitua `seu-projeto-gcp` pelo `GCP_PROJECT_ID` real do seu projeto em
 qualquer comando de exemplo abaixo.
 
 ---
 
-## 🎯 Streamlit — Dashboard em Produção
+## 🎯 Dashboard em Produção — FastAPI + Jinja2 + Vite/ECharts
 
-Dashboard interativo construído em Python, conectado diretamente ao BigQuery via `google-cloud-bigquery`.
-Deploy via imagem Docker publicada no GHCR (`build-and-push.yml`); pull e recreate do
-container são gerenciados pelo repositório `infra` — ver seção "Deploy em produção" abaixo.
+Dashboard servido por FastAPI: páginas HTML (Jinja2) + endpoints JSON em
+`/api/v1`, consumidos por um frontend TypeScript (Vite + ECharts) cujo build
+é copiado para `api/app/static/`. Consulta o BigQuery direto via
+`google-cloud-bigquery`. Deploy via imagem Docker publicada no GHCR
+(`build-and-push-api.yml`); pull e recreate do container são gerenciados pelo
+repositório `infra` — ver "Deploy em produção" abaixo.
+
+> Antes de setembro/2026 este dashboard era um app Streamlit
+> (`streamlit/`). A migração para FastAPI foi incremental, página a página
+> (specs `006`–`014`); o corte do código legado é a spec `015`. As 7 URLs
+> antigas em maiúscula (`/Temperatura`, `/Relatorio_por_Cidade`, …)
+> respondem `308` para a rota nova equivalente.
 
 ### Estrutura
 
 ```
-streamlit/
-├── app.py                        ← Home: KPIs + linha de temperatura + mapa SC
-├── pages/
-│   ├── 1_Temperatura.py          ← Rankings hot/cold, tendência mesorregião, heatmap anomalia
-│   ├── 2_Precipitacao.py         ← Top 20 acumulado, pizza de classes, heatmap diário
-│   ├── 3_Alertas.py              ← KPIs severidade, barras por tipo, tabela filtrável
-│   ├── 4_Horario.py              ← Temp+umidade, vento+chuva, perfil médio 24h
-│   └── 5_Cidades.py              ← Perfil completo por município (temp/precip/vento/alertas)
-├── utils/
-│   └── bigquery.py               ← Client singleton (@cache_resource) + query (@cache_data 1h)
-├── .streamlit/config.toml        ← Tema dark + server escutando só 127.0.0.1:8501
-├── requirements.txt
-├── .env.example
-└── deploy/
-    ├── nginx-weather.conf        ← Configuração legada (Nginx + systemd)
-    └── weather-streamlit.service ← não é o mecanismo de deploy ativo hoje
+api/
+├── app/
+│   ├── main.py          ← monta as 8 rotas de página a partir de uma tupla central (PAGES) + os 7 redirects 308 das URLs antigas
+│   ├── routers/         ← endpoints JSON /api/v1 (um módulo por página + ref.py da camada de referência)
+│   ├── schemas/         ← modelos Pydantic de resposta
+│   ├── templates/       ← Jinja2 (home.html + uma por página + layout compartilhado)
+│   ├── static/          ← build do Vite (gitignored; vem de `npm run build` em web/)
+│   └── utils/bigquery.py ← client BigQuery + query() + max_date()/min_date() + tbl()
+├── tests/               ← pytest (importa a app com manifest do Vite forjado — sem credencial)
+└── .env.example
+
+web/
+├── src/
+│   ├── main.ts          ← dispatch por document.body.dataset.page
+│   ├── pages/           ← um módulo de gráficos ECharts por página
+│   ├── nav.ts, ui.ts, format.ts, labels.ts
+│   └── style.css
+└── vite.config.ts       ← outDir aponta para ../api/app/static
 ```
 
-### Executar localmente (Windows)
+### Executar localmente
 
-#### 1. Criar o ambiente virtual
+```bash
+# 1. Frontend: build do Vite -> api/app/static (a API falha ao subir sem o manifest)
+cd web && npm ci && npm run build && cd ..
 
-```powershell
-cd streamlit
-python.exe -m pip install --upgrade pip
+# 2. Credenciais: copiar api/.env.example para api/.env e preencher
+#    GCP_PROJECT_ID, GOOGLE_APPLICATION_CREDENTIALS_API, BIGQUERY_DATASET=marts
+
+# 3. API
+cd api
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+.venv\Scripts\activate          # Windows (PowerShell/CMD)
+# source .venv/bin/activate     # Linux/macOS
+pip install -r requirements-dev.txt
+uvicorn app.main:app --reload --port 8000
 ```
 
-#### 2. Configurar credenciais
-
-```powershell
-copy .env.example .env
-```
-
-Editar o `.env` com os valores locais:
-
-```env
-GCP_PROJECT_ID=seu-projeto-gcp
-BIGQUERY_DATASET=marts
-BIGQUERY_SEEDS_DATASET=seeds
-GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD=C:/Users/seu-usuario/secrets/weather-dashboard-sa-key.json
-```
-
-> Use barras `/` ou `\\` no caminho — barra invertida simples `\` causa erro no Python.
-
-#### 3. Sobrescrever o endereço para desenvolvimento
-
-O `config.toml` padrão escuta apenas `127.0.0.1` com `headless = true` (modo servidor).
-Para rodar localmente sem precisar alterar o arquivo commitado, passe os overrides via CLI:
-
-```powershell
-streamlit run app.py --server.address localhost --server.headless false
-```
-
-O Streamlit abrirá automaticamente [http://localhost:8501](http://localhost:8501) no browser.
-
-#### 4. Testar cada página
-
-| Página | O que validar |
-|--------|--------------|
-| Home (`app.py`) | KPIs carregam, mapa SC renderiza com pontos |
-| Temperatura | Rankings hot/cold preenchidos, heatmap de anomalia sem erros |
-| Precipitação | Top 20 acumulado, pizza de classes sem fatias zeradas |
-| Alertas | Tabela filtrável responde aos selects de severidade/tipo |
-| Horário | Gráficos de temp+umidade e perfil 24h carregam para qualquer município |
-| Cidades | Dropdown de município funciona e exibe todos os painéis |
-
-#### 5. Verificar o cache
-
-O cache de queries tem TTL de 1h. Para forçar recarga durante testes:
-
-```powershell
-# Na UI do Streamlit: menu ⋮ (canto superior direito) → "Clear cache"
-# Ou reinicie o processo:
-# Ctrl+C no terminal → streamlit run app.py ...
-```
-
----
+Abre em [http://localhost:8000](http://localhost:8000). Sem `npm run build`
+a API não sobe (leitura fail-fast do manifest do Vite em `main.py`).
 
 ### Deploy em produção
 
-O deploy não é feito manualmente neste repositório: a imagem Docker do
-Streamlit é publicada no GHCR pelo workflow `build-and-push.yml` (ver seção
-CI/CD abaixo), e o pull da imagem + recreate do container são gerenciados
-pelo repositório `infra`. Este repositório não documenta o mecanismo físico
-de deploy — ver `docs/steering/weather-analytics.md` para a fronteira entre
-os dois repositórios.
-
-`streamlit/deploy/nginx-weather.conf` e
-`streamlit/deploy/weather-streamlit.service` continuam no repositório por
-referência histórica de uma configuração anterior (Nginx + systemd
-gerenciados manualmente no host) — **não são o mecanismo de deploy ativo
-hoje**.
+O deploy não é feito manualmente neste repositório: a imagem Docker da API
+(FastAPI + frontend, `Dockerfile` multi-stage na raiz) é publicada no GHCR
+pelo workflow `build-and-push-api.yml`, e o pull da imagem + recreate do
+container são gerenciados pelo repositório `infra`. Os manifests k8s
+(`deploy/k8s/api/`) vivem aqui; o Ingress colapsou numa regra única
+`/` → `weather-analytics-api:8000` após o corte do Streamlit (spec `015`).
+Ver `docs/steering/weather-analytics.md` para a fronteira entre os dois
+repositórios.
 
 ### Decisões de arquitetura
 
 | Decisão | Motivo |
 |---------|--------|
-| `@st.cache_data(ttl=3600)` em todas as queries | Evita hits desnecessários no BigQuery; 1h é adequado dado o pipeline diário |
-| `@st.cache_resource` no client BigQuery | Singleton por processo — não re-autentica a cada página |
-| Streamlit escuta só `127.0.0.1` | Nginx faz o proxy; app não fica exposta diretamente |
-| `QUALIFY ROW_NUMBER()` no mapa | Filtra último dia por município sem subquery extra, aproveitando o partition pruning do BigQuery |
-| `clip(lower=1)` nos scatter mapbox | Plotly mapbox falha silenciosamente com tamanho zero |
+| Rotas de página + menu saem de uma tupla central (`PAGES` em `main.py`) | Não dá para registrar uma rota e esquecer o item de menu — os dois campos são obrigatórios na dataclass |
+| Filtros de data ancoram em `max_date()` da tabela, nunca em `CURRENT_DATE()` | O pipeline roda em lote e pode atrasar; ancorar no relógio deixaria os gráficos vazios (regra herdada do Streamlit, ainda válida) |
+| Lib de gráfico: ECharts | Mesmo vocabulário do repo irmão `compras-publicas-sc` |
+| Leitura fail-fast do manifest do Vite no import de `main.py` | Sobe sem frontend buildado = erro explícito, não asset sem hash |
 
 ---
 
 ## CI/CD
 
-Único workflow: `.github/workflows/build-and-push.yml` — builda e publica
-imagens Docker no GHCR (`ghcr.io/jeysel-dev/...`) para `streamlit/` e para o
-pipeline (`pipeline/Dockerfile`), disparado em push para `main` que toque
-`streamlit/`, `pipeline/`, `dbt/` ou o próprio arquivo do workflow. O deploy
-em si (pull da imagem + recreate do container) é feito manualmente/via script
-no servidor — ver `docs/steering/` para o fluxo de deploy completo.
+Dois workflows, ambos disparados em push para `main`:
+
+- `.github/workflows/build-and-push-api.yml` — roda a suíte `pytest`, builda
+  e publica `ghcr.io/jeysel-dev/weather-analytics/api` (FastAPI + frontend) e
+  faz `kustomize edit set image` no overlay de staging. Dispara ao tocar
+  `api/`, `web/`, `Dockerfile` ou o próprio workflow.
+- `.github/workflows/build-and-push.yml` — builda e publica
+  `ghcr.io/jeysel-dev/weather-pipeline` (`pipeline/Dockerfile`). Dispara ao
+  tocar `pipeline/`, `dbt/` ou o próprio workflow.
+
+O deploy em si (pull da imagem + recreate do container) é responsabilidade do
+repositório `infra` — ver `docs/steering/` para o fluxo completo.
 
 ---
 

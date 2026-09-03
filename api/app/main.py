@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -167,6 +167,45 @@ for _page in PAGES:
         methods=["GET"],
         include_in_schema=False,
     )
+
+
+# ── Redirects das URLs antigas do Streamlit (spec 015) ───────────────────────
+# O Streamlit derivava estes paths dos nomes de arquivo em `streamlit/pages/`
+# (capitalizados, `_` como separador). Nenhum link do site atual aponta para
+# eles — só chegam por bookmark ou histórico de quem usava o dashboard antigo.
+# Mesma disciplina de "estrutura central" do PAGES acima: o mapa é a fonte
+# única e as rotas saem de um loop, não de 7 blocos repetidos.
+LEGACY_STREAMLIT_REDIRECTS: dict[str, str] = {
+    "/Temperatura": "/temperatura",
+    "/Precipitacao": "/precipitacao",
+    "/Alertas": "/alertas",
+    "/Cidades": "/cidades",
+    "/Comparativo": "/comparativo",
+    "/Relatorio_por_Cidade": "/relatorio-cidade",
+    "/Horario": "/horario",
+}
+
+
+def _make_legacy_redirect(target: str):
+    # 308 (Permanent Redirect): preserva o método HTTP e sinaliza permanência,
+    # o comportamento correto para links e bookmarks antigos. A query string do
+    # request original é reanexada ao path novo, para não perder parâmetros
+    # como ?cidades=X&inicio=Y.
+    def _redirect(request: Request) -> RedirectResponse:
+        location = f"{target}?{request.url.query}" if request.url.query else target
+        return RedirectResponse(location, status_code=308)
+
+    return _redirect
+
+
+for _old_path, _new_path in LEGACY_STREAMLIT_REDIRECTS.items():
+    app.add_api_route(
+        _old_path,
+        _make_legacy_redirect(_new_path),
+        methods=["GET"],
+        include_in_schema=False,
+    )
+
 
 app.include_router(temperatura.router, prefix="/api/v1")
 app.include_router(precipitacao.router, prefix="/api/v1")

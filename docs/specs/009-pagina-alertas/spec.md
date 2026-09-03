@@ -5,7 +5,7 @@
 comportamento atual da página Streamlit antes de replicá-lo)
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito.
+[x] implementado — página Alertas no FastAPI, validada em produção.
 
 ## Resumo
 Migrar `streamlit/pages/3_Alertas.py` para a rota FastAPI (`/alertas`) com

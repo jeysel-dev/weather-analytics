@@ -49,11 +49,11 @@ arquitetura em regime, não o histórico de como ela chegou lá.
              └──────────────┬───────────────────────────┘
                             │
                             │  google-cloud-bigquery (Python SDK)
-                            │  @st.cache_data TTL=1h
                             ▼
              ┌──────────────────────────────────────────┐
-             │   Streamlit                                │
-             │   6 páginas analíticas + comparativo       │
+             │   Dashboard FastAPI (api/ + web/)          │
+             │   home + 7 páginas (Jinja2 + ECharts)      │
+             │   + endpoints JSON /api/v1                 │
              └──────────────────────────────────────────┘
 ```
 
@@ -133,10 +133,10 @@ condensada voltada a leitor externo).
 
 ## Deploy
 
-Cada serviço (`weather-pipeline`, `streamlit-weather`) é publicado como
-imagem Docker no GHCR (workflow `build-and-push.yml`, disparado em push
-para `main` que toque `streamlit/`, `pipeline/`, `dbt/` ou o próprio
-workflow). O deploy em si — pull da imagem e recreate do container — é
+Cada serviço (`weather-pipeline`, `weather-analytics-api`) é publicado como
+imagem Docker no GHCR, disparado em push para `main`: `build-and-push-api.yml`
+para a API (toca `api/`, `web/`, `Dockerfile`), `build-and-push.yml` para o
+pipeline (toca `pipeline/`, `dbt/`). O deploy em si — pull da imagem e recreate do container — é
 responsabilidade do repositório `infra`, que também é dono do agendamento
 físico (cron do host) e do runtime dos containers. Este repositório não
 documenta esse mecanismo além de "a imagem é publicada no GHCR e consumida
@@ -150,7 +150,7 @@ o menor privilégio necessário para o que faz:
 
 - **Pipeline** (`ingest.py` + `dbt run`/`dbt test`): precisa escrever em
   `weather_raw` e nas marts — role `BigQuery Data Editor`.
-- **Dashboard** (Streamlit, só leitura): só consulta `marts`/`seeds` —
+- **Dashboard** (API FastAPI, só leitura): só consulta `marts`/`seeds` —
   role `BigQuery Data Viewer`.
 
 Nenhuma das duas compartilha chave com a outra. Nomes de arquivo de chave
@@ -159,17 +159,33 @@ fora do escopo deste documento.
 
 ## Detalhes técnicos importantes
 
-### Cache do Streamlit
-- `@st.cache_resource` no client BigQuery → singleton por processo, não
-  re-autentica a cada página.
-- `@st.cache_data(ttl=3600)` em todas as queries → evita hits
-  desnecessários; 1h é adequado dado o pipeline rodar 1x/dia.
-- Cache em memória do processo — só limpa com restart/recreate do
-  container (não sobrevive a deploy sem restart).
-- Filtros de data ancoram em `MAX(date)` da própria tabela
-  (`utils/bigquery.py::max_date`), nunca em `CURRENT_DATE()` — necessário
-  porque o pipeline roda em lote e pode atrasar; ver `CLAUDE.md` para o
-  padrão de query a seguir ao adicionar uma página nova.
+### Filtros de data ancoram no dado real
+- As queries do dashboard ancoram a janela de período em `MAX(date)` da
+  própria tabela (`api/app/utils/bigquery.py::max_date`), nunca em
+  `CURRENT_DATE()` — necessário porque o pipeline roda em lote e pode
+  atrasar; ver `CLAUDE.md` para o padrão de query a seguir ao adicionar uma
+  rota nova. Regra herdada da versão Streamlit do dashboard.
+
+### Cache — o que a FastAPI mantém em memória (equivalente ao do Streamlit)
+O modelo de cache mudou na migração Streamlit → FastAPI; o que a API guarda:
+
+- **Client BigQuery: singleton por processo** via `@lru_cache(maxsize=1)` em
+  `api/app/utils/bigquery.py::_client` — equivalente direto do
+  `@st.cache_resource` do Streamlit: não re-autentica nem reabre conexão a
+  cada request.
+- **Listas de referência** (`/api/v1/ref/mesorregioes`, `/api/v1/ref/cidades`,
+  e o `_cidades()` de `horario.py`): `@lru_cache(maxsize=1)`, **sem TTL e sem
+  invalidação automática** — diferente do `@st.cache_data(ttl=3600)` do
+  Streamlit. Justificativa (documentada em `api/app/routers/ref.py`): essas
+  listas só mudam quando o seed `locations` muda, o que é raríssimo.
+- **Queries de dado** (não-referência), incluindo `/api/v1/ref/daily-meta` e
+  `/api/v1/ref/alerts-meta`: **sem cache de aplicação**. Dependem do cache de
+  resultado server-side do próprio BigQuery (24h, sem custo, para SQL
+  idêntico). Diferença deliberada do modelo antigo, que punha
+  `@st.cache_data(ttl=3600)` em toda query.
+- Tanto o client singleton quanto as listas de referência vivem na memória do
+  processo — **só limpam com restart/recreate do container** (mesma
+  observação que valia para o cache do Streamlit, ainda verdadeira).
 
 ### `generate_schema_name` (dbt macro)
 `dbt/macros/weather_utils.sql` sobrescreve o comportamento padrão do dbt:

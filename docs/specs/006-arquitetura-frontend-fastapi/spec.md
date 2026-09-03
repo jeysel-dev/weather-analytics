@@ -5,9 +5,9 @@
 enquadra as 7 specs de página que virão depois.
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito ainda; esta spec
-só fixa o alvo arquitetural e as invariantes que cada spec de página deve
-respeitar.
+[x] implementado — arquitetura `api/` + `web/` em produção; home + 7 páginas
+migradas (specs 007–014) e o código Streamlit legado cortado pela
+[[015-corte-streamlit]].
 
 ## Resumo
 Migração do dashboard `streamlit-weather` (Streamlit) para uma arquitetura
@@ -190,9 +190,10 @@ embasam esta spec:
   no Streamlit.
 
 ## Fora do escopo
-- **Remoção do diretório `streamlit/`.** Só acontece depois que as 7
-  páginas estiverem migradas e validadas em produção — vira uma spec de
-  corte própria, no fim da sequência.
+- **Remoção do diretório `streamlit/`.** Executada pela
+  [[015-corte-streamlit]], no fim da sequência, depois das 7 páginas
+  migradas e validadas em produção — junto do corte do CI e da
+  infraestrutura k8s do Streamlit e do colapso do Ingress numa regra única.
 - **Especificação de cada página individual.** Cada uma vira spec própria
   (7 specs, a criar em sequência — ver "Ver também"). Esta spec só fixa o
   esqueleto arquitetural comum.
@@ -243,6 +244,9 @@ embasam esta spec:
 - [[013-pagina-relatorio-cidade]] — (a criar).
 - [[014-camada-referencia]] — endpoints `/api/v1/ref/*` e `web/src/labels.ts`
   compartilhados entre as páginas (a criar).
+- [[015-corte-streamlit]] — spec de corte que fecha a sequência: remove
+  `streamlit/`, o job de CI da imagem legada e a infra k8s do Streamlit,
+  colapsa o Ingress e redireciona (`308`) as 7 URLs antigas.
 - [[001-atualizar-docs-arquitetura]] — descreve a arquitetura de dados
   (Open-Meteo → pipeline → `weather_raw` → dbt → dashboard) que esta
   migração mantém intacta; só troca a camada de apresentação.

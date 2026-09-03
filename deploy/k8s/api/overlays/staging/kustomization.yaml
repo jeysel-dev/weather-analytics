@@ -5,6 +5,7 @@ namespace: staging
 
 resources:
 - ../../base
+- ingress.yaml
 
 # Mantido pelo passo de CI (kustomize edit set image) a partir do 1º build.
 images:

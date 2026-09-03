@@ -5,7 +5,7 @@
 comportamento atual da página Streamlit antes de replicá-lo)
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito.
+[x] implementado — página Horário no FastAPI, validada em produção.
 
 ## Resumo
 Migrar `streamlit/pages/4_Horario.py` para a rota FastAPI (`/horario`) com

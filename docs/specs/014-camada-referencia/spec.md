@@ -6,9 +6,9 @@ consolida decisões que já apareceram, repetidas, nas specs de página
 007/008/009/012/013.
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito. Esta spec fixa
-os contratos de dado de referência que as specs de página passam a
-**consumir**, não a redefinir.
+[x] implementado — camada `/api/v1/ref/*` em produção. Esta spec fixou os
+contratos de dado de referência que as specs de página consomem, não
+redefinem.
 
 ## Resumo
 Definir, num único lugar, os endpoints JSON de **dado de referência** que

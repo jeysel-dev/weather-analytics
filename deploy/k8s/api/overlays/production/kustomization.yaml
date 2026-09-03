@@ -5,6 +5,7 @@ namespace: production
 
 resources:
   - ../../base
+  - ingress.yaml
 
 # Promoção manual (spec 090) — bump deliberado desta tag + commit, ou
 # kubectl patch application weather-analytics-api-production -n argocd.

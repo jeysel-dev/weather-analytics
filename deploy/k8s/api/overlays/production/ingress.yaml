@@ -1,0 +1,23 @@
+# Regra única (spec 015): sem o Streamlit disputando a mesma URL, não há mais
+# motivo para rotear path a path nem para o Ingress-home de prioridade forçada
+# (spec 090 do infra). Tudo vai para o mesmo serviço.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: weather-analytics-api-production
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: weather-analytics-production.internal
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: weather-analytics-api
+                port:
+                  number: 8000

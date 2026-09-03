@@ -5,9 +5,8 @@
 comportamento atual da página Streamlit antes de replicá-lo)
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito. Esta spec fixa a
-paridade de filtros/métricas que a versão FastAPI da página Temperatura
-deve preservar.
+[x] implementado — página Temperatura no FastAPI, validada em produção. Esta
+spec fixou a paridade de filtros/métricas que a versão FastAPI preservou.
 
 ## Resumo
 Migrar `streamlit/pages/1_Temperatura.py` para uma rota FastAPI (`/temperatura`)

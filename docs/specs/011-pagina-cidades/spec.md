@@ -5,7 +5,7 @@
 comportamento atual da página Streamlit antes de replicá-lo)
 
 ## Status
-[x] proposta — nenhum código de `api/` ou `web/` escrito.
+[x] implementado — página Cidades no FastAPI, validada em produção.
 
 ## Resumo
 Migrar `streamlit/pages/5_Cidades.py` para a rota FastAPI (`/cidades`) com
