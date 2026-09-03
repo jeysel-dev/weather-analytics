@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block title %}Chuva Acumulada — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Chuva Acumulada
+</nav>
+
+<h1>🌧️ Chuva acumulada por cidade</h1>
+
+{# Esqueleto apenas (spec 006/022). web/src/pages/relatorio-chuva-acumulada.ts
+   popula o seletor de macrorregião (/api/v1/ref/mesorregioes) e dispara
+   /api/v1/relatorio-chuva-acumulada/dados. Ranking no padrão .data-table
+   (spec 021), ordenado por acumulado. #}
+<form class="filter-bar" id="relatorio-chuva-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-dias">Período (dias)</label>
+    <input type="number" id="filtro-dias" name="dias" min="7" max="365" step="7" value="30" />
+  </div>
+  <div class="filter-field">
+    <label for="filtro-mesorregiao">Macrorregião</label>
+    <select id="filtro-mesorregiao" name="mesorregiao">
+      <option value="Todas">Todas</option>
+    </select>
+  </div>
+</form>
+
+<p id="chuva-caption" class="page-caption" hidden></p>
+<p id="chuva-msg" hidden></p>
+
+<div class="data-table">
+  <table id="tabela-chuva" hidden>
+    <thead>
+      <tr>
+        <th>Cidade</th>
+        <th>Macrorregião</th>
+        <th class="col-num">Precip. Acumulada (mm)</th>
+        <th class="col-num">Dias com Chuva</th>
+        <th class="col-num">Maior Volume 24 h (mm)</th>
+        <th>Data do Maior Volume</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+{% endblock %}

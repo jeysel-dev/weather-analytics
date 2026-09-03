@@ -17,7 +17,11 @@ import { initComparativo } from "./pages/comparativo";
 import { initHome } from "./pages/home";
 import { initHorario } from "./pages/horario";
 import { initPrecipitacao } from "./pages/precipitacao";
+import { initRelatorioChuvaAcumulada } from "./pages/relatorio-chuva-acumulada";
 import { initRelatorioCidade } from "./pages/relatorio-cidade";
+import { initRelatorioExtremos } from "./pages/relatorio-extremos";
+import { initRelatorioMacrorregiao } from "./pages/relatorio-macrorregiao";
+import { initRelatorioMensal } from "./pages/relatorio-mensal";
 import { initTemperatura } from "./pages/temperatura";
 
 const page = document.body.dataset.page;
@@ -31,6 +35,10 @@ const DISPATCH: Record<string, () => void> = {
   cidades: initCidades,
   comparativo: initComparativo,
   "relatorio-cidade": initRelatorioCidade,
+  "relatorio-mensal": initRelatorioMensal,
+  "relatorio-macrorregiao": initRelatorioMacrorregiao,
+  "relatorio-extremos": initRelatorioExtremos,
+  "relatorio-chuva-acumulada": initRelatorioChuvaAcumulada,
 };
 
 // Roda em toda página (o toggle só faz algo onde o CSS mostra o hambúrguer).

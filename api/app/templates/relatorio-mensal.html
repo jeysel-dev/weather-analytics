@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block title %}Consolidado Mensal — Weather Analytics{% endblock %}
+{% block content %}
+<nav class="breadcrumb" aria-label="Trilha de navegação">
+  <a href="/">Início</a> <span aria-hidden="true">/</span> Consolidado Mensal
+</nav>
+
+<h1>📅 Consolidado do clima mês a mês</h1>
+
+{# Esqueleto apenas (spec 006/022). web/src/pages/relatorio-mensal.ts popula
+   o seletor de cidades (/api/v1/ref/cidades) e os limites de mês
+   (/api/v1/ref/daily-meta), e dispara /api/v1/relatorio-mensal/dados.
+   Tabela no padrão .data-table (spec 021). #}
+<form class="filter-bar" id="relatorio-mensal-filtros" autocomplete="off">
+  <div class="filter-field">
+    <label for="filtro-cidades">Cidades</label>
+    <select id="filtro-cidades" name="cidades" multiple size="8"></select>
+  </div>
+  <div class="filter-field">
+    <label for="filtro-inicio">Mês inicial</label>
+    <input type="month" id="filtro-inicio" name="inicio" />
+  </div>
+  <div class="filter-field">
+    <label for="filtro-fim">Mês final</label>
+    <input type="month" id="filtro-fim" name="fim" />
+  </div>
+</form>
+
+<p id="mensal-caption" class="page-caption" hidden></p>
+<p id="mensal-msg">Selecione ao menos uma cidade para gerar o relatório.</p>
+
+<div class="data-table">
+  <table id="tabela-mensal" hidden>
+    <thead>
+      <tr>
+        <th>Mês</th>
+        <th>Cidade</th>
+        <th class="col-num">Temp. Máx. Média (°C)</th>
+        <th class="col-num">Temp. Mín. Média (°C)</th>
+        <th class="col-num">Amplitude Média (°C)</th>
+        <th class="col-num">Precip. Acumulada (mm)</th>
+        <th class="col-num">Dias com Chuva</th>
+        <th class="col-num">Vento Máx. (km/h)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+{% endblock %}

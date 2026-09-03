@@ -29,3 +29,11 @@ export function formatarDataISO(iso: string | null | undefined): string {
   if (ano === undefined || mes === undefined || dia === undefined) return iso;
   return `${dia}/${mes}/${ano}`;
 }
+
+// "2026-07" -> "07/2026" (coluna `year_month`, relatório Consolidado Mensal).
+export function formatarMesISO(ym: string | null | undefined): string {
+  if (ym === null || ym === undefined || ym === "") return "—";
+  const [ano, mes] = ym.split("-");
+  if (ano === undefined || mes === undefined) return ym;
+  return `${mes}/${ano}`;
+}

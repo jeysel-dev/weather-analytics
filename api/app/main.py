@@ -14,7 +14,11 @@ from app.routers import (
     horario,
     precipitacao,
     ref,
+    relatorio_chuva_acumulada,
     relatorio_cidade,
+    relatorio_extremos,
+    relatorio_macrorregiao,
+    relatorio_mensal,
     temperatura,
 )
 
@@ -166,6 +170,42 @@ PAGES: tuple[Page, ...] = (
         menu_position=7,
         menu_group="Relatórios",
     ),
+    Page(
+        path="/relatorio-mensal",
+        template="relatorio-mensal.html",
+        page_id="relatorio-mensal",
+        menu_label="Consolidado Mensal",
+        menu_icon="📅",
+        menu_position=8,
+        menu_group="Relatórios",
+    ),
+    Page(
+        path="/relatorio-macrorregiao",
+        template="relatorio-macrorregiao.html",
+        page_id="relatorio-macrorregiao",
+        menu_label="Por Macrorregião",
+        menu_icon="🗺️",
+        menu_position=9,
+        menu_group="Relatórios",
+    ),
+    Page(
+        path="/relatorio-extremos",
+        template="relatorio-extremos.html",
+        page_id="relatorio-extremos",
+        menu_label="Extremos e Recordes",
+        menu_icon="🏆",
+        menu_position=10,
+        menu_group="Relatórios",
+    ),
+    Page(
+        path="/relatorio-chuva-acumulada",
+        template="relatorio-chuva-acumulada.html",
+        page_id="relatorio-chuva-acumulada",
+        menu_label="Chuva Acumulada",
+        menu_icon="🌧️",
+        menu_position=11,
+        menu_group="Relatórios",
+    ),
 )
 
 
@@ -251,6 +291,10 @@ app.include_router(horario.router, prefix="/api/v1")
 app.include_router(cidades.router, prefix="/api/v1")
 app.include_router(comparativo.router, prefix="/api/v1")
 app.include_router(relatorio_cidade.router, prefix="/api/v1")
+app.include_router(relatorio_mensal.router, prefix="/api/v1")
+app.include_router(relatorio_macrorregiao.router, prefix="/api/v1")
+app.include_router(relatorio_extremos.router, prefix="/api/v1")
+app.include_router(relatorio_chuva_acumulada.router, prefix="/api/v1")
 app.include_router(ref.router, prefix="/api/v1")
 
 
