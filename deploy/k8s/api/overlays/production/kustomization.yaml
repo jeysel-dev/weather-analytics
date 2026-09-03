@@ -11,22 +11,25 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — 81fe368 (merge PR #1: mesoregion
-    # vira macrorregião / crosswalk SAS-SC, ver CLAUDE.md; inclui também
-    # dbe3ac2, filtro de dias unificado default 7 em
-    # temperatura/precipitação/alertas — ainda não tinha sido promovido).
-    # Produção rodava 7418b90 (spec 020, Tom Select) até este bump. Entrega
-    # de uma vez:
-    #   - dbe3ac2: filtro de dias unificado (default 7)
-    #   - rótulos "Mesorregião" -> "Macrorregião" nas páginas
-    #     temperatura/precipitação/alertas/comparativo/home (mudança
-    #     visual; os dados em si só corrigem depois do runbook
-    #     deploy/reconcile_mesoregion.sql rodar no pipeline/BigQuery — até
-    #     lá a API segue servindo o mesoregion antigo do BigQuery, só com
-    #     rótulo novo)
-    # Build da imagem passou: pytest + smoke test /health (run 33777000465).
+    # Promovido manualmente em 2026-09-03 — e895852 (specs 021/022/023, todas
+    # aditivas, sem mudança de seed / migração de dado / mudança em mart_*).
+    # Versão anterior em produção: 81fe368. Entrega deste bump:
+    #   - spec 021: padrão de tabela responsiva .data-table + renderTable;
+    #     refatora as 4 tabelas existentes (alertas, cidades, comparativo,
+    #     relatorio-cidade). Só front, sem mudança de endpoint.
+    #   - spec 022: 4 relatórios novos no submenu "Relatórios" —
+    #     /relatorio-mensal, /relatorio-macrorregiao, /relatorio-extremos,
+    #     /relatorio-chuva-acumulada (cada um com router +
+    #     /api/v1/relatorio-*/dados).
+    #   - spec 023: 5º relatório /relatorio-horario
+    #     (/api/v1/relatorio-horario/dados, lê mart_climate__hourly_facts).
+    # Validado em staging contra BigQuery real: 5 páginas 200 + data-table,
+    # submenu "Relatórios" com 6 itens, os 5 endpoints /api/v1/relatorio-*
+    # respondem 200 com payload coerente (MAX_BY/MIN_BY(STRUCT(...)) e
+    # FORMAT_TIMESTAMP(..., 'America/Sao_Paulo') conferidos ao vivo).
+    # CI verde: run 33787610758 (pytest + smoke test /health).
     #
-    # Rollback: última versão boa em produção é 7418b90. `kustomize edit set
-    # image ghcr.io/jeysel-dev/weather-analytics/api=...:7418b90` + commit +
+    # Rollback: última versão boa em produção é 81fe368. `kustomize edit set
+    # image ghcr.io/jeysel-dev/weather-analytics/api=...:81fe368` + commit +
     # sync.
-    newTag: 81fe368
+    newTag: e895852
