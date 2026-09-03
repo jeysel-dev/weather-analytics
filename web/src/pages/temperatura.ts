@@ -2,10 +2,10 @@
 //
 // 3 blocos lendo /api/v1/temperatura/*:
 //   - Rankings quente/frio (janela `days`, sensível a `meso`)   -> /rankings
-//   - Tendência média por mesorregião (janela `days`)           -> /tendencia-mesorregiao
+//   - Tendência média por macrorregião (janela `days`)           -> /tendencia-mesorregiao
 //   - Heatmap de anomalia térmica (janela `days`, ignora `meso`) -> /anomalia
 //
-// Lista de mesorregiões e caption de data vêm da camada de referência
+// Lista de macrorregiões e caption de data vêm da camada de referência
 // (spec 014): /api/v1/ref/mesorregioes e /api/v1/ref/daily-meta.
 
 import { fmt1, formatarDataISO } from "../format";
@@ -111,7 +111,7 @@ function renderRanking(
   );
 }
 
-// ── Tendência por mesorregião ───────────────────────────────────────────────
+// ── Tendência por macrorregião ───────────────────────────────────────────────
 function renderTendencia(rows: TendenciaRow[]): void {
   const chart = chartFor("chart-tendencia");
   if (chart === null) return;
@@ -224,7 +224,7 @@ async function carregarRankings(meso: string, days: number): Promise<void> {
 }
 
 async function carregarTendencia(meso: string, days: number): Promise<void> {
-  setText("tendencia-titulo", `Temperatura média por mesorregião — últimos ${days} dias`);
+  setText("tendencia-titulo", `Temperatura média por macrorregião — últimos ${days} dias`);
   const params = new URLSearchParams({ days: String(days) });
   if (meso !== "Todas") params.set("meso", meso);
   const resposta = await fetch(`/api/v1/temperatura/tendencia-mesorregiao?${params.toString()}`);
@@ -237,7 +237,7 @@ async function carregarTendencia(meso: string, days: number): Promise<void> {
 }
 
 async function carregarAnomalia(days: number): Promise<void> {
-  setText("anomalia-titulo", `Anomalia térmica por mesorregião — últimos ${days} dias`);
+  setText("anomalia-titulo", `Anomalia térmica por macrorregião — últimos ${days} dias`);
   const resposta = await fetch(`/api/v1/temperatura/anomalia?days=${days}`);
   if (!resposta.ok) {
     setText("temp-erro", `Erro ao carregar anomalia (HTTP ${resposta.status})`);

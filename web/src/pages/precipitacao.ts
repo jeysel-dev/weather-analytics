@@ -1,12 +1,12 @@
 // Página Precipitação (spec 008) — migração de streamlit/pages/2_Precipitacao.py.
 //
 // 3 blocos lendo /api/v1/precipitacao/*:
-//   - Ranking de chuvosos (bar horizontal, cor por mesorregião)  -> /ranking
+//   - Ranking de chuvosos (bar horizontal, cor por macrorregião)  -> /ranking
 //   - Distribuição por intensidade (pizza)                       -> /intensidade
-//   - Heatmap de chuva média por mesorregião (ignora `meso`)     -> /heatmap-mesorregiao
+//   - Heatmap de chuva média por macrorregião (ignora `meso`)     -> /heatmap-mesorregiao
 //
 // Rótulo/cor por precipitation_class vêm de web/src/labels.ts (spec 014);
-// lista de mesorregiões e caption de data, da camada de referência.
+// lista de macrorregiões e caption de data, da camada de referência.
 
 import { fmt1, formatarDataISO } from "../format";
 import { CLASS_COLORS, CLASS_LABELS_PT } from "../labels";
@@ -28,7 +28,7 @@ interface HeatRow {
   avg_precip: number | null;
 }
 
-// Paleta categórica para as mesorregiões no ranking (o Streamlit deixa o
+// Paleta categórica para as macrorregiões no ranking (o Streamlit deixa o
 // Plotly escolher; aqui fixamos para o resultado ser estável entre runs).
 const MESO_PALETTE = [
   "#5470c6",
@@ -148,9 +148,9 @@ function renderIntensidade(rows: IntRow[], days: number): void {
   );
 }
 
-// ── Heatmap por mesorregião ─────────────────────────────────────────────────
+// ── Heatmap por macrorregião ─────────────────────────────────────────────────
 function renderHeatmap(rows: HeatRow[], days: number): void {
-  setText("heatmap-titulo", `Precipitação média diária por mesorregião — últimos ${days} dias`);
+  setText("heatmap-titulo", `Precipitação média diária por macrorregião — últimos ${days} dias`);
   const chart = chartFor("chart-heatmap");
   if (chart === null) return;
   if (rows.length === 0) {

@@ -9,8 +9,8 @@
 <p id="alertas-caption" class="page-caption" hidden></p>
 
 {# Esqueleto apenas (spec 006). web/src/pages/alertas.ts popula o select de
-   mesorregião (/api/v1/ref/mesorregioes) e dispara os fetches de
-   /api/v1/alertas/*. Ordem dos filtros: dias -> mesorregião -> severidade
+   macrorregião (/api/v1/ref/mesorregioes) e dispara os fetches de
+   /api/v1/alertas/*. Ordem dos filtros: dias -> macrorregião -> severidade
    (paridade com o Streamlit). Severidade em valor cru, sem tradução. #}
 <form class="filter-bar" id="alertas-filtros" autocomplete="off">
   <div class="filter-field">
@@ -18,7 +18,7 @@
     <input type="number" id="filtro-dias" name="dias" min="7" max="60" step="7" value="7" />
   </div>
   <div class="filter-field">
-    <label for="filtro-mesorregiao">Mesorregião</label>
+    <label for="filtro-mesorregiao">Macrorregião</label>
     <select id="filtro-mesorregiao" name="mesorregiao">
       <option value="Todas">Todas</option>
     </select>
@@ -65,7 +65,7 @@
     <table id="tabela-recentes" hidden>
       <thead>
         <tr>
-          <th>Data</th><th>Município</th><th>Mesorregião</th><th>Tipo</th><th>Severidade</th>
+          <th>Data</th><th>Município</th><th>Macrorregião</th><th>Tipo</th><th>Severidade</th>
           <th>Temp Máx (°C)</th><th>Anomalia (°C)</th><th>Precip (mm)</th>
           <th>Vento (km/h)</th><th>UV Máx</th>
         </tr>

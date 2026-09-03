@@ -1,6 +1,6 @@
 // Página Alertas (spec 009) — migração de streamlit/pages/3_Alertas.py.
 //
-// 4 blocos, mesmo WHERE (dias 7–60 / mesorregião / severidade):
+// 4 blocos, mesmo WHERE (dias 7–60 / macrorregião / severidade):
 //   - 5 KPIs (tiles HTML)                       -> /api/v1/alertas/resumo
 //   - Por tipo de alerta (bar horizontal stack) -> /api/v1/alertas/por-tipo
 //   - Municípios mais afetados (bar horizontal) -> /api/v1/alertas/municipios
@@ -46,7 +46,17 @@ interface RecenteRow {
 }
 
 const SEV_ORDER = ["critical", "high", "medium", "low"] as const;
-const MESO_PALETTE = ["#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272"];
+// 8 cores — uma por macrorregião de SC (ver /api/v1/ref/mesorregioes).
+const MESO_PALETTE = [
+  "#5470c6",
+  "#91cc75",
+  "#fac858",
+  "#ee6666",
+  "#73c0de",
+  "#3ba272",
+  "#fc8452",
+  "#9a60b4",
+];
 
 // Tabela "Alertas recentes" — paginação client-side (mesmo padrão da aba
 // Alertas em /cidades, spec 018): renderiza só as primeiras `recentesMax`

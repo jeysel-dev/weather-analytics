@@ -1,296 +1,296 @@
 location_id,city_name,state_name,state_code,country,region,mesoregion,latitude,longitude,altitude_m,population_class
-abdon_batista,Abdon Batista,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-27.6124,-51.023,0,small
-abelardo_luz,Abelardo Luz,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.5706,-52.328,0,small
-agrolandia,Agrolândia,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.4121,-49.8295,0,small
+abdon_batista,Abdon Batista,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.6124,-51.023,0,small
+abelardo_luz,Abelardo Luz,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.5706,-52.328,0,small
+agrolandia,Agrolândia,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.4121,-49.8295,0,small
 agronomica,Agronômica,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2661,-49.7105,0,small
-agua_doce,Água Doce,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9986,-51.5529,0,small
-aguas_de_chapeco,Águas de Chapecó,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.0741,-52.9879,0,small
-aguas_frias,Águas Frias,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8817,-52.86,0,small
-aguas_mornas,Águas Mornas,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.6963,-48.8248,0,small
-alfredo_wagner,Alfredo Wagner,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.6962,-49.3327,0,small
-alto_bela_vista,Alto Bela Vista,Santa Catarina,SC,Brasil,Sul,Serrana,-27.4321,-51.9058,0,small
-anchieta,Anchieta,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.5351,-53.3294,0,small
+agua_doce,Água Doce,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.9986,-51.5529,0,small
+aguas_de_chapeco,Águas de Chapecó,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0741,-52.9879,0,small
+aguas_frias,Águas Frias,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8817,-52.86,0,small
+aguas_mornas,Águas Mornas,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.6963,-48.8248,0,small
+alfredo_wagner,Alfredo Wagner,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.6962,-49.3327,0,small
+alto_bela_vista,Alto Bela Vista,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.4321,-51.9058,0,small
+anchieta,Anchieta,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.5351,-53.3294,0,small
 angelina,Angelina,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.5805,-48.9839,0,small
-anita_garibaldi,Anita Garibaldi,Santa Catarina,SC,Brasil,Sul,Serrana,-27.6855,-51.1294,0,small
+anita_garibaldi,Anita Garibaldi,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.6855,-51.1294,0,small
 anitapolis,Anitápolis,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.9041,-49.1287,0,small
 antonio_carlos,Antônio Carlos,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.5168,-48.7685,0,small
-apiuna,Apiúna,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.0375,-49.3885,0,small
-arabuta,Arabutã,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1587,-52.1438,0,small
-araquari,Araquari,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.3703,-48.7211,0,small
+apiuna,Apiúna,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0375,-49.3885,0,small
+arabuta,Arabutã,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1587,-52.1438,0,small
+araquari,Araquari,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.3703,-48.7211,0,small
 ararangua,Araranguá,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.9349,-49.4858,0,small
-armazem,Armazém,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-28.2625,-49.019,0,small
-arroio_trinta,Arroio Trinta,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9302,-51.3349,0,small
-arvoredo,Arvoredo,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0755,-52.4571,0,small
+armazem,Armazém,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.2625,-49.019,0,small
+arroio_trinta,Arroio Trinta,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.9302,-51.3349,0,small
+arvoredo,Arvoredo,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0755,-52.4571,0,small
 ascurra,Ascurra,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.957,-49.3768,0,small
 atalanta,Atalanta,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.4219,-49.7789,0,small
 aurora,Aurora,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.3304,-49.5866,0,small
 balneario_arroio_do_silva,Balneário Arroio do Silva,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.9815,-49.419,0,small
-balneario_camboriu,Balneário Camboriú,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-26.9924,-48.634,0,small
-balneario_barra_do_sul,Balneário Barra do Sul,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.4598,-48.6061,0,small
-balneario_gaivota,Balneário Gaivota,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-29.1553,-49.5809,0,small
-bandeirante,Bandeirante,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7673,-53.6392,0,small
-barra_bonita,Barra Bonita,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6526,-53.442,0,small
-barra_velha,Barra Velha,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.6338,-48.6835,0,small
-bela_vista_do_toldo,Bela Vista do Toldo,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.2746,-50.4664,0,small
-belmonte,Belmonte,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8448,-53.5789,0,small
-benedito_novo,Benedito Novo,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.7841,-49.363,0,small
+balneario_camboriu,Balneário Camboriú,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.9924,-48.634,0,small
+balneario_barra_do_sul,Balneário Barra do Sul,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.4598,-48.6061,0,small
+balneario_gaivota,Balneário Gaivota,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.1553,-49.5809,0,small
+bandeirante,Bandeirante,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7673,-53.6392,0,small
+barra_bonita,Barra Bonita,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6526,-53.442,0,small
+barra_velha,Barra Velha,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.6338,-48.6835,0,small
+bela_vista_do_toldo,Bela Vista do Toldo,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.2746,-50.4664,0,small
+belmonte,Belmonte,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8448,-53.5789,0,small
+benedito_novo,Benedito Novo,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.7841,-49.363,0,small
 biguacu,Biguaçu,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.4961,-48.6541,0,small
-blumenau,Blumenau,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.9196,-49.0658,0,small
-bocaina_do_sul,Bocaina do Sul,Santa Catarina,SC,Brasil,Sul,Serrana,-27.7455,-49.9423,0,small
-bombinhas,Bombinhas,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.1519,-48.4876,0,small
-bom_jardim_da_serra,Bom Jardim da Serra,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-28.338,-49.6256,0,small
-bom_jesus,Bom Jesus,Santa Catarina,SC,Brasil,Sul,Serrana,-26.7351,-52.3917,0,small
-bom_jesus_do_oeste,Bom Jesus do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.693,-53.0967,0,small
-bom_retiro,Bom Retiro,Santa Catarina,SC,Brasil,Sul,Serrana,-27.799,-49.487,0,small
+blumenau,Blumenau,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9196,-49.0658,0,small
+bocaina_do_sul,Bocaina do Sul,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.7455,-49.9423,0,small
+bombinhas,Bombinhas,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-27.1519,-48.4876,0,small
+bom_jardim_da_serra,Bom Jardim da Serra,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-28.338,-49.6256,0,small
+bom_jesus,Bom Jesus,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7351,-52.3917,0,small
+bom_jesus_do_oeste,Bom Jesus do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.693,-53.0967,0,small
+bom_retiro,Bom Retiro,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.799,-49.487,0,small
 botuvera,Botuverá,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.1991,-49.0726,0,small
-braco_do_norte,Braço do Norte,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-28.2729,-49.1623,0,small
-braco_do_trombudo,Braço do Trombudo,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.3586,-49.8821,0,small
-brunopolis,Brunópolis,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.311,-50.8376,0,small
+braco_do_norte,Braço do Norte,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.2729,-49.1623,0,small
+braco_do_trombudo,Braço do Trombudo,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.3586,-49.8821,0,small
+brunopolis,Brunópolis,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.311,-50.8376,0,small
 brusque,Brusque,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0965,-48.9136,0,small
-cacador,Caçador,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.7738,-51.0135,0,small
-caibi,Caibi,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0752,-53.2502,0,small
-calmon,Calmon,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6024,-51.0993,0,small
-camboriu,Camboriú,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0274,-48.6536,0,small
-capao_alto,Capão Alto,Santa Catarina,SC,Brasil,Sul,Serrana,-27.9383,-50.5115,0,small
-campo_alegre,Campo Alegre,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.1942,-49.2657,0,small
-campo_belo_do_sul,Campo Belo do Sul,Santa Catarina,SC,Brasil,Sul,Serrana,-27.8989,-50.7596,0,small
-campo_ere,Campo Erê,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.3947,-53.079,0,small
-campos_novos,Campos Novos,Santa Catarina,SC,Brasil,Sul,Serrana,-27.3963,-51.2224,0,small
-canelinha,Canelinha,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.266,-48.7667,0,small
-canoinhas,Canoinhas,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.1755,-50.395,0,small
-capinzal,Capinzal,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.3441,-51.611,0,small
+cacador,Caçador,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.7738,-51.0135,0,small
+caibi,Caibi,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0752,-53.2502,0,small
+calmon,Calmon,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.6024,-51.0993,0,small
+camboriu,Camboriú,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-27.0274,-48.6536,0,small
+capao_alto,Capão Alto,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.9383,-50.5115,0,small
+campo_alegre,Campo Alegre,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.1942,-49.2657,0,small
+campo_belo_do_sul,Campo Belo do Sul,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.8989,-50.7596,0,small
+campo_ere,Campo Erê,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.3947,-53.079,0,small
+campos_novos,Campos Novos,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.3963,-51.2224,0,small
+canelinha,Canelinha,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.266,-48.7667,0,small
+canoinhas,Canoinhas,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.1755,-50.395,0,small
+capinzal,Capinzal,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.3441,-51.611,0,small
 capivari_de_baixo,Capivari de Baixo,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.4498,-48.9631,0,small
-catanduvas,Catanduvas,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.069,-51.6602,0,small
-caxambu_do_sul,Caxambu do Sul,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.1615,-52.8797,0,small
-celso_ramos,Celso Ramos,Santa Catarina,SC,Brasil,Sul,Serrana,-27.6336,-51.3368,0,small
-cerro_negro,Cerro Negro,Santa Catarina,SC,Brasil,Sul,Serrana,-27.7953,-50.8741,0,small
-chapadao_do_lageado,Chapadão do Lageado,Santa Catarina,SC,Brasil,Sul,Serrana,-27.5905,-49.5539,0,small
-chapeco,Chapecó,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.111,-52.5959,0,small
+catanduvas,Catanduvas,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.069,-51.6602,0,small
+caxambu_do_sul,Caxambu do Sul,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.1615,-52.8797,0,small
+celso_ramos,Celso Ramos,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.6336,-51.3368,0,small
+cerro_negro,Cerro Negro,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.7953,-50.8741,0,small
+chapadao_do_lageado,Chapadão do Lageado,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.5905,-49.5539,0,small
+chapeco,Chapecó,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.111,-52.5959,0,small
 cocal_do_sul,Cocal do Sul,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.6007,-49.3249,0,small
-concordia,Concórdia,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.2312,-52.0231,0,small
-cordilheira_alta,Cordilheira Alta,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9854,-52.6035,0,small
-coronel_freitas,Coronel Freitas,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9059,-52.7028,0,small
-coronel_martins,Coronel Martins,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.5125,-52.6682,0,small
-corupa,Corupá,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.4267,-49.2475,0,small
-correia_pinto,Correia Pinto,Santa Catarina,SC,Brasil,Sul,Serrana,-27.5877,-50.3614,0,small
+concordia,Concórdia,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2312,-52.0231,0,small
+cordilheira_alta,Cordilheira Alta,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9854,-52.6035,0,small
+coronel_freitas,Coronel Freitas,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9059,-52.7028,0,small
+coronel_martins,Coronel Martins,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.5125,-52.6682,0,small
+corupa,Corupá,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.4267,-49.2475,0,small
+correia_pinto,Correia Pinto,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.5877,-50.3614,0,small
 criciuma,Criciúma,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.679,-49.3696,0,small
-cunha_pora,Cunha Porã,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8927,-53.1717,0,small
-cunhatai,Cunhataí,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9735,-53.0914,0,small
-curitibanos,Curitibanos,Santa Catarina,SC,Brasil,Sul,Serrana,-27.2901,-50.578,0,small
-descanso,Descanso,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8247,-53.5018,0,small
-dionisio_cerqueira,Dionísio Cerqueira,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.2605,-53.6346,0,small
+cunha_pora,Cunha Porã,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8927,-53.1717,0,small
+cunhatai,Cunhataí,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9735,-53.0914,0,small
+curitibanos,Curitibanos,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2901,-50.578,0,small
+descanso,Descanso,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8247,-53.5018,0,small
+dionisio_cerqueira,Dionísio Cerqueira,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.2605,-53.6346,0,small
 dona_emma,Dona Emma,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9849,-49.7265,0,small
-doutor_pedrinho,Doutor Pedrinho,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.7164,-49.4827,0,small
-entre_rios,Entre Rios,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7236,-52.5638,0,small
+doutor_pedrinho,Doutor Pedrinho,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.7164,-49.4827,0,small
+entre_rios,Entre Rios,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7236,-52.5638,0,small
 ermo,Ermo,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.9849,-49.6427,0,small
-erval_velho,Erval Velho,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.2748,-51.443,0,small
-faxinal_dos_guedes,Faxinal dos Guedes,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8494,-52.2586,0,small
-flor_do_sertao,Flor do Sertão,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7785,-53.3479,0,small
+erval_velho,Erval Velho,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2748,-51.443,0,small
+faxinal_dos_guedes,Faxinal dos Guedes,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8494,-52.2586,0,small
+flor_do_sertao,Flor do Sertão,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7785,-53.3479,0,small
 florianopolis,Florianópolis,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.5973,-48.5496,0,small
-formosa_do_sul,Formosa do Sul,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6479,-52.7934,0,small
+formosa_do_sul,Formosa do Sul,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6479,-52.7934,0,small
 forquilhinha,Forquilhinha,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.7488,-49.4738,0,small
-fraiburgo,Fraiburgo,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.0233,-50.92,0,small
-frei_rogerio,Frei Rogério,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.175,-50.8076,0,small
-galvao,Galvão,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.4554,-52.687,0,small
-garopaba,Garopaba,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-28.0275,-48.624,0,small
-garuva,Garuva,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.0295,-48.8545,0,small
-gaspar,Gaspar,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9307,-48.9567,0,small
+fraiburgo,Fraiburgo,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0233,-50.92,0,small
+frei_rogerio,Frei Rogério,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.175,-50.8076,0,small
+galvao,Galvão,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.4554,-52.687,0,small
+garopaba,Garopaba,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-28.0275,-48.624,0,small
+garuva,Garuva,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.0295,-48.8545,0,small
+gaspar,Gaspar,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.9307,-48.9567,0,small
 governador_celso_ramos,Governador Celso Ramos,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.3172,-48.5576,0,small
 grao_para,Grão-Pará,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.1857,-49.2164,0,small
-gravatal,Gravatal,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-28.3301,-49.0362,0,small
+gravatal,Gravatal,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.3301,-49.0362,0,small
 guabiruba,Guabiruba,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0864,-48.9781,0,small
-guaraciaba,Guaraciaba,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6002,-53.5216,0,small
-guaramirim,Guaramirim,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.4745,-48.9981,0,small
-guaruja_do_sul,Guarujá do Sul,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.385,-53.5278,0,small
-guatambu,Guatambú,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1123,-52.7808,0,small
-herval_d_oeste,Herval d'Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1736,-51.4904,0,small
-ibiam,Ibiam,Santa Catarina,SC,Brasil,Sul,Serrana,-27.1819,-51.237,0,small
-ibicare,Ibicaré,Santa Catarina,SC,Brasil,Sul,Serrana,-27.0881,-51.3681,0,small
+guaraciaba,Guaraciaba,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6002,-53.5216,0,small
+guaramirim,Guaramirim,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.4745,-48.9981,0,small
+guaruja_do_sul,Guarujá do Sul,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.385,-53.5278,0,small
+guatambu,Guatambú,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.1123,-52.7808,0,small
+herval_d_oeste,Herval d'Oeste,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1736,-51.4904,0,small
+ibiam,Ibiam,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1819,-51.237,0,small
+ibicare,Ibicaré,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0881,-51.3681,0,small
 ibirama,Ibirama,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0537,-49.5191,0,small
 icara,Içara,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.7117,-49.2971,0,small
-ilhota,Ilhota,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.9023,-48.8285,0,small
+ilhota,Ilhota,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.9023,-48.8285,0,small
 imarui,Imaruí,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.344,-48.8152,0,small
-imbituba,Imbituba,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-28.2418,-48.6643,0,small
-imbuia,Imbuia,Santa Catarina,SC,Brasil,Sul,Serrana,-27.4908,-49.4218,0,small
+imbituba,Imbituba,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.2418,-48.6643,0,small
+imbuia,Imbuia,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.4908,-49.4218,0,small
 indaial,Indaial,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.8902,-49.2417,0,small
-iomere,Iomerê,Santa Catarina,SC,Brasil,Sul,Serrana,-27.002,-51.2406,0,small
-ipira,Ipira,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.4053,-51.7735,0,small
-ipora_do_oeste,Iporã do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9884,-53.5346,0,small
-ipuacu,Ipuaçu,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.635,-52.4556,0,small
-ipumirim,Ipumirim,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0762,-52.1357,0,small
-iraceminha,Iraceminha,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8237,-53.2728,0,small
-irani,Irani,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.023,-51.9011,0,small
-irati,Irati,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6578,-52.893,0,small
-irineopolis,Irineópolis,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.242,-50.7957,0,small
-ita,Itá,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.275,-52.3382,0,small
-itaiopolis,Itaiópolis,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.3392,-49.9072,0,small
-itajai,Itajaí,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.9047,-48.6553,0,small
-itapema,Itapema,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.0947,-48.6138,0,small
-itapiranga,Itapiranga,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1724,-53.7119,0,small
-itapoa,Itapoá,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.1162,-48.618,0,small
+iomere,Iomerê,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.002,-51.2406,0,small
+ipira,Ipira,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.4053,-51.7735,0,small
+ipora_do_oeste,Iporã do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9884,-53.5346,0,small
+ipuacu,Ipuaçu,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.635,-52.4556,0,small
+ipumirim,Ipumirim,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0762,-52.1357,0,small
+iraceminha,Iraceminha,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8237,-53.2728,0,small
+irani,Irani,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.023,-51.9011,0,small
+irati,Irati,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6578,-52.893,0,small
+irineopolis,Irineópolis,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.242,-50.7957,0,small
+ita,Itá,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.275,-52.3382,0,small
+itaiopolis,Itaiópolis,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.3392,-49.9072,0,small
+itajai,Itajaí,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.9047,-48.6553,0,small
+itapema,Itapema,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-27.0947,-48.6138,0,small
+itapiranga,Itapiranga,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.1724,-53.7119,0,small
+itapoa,Itapoá,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.1162,-48.618,0,small
 ituporanga,Ituporanga,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.4096,-49.6015,0,small
-jabora,Jaborá,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.1743,-51.7349,0,small
+jabora,Jaborá,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1743,-51.7349,0,small
 jacinto_machado,Jacinto Machado,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.9993,-49.7603,0,small
 jaguaruna,Jaguaruna,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.6237,-49.0289,0,small
-jaragua_do_sul,Jaraguá do Sul,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-26.4897,-49.0778,0,small
-jardinopolis,Jardinópolis,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7216,-52.8591,0,small
-joacaba,Joaçaba,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.1737,-51.5065,0,small
-joinville,Joinville,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.3045,-48.8487,0,small
-jose_boiteux,José Boiteux,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9621,-49.6263,0,small
-jupia,Jupiá,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.3986,-52.7263,0,small
-lacerdopolis,Lacerdópolis,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.2614,-51.5564,0,small
-lages,Lages,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.8166,-50.3259,0,small
+jaragua_do_sul,Jaraguá do Sul,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.4897,-49.0778,0,small
+jardinopolis,Jardinópolis,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7216,-52.8591,0,small
+joacaba,Joaçaba,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1737,-51.5065,0,small
+joinville,Joinville,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.3045,-48.8487,0,small
+jose_boiteux,José Boiteux,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9621,-49.6263,0,small
+jupia,Jupiá,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.3986,-52.7263,0,small
+lacerdopolis,Lacerdópolis,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2614,-51.5564,0,small
+lages,Lages,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.8166,-50.3259,0,small
 laguna,Laguna,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.4837,-48.7817,0,small
-lajeado_grande,Lajeado Grande,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8583,-52.5667,0,small
+lajeado_grande,Lajeado Grande,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8583,-52.5667,0,small
 laurentino,Laurentino,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2193,-49.7323,0,small
-lauro_muller,Lauro Müller,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-28.3942,-49.3975,0,small
-lebon_regis,Lebon Régis,Santa Catarina,SC,Brasil,Sul,Serrana,-26.928,-50.6921,0,small
+lauro_muller,Lauro Müller,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.3942,-49.3975,0,small
+lebon_regis,Lebon Régis,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.928,-50.6921,0,small
 leoberto_leal,Leoberto Leal,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.5071,-49.2872,0,small
-lindoia_do_sul,Lindóia do Sul,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.052,-52.0832,0,small
+lindoia_do_sul,Lindóia do Sul,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.052,-52.0832,0,small
 lontras,Lontras,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.168,-49.5425,0,small
-luiz_alves,Luiz Alves,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.7119,-48.9127,0,small
-luzerna,Luzerna,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1294,-51.4686,0,small
-macieira,Macieira,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8542,-51.3764,0,small
-mafra,Mafra,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.1151,-49.8036,0,small
-major_gercino,Major Gercino,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.4192,-48.9488,0,small
-major_vieira,Major Vieira,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.3655,-50.3273,0,small
+luiz_alves,Luiz Alves,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.7119,-48.9127,0,small
+luzerna,Luzerna,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1294,-51.4686,0,small
+macieira,Macieira,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.8542,-51.3764,0,small
+mafra,Mafra,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.1151,-49.8036,0,small
+major_gercino,Major Gercino,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.4192,-48.9488,0,small
+major_vieira,Major Vieira,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.3655,-50.3273,0,small
 maracaja,Maracajá,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.8475,-49.4539,0,small
-maravilha,Maravilha,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7624,-53.1747,0,small
-marema,Marema,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8024,-52.6264,0,small
-massaranduba,Massaranduba,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.6109,-49.0054,0,small
-matos_costa,Matos Costa,Santa Catarina,SC,Brasil,Sul,Serrana,-26.474,-51.151,0,small
+maravilha,Maravilha,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7624,-53.1747,0,small
+marema,Marema,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8024,-52.6264,0,small
+massaranduba,Massaranduba,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.6109,-49.0054,0,small
+matos_costa,Matos Costa,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.474,-51.151,0,small
 meleiro,Meleiro,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.8303,-49.635,0,small
-mirim_doce,Mirim Doce,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-27.2004,-50.0697,0,small
-modelo,Modelo,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7752,-53.0526,0,small
-mondai,Mondaí,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1021,-53.3992,0,small
-monte_carlo,Monte Carlo,Santa Catarina,SC,Brasil,Sul,Serrana,-27.2217,-50.9784,0,small
-monte_castelo,Monte Castelo,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.461,-50.2327,0,small
-morro_da_fumaca,Morro da Fumaça,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-28.6522,-49.2134,0,small
+mirim_doce,Mirim Doce,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2004,-50.0697,0,small
+modelo,Modelo,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7752,-53.0526,0,small
+mondai,Mondaí,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.1021,-53.3992,0,small
+monte_carlo,Monte Carlo,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2217,-50.9784,0,small
+monte_castelo,Monte Castelo,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.461,-50.2327,0,small
+morro_da_fumaca,Morro da Fumaça,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.6522,-49.2134,0,small
 morro_grande,Morro Grande,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.8006,-49.7214,0,small
-navegantes,Navegantes,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.8899,-48.6496,0,small
-nova_erechim,Nova Erechim,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9028,-52.9071,0,small
-nova_itaberaba,Nova Itaberaba,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9407,-52.8133,0,small
-nova_trento,Nova Trento,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2863,-48.9303,0,small
+navegantes,Navegantes,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.8899,-48.6496,0,small
+nova_erechim,Nova Erechim,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9028,-52.9071,0,small
+nova_itaberaba,Nova Itaberaba,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9407,-52.8133,0,small
+nova_trento,Nova Trento,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.2863,-48.9303,0,small
 nova_veneza,Nova Veneza,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.6374,-49.4998,0,small
-novo_horizonte,Novo Horizonte,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.4466,-52.832,0,small
-orleans,Orleans,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-28.3573,-49.2872,0,small
-otacilio_costa,Otacílio Costa,Santa Catarina,SC,Brasil,Sul,Serrana,-27.4832,-50.1195,0,small
-ouro,Ouro,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.3389,-51.6138,0,small
-ouro_verde,Ouro Verde,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6942,-52.3104,0,small
-paial,Paial,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.2565,-52.4998,0,small
-painel,Painel,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.9215,-50.0995,0,small
+novo_horizonte,Novo Horizonte,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.4466,-52.832,0,small
+orleans,Orleans,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.3573,-49.2872,0,small
+otacilio_costa,Otacílio Costa,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.4832,-50.1195,0,small
+ouro,Ouro,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.3389,-51.6138,0,small
+ouro_verde,Ouro Verde,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6942,-52.3104,0,small
+paial,Paial,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2565,-52.4998,0,small
+painel,Painel,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.9215,-50.0995,0,small
 palhoca,Palhoça,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.6448,-48.6646,0,small
-palma_sola,Palma Sola,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.3482,-53.2776,0,small
-palmeira,Palmeira,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.5798,-50.1589,0,small
-palmitos,Palmitos,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0711,-53.1597,0,small
-papanduva,Papanduva,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.4085,-50.1424,0,small
-paraiso,Paraíso,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6184,-53.6751,0,small
-passo_de_torres,Passo de Torres,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-29.3254,-49.7219,0,small
-passos_maia,Passos Maia,Santa Catarina,SC,Brasil,Sul,Serrana,-26.7806,-52.0611,0,small
+palma_sola,Palma Sola,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.3482,-53.2776,0,small
+palmeira,Palmeira,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.5798,-50.1589,0,small
+palmitos,Palmitos,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0711,-53.1597,0,small
+papanduva,Papanduva,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.4085,-50.1424,0,small
+paraiso,Paraíso,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6184,-53.6751,0,small
+passo_de_torres,Passo de Torres,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.3254,-49.7219,0,small
+passos_maia,Passos Maia,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7806,-52.0611,0,small
 paulo_lopes,Paulo Lopes,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.965,-48.683,0,small
 pedras_grandes,Pedras Grandes,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.4358,-49.1864,0,small
-penha,Penha,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-26.7754,-48.6465,0,small
-peritiba,Peritiba,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-27.3736,-51.905,0,small
+penha,Penha,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.7754,-48.6465,0,small
+peritiba,Peritiba,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.3736,-51.905,0,small
 pescaria_brava,Pescaria Brava,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.3846,-48.8658,0,small
-petrolandia,Petrolândia,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-27.533,-49.6985,0,small
-balneario_picarras,Balneário Piçarras,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-26.7639,-48.6717,0,small
-pinhalzinho,Pinhalzinho,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8526,-52.9872,0,small
-pinheiro_preto,Pinheiro Preto,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0457,-51.2296,0,small
-piratuba,Piratuba,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.4216,-51.7823,0,small
-planalto_alegre,Planalto Alegre,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0721,-52.8667,0,small
+petrolandia,Petrolândia,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.533,-49.6985,0,small
+balneario_picarras,Balneário Piçarras,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.7639,-48.6717,0,small
+pinhalzinho,Pinhalzinho,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8526,-52.9872,0,small
+pinheiro_preto,Pinheiro Preto,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0457,-51.2296,0,small
+piratuba,Piratuba,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.4216,-51.7823,0,small
+planalto_alegre,Planalto Alegre,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0721,-52.8667,0,small
 pomerode,Pomerode,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.7356,-49.177,0,small
-ponte_alta,Ponte Alta,Santa Catarina,SC,Brasil,Sul,Serrana,-27.4835,-50.3764,0,small
-ponte_alta_do_norte,Ponte Alta do Norte,Santa Catarina,SC,Brasil,Sul,Serrana,-27.1626,-50.4684,0,small
-ponte_serrada,Ponte Serrada,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8709,-52.0164,0,small
-porto_belo,Porto Belo,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.1542,-48.5424,0,small
-porto_uniao,Porto União,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.2336,-51.0828,0,small
+ponte_alta,Ponte Alta,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.4835,-50.3764,0,small
+ponte_alta_do_norte,Ponte Alta do Norte,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1626,-50.4684,0,small
+ponte_serrada,Ponte Serrada,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8709,-52.0164,0,small
+porto_belo,Porto Belo,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-27.1542,-48.5424,0,small
+porto_uniao,Porto União,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.2336,-51.0828,0,small
 pouso_redondo,Pouso Redondo,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2567,-49.9332,0,small
 praia_grande,Praia Grande,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.1971,-49.9504,0,small
-presidente_castello_branco,Presidente Castello Branco,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.2218,-51.8089,0,small
+presidente_castello_branco,Presidente Castello Branco,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.2218,-51.8089,0,small
 presidente_getulio,Presidente Getúlio,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.0426,-49.621,0,small
 presidente_nereu,Presidente Nereu,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2783,-49.389,0,small
-princesa,Princesa,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.4453,-53.5999,0,small
-quilombo,Quilombo,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7254,-52.7193,0,small
+princesa,Princesa,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.4453,-53.5999,0,small
+quilombo,Quilombo,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7254,-52.7193,0,small
 rancho_queimado,Rancho Queimado,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.6728,-49.0124,0,small
-rio_das_antas,Rio das Antas,Santa Catarina,SC,Brasil,Sul,Serrana,-26.8998,-51.0748,0,small
-rio_do_campo,Rio do Campo,Santa Catarina,SC,Brasil,Sul,Serrana,-26.9468,-50.1413,0,small
+rio_das_antas,Rio das Antas,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.8998,-51.0748,0,small
+rio_do_campo,Rio do Campo,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9468,-50.1413,0,small
 rio_do_oeste,Rio do Oeste,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.1933,-49.7985,0,small
 rio_dos_cedros,Rio dos Cedros,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.7398,-49.2718,0,small
 rio_do_sul,Rio do Sul,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2163,-49.6437,0,small
 rio_fortuna,Rio Fortuna,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.1336,-49.1048,0,small
-rio_negrinho,Rio Negrinho,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.2591,-49.5177,0,small
-rio_rufino,Rio Rufino,Santa Catarina,SC,Brasil,Sul,Serrana,-27.8617,-49.7806,0,small
-riqueza,Riqueza,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0698,-53.3225,0,small
+rio_negrinho,Rio Negrinho,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.2591,-49.5177,0,small
+rio_rufino,Rio Rufino,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.8617,-49.7806,0,small
+riqueza,Riqueza,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0698,-53.3225,0,small
 rodeio,Rodeio,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9233,-49.3685,0,small
-romelandia,Romelândia,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6783,-53.319,0,small
+romelandia,Romelândia,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6783,-53.319,0,small
 salete,Salete,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9842,-50.0076,0,small
-saltinho,Saltinho,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6049,-53.0578,0,small
-salto_veloso,Salto Veloso,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9072,-51.4068,0,small
+saltinho,Saltinho,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6049,-53.0578,0,small
+salto_veloso,Salto Veloso,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.9072,-51.4068,0,small
 sangao,Sangão,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.6398,-49.1266,0,small
-santa_cecilia,Santa Cecília,Santa Catarina,SC,Brasil,Sul,Serrana,-26.9659,-50.4183,0,small
-santa_helena,Santa Helena,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9388,-53.6194,0,small
+santa_cecilia,Santa Cecília,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.9659,-50.4183,0,small
+santa_helena,Santa Helena,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9388,-53.6194,0,small
 santa_rosa_de_lima,Santa Rosa de Lima,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.0404,-49.128,0,small
 santa_rosa_do_sul,Santa Rosa do Sul,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.1355,-49.7154,0,small
-santa_terezinha,Santa Terezinha,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7813,-50.009,0,small
-santa_terezinha_do_progresso,Santa Terezinha do Progresso,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6197,-53.1987,0,small
-santiago_do_sul,Santiago do Sul,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6346,-52.6753,0,small
+santa_terezinha,Santa Terezinha,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.7813,-50.009,0,small
+santa_terezinha_do_progresso,Santa Terezinha do Progresso,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6197,-53.1987,0,small
+santiago_do_sul,Santiago do Sul,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6346,-52.6753,0,small
 santo_amaro_da_imperatriz,Santo Amaro da Imperatriz,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.6865,-48.7769,0,small
-sao_bernardino,São Bernardino,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.4713,-52.9659,0,small
-sao_bento_do_sul,São Bento do Sul,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.2484,-49.3821,0,small
-sao_bonifacio,São Bonifácio,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.9009,-48.9326,0,small
-sao_carlos,São Carlos,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0819,-53.0051,0,small
-sao_cristovao_do_sul,São Cristóvão do Sul,Santa Catarina,SC,Brasil,Sul,Serrana,-27.267,-50.441,0,small
-sao_domingos,São Domingos,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.5593,-52.5312,0,small
-sao_francisco_do_sul,São Francisco do Sul,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.2495,-48.6308,0,small
-sao_joao_do_oeste,São João do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0981,-53.5932,0,small
-sao_joao_batista,São João Batista,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.2775,-48.8496,0,small
-sao_joao_do_itaperiu,São João do Itaperiú,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.6186,-48.767,0,small
+sao_bernardino,São Bernardino,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.4713,-52.9659,0,small
+sao_bento_do_sul,São Bento do Sul,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.2484,-49.3821,0,small
+sao_bonifacio,São Bonifácio,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.9009,-48.9326,0,small
+sao_carlos,São Carlos,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0819,-53.0051,0,small
+sao_cristovao_do_sul,São Cristóvão do Sul,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.267,-50.441,0,small
+sao_domingos,São Domingos,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.5593,-52.5312,0,small
+sao_francisco_do_sul,São Francisco do Sul,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.2495,-48.6308,0,small
+sao_joao_do_oeste,São João do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-27.0981,-53.5932,0,small
+sao_joao_batista,São João Batista,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.2775,-48.8496,0,small
+sao_joao_do_itaperiu,São João do Itaperiú,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.6186,-48.767,0,small
 sao_joao_do_sul,São João do Sul,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.2247,-49.8082,0,small
-sao_joaquim,São Joaquim,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-28.2925,-49.9353,0,small
+sao_joaquim,São Joaquim,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-28.2925,-49.9353,0,small
 sao_jose,São José,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.6158,-48.6276,0,small
-sao_jose_do_cedro,São José do Cedro,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.4556,-53.4955,0,small
-sao_jose_do_cerrito,São José do Cerrito,Santa Catarina,SC,Brasil,Sul,Serrana,-27.6627,-50.5792,0,small
-sao_lourenco_do_oeste,São Lourenço do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.3557,-52.8498,0,small
+sao_jose_do_cedro,São José do Cedro,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.4556,-53.4955,0,small
+sao_jose_do_cerrito,São José do Cerrito,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.6627,-50.5792,0,small
+sao_lourenco_do_oeste,São Lourenço do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.3557,-52.8498,0,small
 sao_ludgero,São Ludgero,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.3244,-49.1748,0,small
 sao_martinho,São Martinho,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.165,-48.9793,0,small
-sao_miguel_da_boa_vista,São Miguel da Boa Vista,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6911,-53.2523,0,small
-sao_miguel_do_oeste,São Miguel do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7279,-53.5177,0,small
+sao_miguel_da_boa_vista,São Miguel da Boa Vista,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6911,-53.2523,0,small
+sao_miguel_do_oeste,São Miguel do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7279,-53.5177,0,small
 sao_pedro_de_alcantara,São Pedro de Alcântara,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.5677,-48.8048,0,small
-saudades,Saudades,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9262,-53.0047,0,small
-schroeder,Schroeder,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.4116,-49.074,0,small
-seara,Seara,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.1529,-52.3097,0,small
-serra_alta,Serra Alta,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7291,-53.0441,0,small
+saudades,Saudades,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9262,-53.0047,0,small
+schroeder,Schroeder,Santa Catarina,SC,Brasil,Sul,Foz do Rio Itajaí / Nordeste,-26.4116,-49.074,0,small
+seara,Seara,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.1529,-52.3097,0,small
+serra_alta,Serra Alta,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7291,-53.0441,0,small
 sideropolis,Siderópolis,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.5976,-49.425,0,small
 sombrio,Sombrio,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-29.108,-49.6328,0,small
-sul_brasil,Sul Brasil,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-26.7379,-52.965,0,small
+sul_brasil,Sul Brasil,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7379,-52.965,0,small
 taio,Taió,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.1168,-50.0002,0,small
-tangara,Tangará,Santa Catarina,SC,Brasil,Sul,Serrana,-27.0998,-51.2477,0,small
-tigrinhos,Tigrinhos,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.6869,-53.157,0,small
+tangara,Tangará,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0998,-51.2477,0,small
+tigrinhos,Tigrinhos,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.6869,-53.157,0,small
 tijucas,Tijucas,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-27.2394,-48.6354,0,small
 timbe_do_sul,Timbé do Sul,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.8318,-49.8466,0,small
 timbo,Timbó,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.8283,-49.2706,0,small
-timbo_grande,Timbó Grande,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.6171,-50.6743,0,small
-tres_barras,Três Barras,Santa Catarina,SC,Brasil,Sul,Norte Catarinense,-26.1056,-50.3197,0,small
+timbo_grande,Timbó Grande,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.6171,-50.6743,0,small
+tres_barras,Três Barras,Santa Catarina,SC,Brasil,Sul,Planalto Norte,-26.1056,-50.3197,0,small
 treviso,Treviso,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.5154,-49.4582,0,small
 treze_de_maio,Treze de Maio,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.5574,-49.1448,0,small
-treze_tilias,Treze Tílias,Santa Catarina,SC,Brasil,Sul,Serrana,-26.9997,-51.4073,0,small
+treze_tilias,Treze Tílias,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-26.9997,-51.4073,0,small
 trombudo_central,Trombudo Central,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.3041,-49.7932,0,small
-tubarao,Tubarão,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-28.4715,-49.0141,0,small
-tunapolis,Tunápolis,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9707,-53.6382,0,small
+tubarao,Tubarão,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.4715,-49.0141,0,small
+tunapolis,Tunápolis,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9707,-53.6382,0,small
 turvo,Turvo,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.9277,-49.6792,0,small
-uniao_do_oeste,União do Oeste,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.7642,-52.8516,0,small
-urubici,Urubici,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-28.0157,-49.5925,0,small
-urupema,Urupema,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.9558,-49.876,0,small
+uniao_do_oeste,União do Oeste,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.7642,-52.8516,0,small
+urubici,Urubici,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-28.0157,-49.5925,0,small
+urupema,Urupema,Santa Catarina,SC,Brasil,Sul,Serra Catarinense,-27.9558,-49.876,0,small
 urussanga,Urussanga,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.4917,-49.3537,0,small
-vargeao,Vargeão,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8613,-52.1545,0,small
-vargem,Vargem,Santa Catarina,SC,Brasil,Sul,Serrana,-27.491,-50.9781,0,small
-vargem_bonita,Vargem Bonita,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0055,-51.7402,0,small
+vargeao,Vargeão,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8613,-52.1545,0,small
+vargem,Vargem,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.491,-50.9781,0,small
+vargem_bonita,Vargem Bonita,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0055,-51.7402,0,small
 vidal_ramos,Vidal Ramos,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-27.3909,-49.3616,0,small
-videira,Videira,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0054,-51.1534,0,small
+videira,Videira,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0054,-51.1534,0,small
 vitor_meireles,Vitor Meireles,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.8797,-49.8332,0,small
 witmarsum,Witmarsum,Santa Catarina,SC,Brasil,Sul,Vale do Itajaí,-26.9275,-49.7947,0,small
-xanxere,Xanxerê,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.8749,-52.4036,0,small
-xavantina,Xavantina,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-27.0702,-52.3431,0,small
-xaxim,Xaxim,Santa Catarina,SC,Brasil,Sul,Oeste Catarinense,-26.9605,-52.5336,0,small
-zortea,Zortéa,Santa Catarina,SC,Brasil,Sul,Serrana,-27.4535,-51.5536,0,small
-balneario_rincao,Balneário Rincão,Santa Catarina,SC,Brasil,Sul,Grande Florianópolis,-28.8236,-49.2242,0,small
+xanxere,Xanxerê,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.8749,-52.4036,0,small
+xavantina,Xavantina,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.0702,-52.3431,0,small
+xaxim,Xaxim,Santa Catarina,SC,Brasil,Sul,Grande Oeste,-26.9605,-52.5336,0,small
+zortea,Zortéa,Santa Catarina,SC,Brasil,Sul,Meio Oeste,-27.4535,-51.5536,0,small
+balneario_rincao,Balneário Rincão,Santa Catarina,SC,Brasil,Sul,Sul Catarinense,-28.8236,-49.2242,0,small
