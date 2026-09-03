@@ -91,6 +91,18 @@ def meso_filter(meso: str | None) -> tuple[str, dict]:
     return "AND mesoregion = @meso", {"meso": meso}
 
 
+def cidade_filter(city: str | None) -> tuple[str, dict]:
+    """Cláusula SQL opcional `AND city_name = @cidade` + o parâmetro nomeado.
+
+    Mesmo contrato de `meso_filter`: `("", {})` quando não há filtro (`None`
+    ou `"Todas"`); valida `city` contra a allowlist do seed quando há
+    filtro."""
+    if city is None or city == "Todas":
+        return "", {}
+    require_cidade(city)
+    return "AND city_name = @cidade", {"cidade": city}
+
+
 @router.get("/mesorregioes", response_model=list[str])
 def get_mesorregioes() -> list[str]:
     """Mesorregiões distintas do seed `locations` (`mesoregion IS NOT NULL`,

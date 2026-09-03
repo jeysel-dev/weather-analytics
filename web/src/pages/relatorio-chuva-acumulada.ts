@@ -2,9 +2,10 @@
 //
 // Ranking de precipitação acumulada por município na janela, com dias de
 // chuva e o maior volume diário (+ data). Filtros: período em dias +
-// macrorregião opcional. Deep link ?dias=N&meso=… + botão Compartilhar,
-// e paginação client-side (10 + "Ver mais") — spec 024.
+// macrorregião opcional + cidade opcional. Deep link ?dias=N&meso=…&cidade=…
+// + botão Compartilhar, e paginação client-side (10 + "Ver mais") — spec 024.
 
+import { enhanceCitySelect } from "../citypicker";
 import { fmt1, formatarDataISO } from "../format";
 import { compartilharWhatsapp, esconderCompartilhar, escreverURL, lerURL } from "../share";
 import { renderTable, type RowDef } from "../table";
@@ -42,6 +43,17 @@ async function popularMesorregioes(select: HTMLSelectElement): Promise<void> {
     const opt = document.createElement("option");
     opt.value = meso;
     opt.textContent = meso;
+    select.appendChild(opt);
+  }
+}
+
+async function popularCidades(select: HTMLSelectElement): Promise<void> {
+  const resposta = await fetch("/api/v1/ref/cidades");
+  if (!resposta.ok) return;
+  for (const cidade of (await resposta.json()) as string[]) {
+    const opt = document.createElement("option");
+    opt.value = cidade;
+    opt.textContent = cidade;
     select.appendChild(opt);
   }
 }
@@ -88,12 +100,13 @@ function renderPagina(): void {
   }
 }
 
-async function atualizar(dias: number, meso: string): Promise<void> {
+async function atualizar(dias: number, meso: string, cidade: string): Promise<void> {
   const tabela = byId<HTMLTableElement>("tabela-chuva");
   if (tabela === null) return;
   chuvaMax = CHUVA_PAGE; // filtro novo → volta ao topo
   const params = new URLSearchParams({ dias: String(dias) });
   if (meso !== "Todas") params.set("meso", meso);
+  if (cidade !== "Todas") params.set("cidade", cidade);
   escreverURL(params);
   esconderCompartilhar();
 
@@ -108,7 +121,7 @@ async function atualizar(dias: number, meso: string): Promise<void> {
   renderPagina();
 
   if (ultimoRows.length > 0) {
-    const alvo = meso === "Todas" ? "Santa Catarina" : meso;
+    const alvo = cidade !== "Todas" ? cidade : meso === "Todas" ? "Santa Catarina" : meso;
     compartilharWhatsapp(`Chuva acumulada — ${alvo}, últimos ${dias} dias.`, params);
   }
 }
@@ -116,21 +129,38 @@ async function atualizar(dias: number, meso: string): Promise<void> {
 export function initRelatorioChuvaAcumulada(): void {
   const diasInput = byId<HTMLInputElement>("filtro-dias");
   const mesoSelect = byId<HTMLSelectElement>("filtro-mesorregiao");
-  if (diasInput === null || mesoSelect === null) return;
+  const cidadeSelect = byId<HTMLSelectElement>("filtro-cidade");
+  if (diasInput === null || mesoSelect === null || cidadeSelect === null) return;
 
   const url = lerURL();
   const dias = clampDias(url.get("dias") ?? diasInput.value);
   diasInput.value = String(dias);
 
+  const rerender = (): void =>
+    void atualizar(clampDias(diasInput.value), mesoSelect.value, cidadeSelect.value);
+
   void carregarCaption();
-  void popularMesorregioes(mesoSelect).then(() => {
+  void Promise.all([
+    popularMesorregioes(mesoSelect),
+    popularCidades(cidadeSelect),
+  ]).then(() => {
     selecionarSePresente(mesoSelect, url.get("meso"));
-    void atualizar(clampDias(diasInput.value), mesoSelect.value);
+    // Combobox pesquisável (spec 020) — ~295 municípios. Depois de popular
+    // as options, restaura a seleção da URL sem disparar `change` (o
+    // `atualizar` abaixo é explícito).
+    const picker = enhanceCitySelect(cidadeSelect);
+    const cidadeUrl = url.get("cidade");
+    if (cidadeUrl !== null && [...cidadeSelect.options].some((o) => o.value === cidadeUrl)) {
+      picker.setValue(cidadeUrl, true);
+    }
+    void atualizar(clampDias(diasInput.value), mesoSelect.value, cidadeSelect.value);
   });
 
-  const rerender = (): void => void atualizar(clampDias(diasInput.value), mesoSelect.value);
   diasInput.addEventListener("change", rerender);
   mesoSelect.addEventListener("change", rerender);
+  // Tom Select sincroniza o <select> nativo e dispara `change` nele (mesmo
+  // padrão de comparativo.ts / relatorio-cidade.ts).
+  cidadeSelect.addEventListener("change", rerender);
   byId("btn-mais-chuva")?.addEventListener("click", () => {
     chuvaMax += CHUVA_PAGE;
     renderPagina();

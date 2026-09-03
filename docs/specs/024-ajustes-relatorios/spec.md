@@ -5,7 +5,8 @@
 
 ## Status
 [x] implementado — 3 ajustes de revisão sobre os 5 relatórios das
-specs 022/023.
+specs 022/023. Ver **Adendo 1** no fim: filtro "Cidade" no
+`/relatorio-chuva-acumulada` (2026-09-03).
 
 ## Resumo
 Retorno da revisão dos relatórios recém-entregues:
@@ -159,3 +160,75 @@ Retorno da revisão dos relatórios recém-entregues:
 - [[018-paginacao-ver-mais-alertas]] — padrão "ver mais".
 - [[013-pagina-relatorio-cidade]] — o relatório cujo deep link + botão
   serviram de molde.
+
+---
+
+# Adendo 1 — filtro "Cidade" no `/relatorio-chuva-acumulada`
+
+## Tipo
+[x] Melhoria
+
+## Status
+[x] implementado
+
+## Resumo
+O ranking de chuva acumulada tinha só dois filtros (período em dias +
+macrorregião). Adicionado um terceiro filtro opcional **Cidade**, que
+restringe o ranking a um único município.
+
+## Requirements (EARS)
+- THE `relatorio-chuva-acumulada.html` SHALL ter um `.filter-field` com
+  `<select id="filtro-cidade" name="cidade">` contendo a opção sentinela
+  `<option value="Todas">Todas</option>`.
+- THE `GET /api/v1/relatorio-chuva-acumulada/dados` SHALL aceitar um query
+  param opcional `cidade`; quando ausente ou `"Todas"`, sem filtro; senão,
+  validar contra a allowlist do seed `locations` (404 se desconhecido) e
+  aplicar `AND city_name = @cidade`.
+- THE filtro de cidade e o de macrorregião SHALL ser independentes
+  (combinados com `AND`).
+- THE `relatorio-chuva-acumulada.ts` SHALL popular o select via
+  `/api/v1/ref/cidades`, transformá-lo em combobox pesquisável
+  (`enhanceCitySelect`, spec 020), incluir `cidade` no deep link
+  (`?dias=N&meso=…&cidade=…`) e restaurá-lo ao abrir.
+- WHEN há um filtro de cidade ativo, THE mensagem do botão "Compartilhar"
+  SHALL usar o nome da cidade como alvo (em vez da macrorregião / "Santa
+  Catarina").
+
+## Design
+| Decisão | Alternativa | Motivo |
+|---|---|---|
+| `cidade_filter(city)` novo em `routers/ref.py`, espelho de `meso_filter` | Inline no router | Mesmo contrato (`("", {})` / cláusula + param nomeado), mesma allowlist cacheada (`require_cidade`); reusável pelos outros relatórios. |
+| Combobox pesquisável (`enhanceCitySelect`) | `<select>` nativo como o de macrorregião | ~295 municípios — o nativo é inviável de navegar; é o padrão da casa desde a spec 020. O CSS `.filter-field .ts-wrapper` (single) já existia. |
+| Filtros macrorregião + cidade independentes (AND) | Cidade sobrepõe/zera macrorregião | Menos código, comportamento previsível. Combinação inconsistente (cidade fora da macro) cai no "Sem dados para o período". |
+| Sem paginação especial | — | Com cidade única o ranking tem 1 linha; com "Todas" a paginação de 10 + "Ver mais" (Adendo 3 da spec original) continua valendo. |
+
+### Componentes afetados
+- `api/app/routers/ref.py` — `cidade_filter()`.
+- `api/app/routers/relatorio_chuva_acumulada.py` — param `cidade`, cláusula
+  na query.
+- `api/app/templates/relatorio-chuva-acumulada.html` — `.filter-field` de
+  cidade.
+- `web/src/pages/relatorio-chuva-acumulada.ts` — `popularCidades`,
+  `enhanceCitySelect`, `atualizar(dias, meso, cidade)`, deep link
+  `?cidade=`, alvo do compartilhamento.
+
+## Casos de borda
+- **`?cidade=` inexistente na URL** → ignorado (não está entre as
+  `<option>`), filtro cai em "Todas".
+- **Cidade + macrorregião que não a contém** → ranking vazio → "Sem dados
+  para o período selecionado."
+- **`cidade=<desconhecida>` direto na API** → 404 (`require_cidade`).
+- **Trocar de cidade depois de expandir "Ver mais"** → `chuvaMax` volta a
+  10 (já coberto pelo `atualizar`).
+
+## Fora do escopo
+- Filtro de cidade nos outros relatórios (macrorregião/extremos) — mesma
+  `cidade_filter` disponível se quiserem depois.
+- Multi-seleção de cidades neste ranking.
+
+## Referências de código
+- `api/app/routers/ref.py` — `meso_filter` (molde), `require_cidade`,
+  `_cidades()` (cache).
+- `web/src/citypicker.ts` — `enhanceCitySelect` (modo único).
+- `web/src/pages/comparativo.ts` — enhance de `<select>` único + listener
+  `change` no nativo (Tom Select sincroniza).
