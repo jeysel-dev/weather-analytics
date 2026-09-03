@@ -5,7 +5,9 @@
 
 ## Status
 [x] implementado — `layout.html` e `web/src/style.css` com o footer de
-3 colunas + linha de rodapé.
+3 colunas + linha de rodapé. Ver **Adendo (2026-09-03)** para a licença
+(MIT, `LICENSE` na raiz) e a remoção dos links `Privacidade` / `Termos de
+Uso`.
 
 ## Resumo
 O footer compartilhado (`layout.html`) troca a linha única (uma frase +
@@ -97,9 +99,60 @@ registra a decisão sobre a lista de "Navegação".
 - `web/src/style.css` — `.site-nav__inner` (`max-width: 1126px` — mesmo
   alinhamento reaproveitado no footer).
 
+## Adendo — 2026-09-03 (licença MIT + remoção de Privacidade/Termos)
+
+Replica o que o projeto irmão `compras-publicas-sc` fez no adendo da spec
+035 de lá (que por sua vez portou o footer desta spec 019). Dois pontos que
+a versão original deixou como placeholder/fora de escopo, resolvidos agora:
+
+1. **Licença escolhida: MIT.** Adicionado `LICENSE` na raiz
+   (`Copyright (c) 2026 Jeysel Pacheco Bastos` — de `git config user.name`)
+   e seção "## Licença" no `README.md`. Motivo: MIT é a permissiva mais
+   curta e reconhecida, sem copyleft (zero fricção pra quem baixa e estuda),
+   e o GitHub passa a exibir o badge de licença. Escolha de licença é
+   decisão à parte do layout — por isso ficou fora da spec original.
+
+2. **Nuance do dado climático.** Os dados vêm do Open-Meteo, servidos pela
+   API sob **CC BY 4.0** (`open-meteo.com/en/licence`, conferido 2026-09-03).
+   Este repo só consome a API e **não relicencia** o dado — o `README`
+   deixa explícito. O footer **não** reintroduz a atribuição Open-Meteo
+   (isso continua fora de escopo, ver lista abaixo); a nota de licença dele
+   é genérica ("Código e dados sob licença aberta") e a procedência
+   detalhada vive no `README`.
+
+3. **Links `Privacidade` / `Termos de Uso` removidos** do
+   `.site-footer__bottom`. Eram `href="#"` (placeholder). O app não tem
+   auth, formulário, sessão nem coleta de dado do visitante — uma política
+   de privacidade seria vazia e "Termos de Uso" não se aplica a um painel
+   de leitura de dado público. É **decisão, não pendência**: as páginas não
+   serão criadas. A barra inferior fica só com a linha de copyright +
+   licença.
+
+4. No `.site-footer__bottom`, `© 2026 Weather Analytics. Todos os direitos
+   reservados.` vira `© 2026 Weather Analytics · <a>Código e dados sob
+   licença aberta</a>.`, onde o link aponta para
+   `github.com/jeysel-dev/weather-analytics/blob/main/LICENSE`.
+
+**CSS** (`web/src/style.css`, bloco `.site-footer__bottom`): removidas as
+regras que só faziam sentido com dois `<p>` e vários links lado a lado —
+`.site-footer__bottom a { margin-right: 16px }`,
+`.site-footer__bottom a:last-child`, `.site-footer__bottom p:last-child
+{ margin-top: 8px }`. Mantido/ajustado: `.site-footer__bottom a`
+(`color: var(--accent); text-decoration: none`) + `a:hover`
+(`text-decoration: underline`).
+
+O item "Reintroduzir a atribuição Open-Meteo" em **Fora do escopo**
+continua valendo — o dado é creditado no `README`, não no footer.
+
+**Status:** implementado. Sem toque em dbt/dados. Deploy pelo fluxo normal
+da API (CI → staging automático → promoção manual de produção).
+
 ## Ver também
 - [[006-arquitetura-frontend-fastapi]] — `layout.html` compartilhado.
 - [[017-navbar-submenu-relatorios]] — o submenu "Relatórios"; o footer
   linka `/relatorio-cidade` direto, sem dropdown.
 - [[016-diagnostico-relatorio-cidade-producao]] /
   [[018-paginacao-ver-mais-alertas]] — mesma rodada de handoff.
+- `compras-publicas-sc` `docs/specs/035-footer-tres-colunas/spec.md` —
+  o adendo irmão (mesmas duas decisões; lá o dado é do Portal de
+  Transparência SC em vez do Open-Meteo).

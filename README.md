@@ -186,3 +186,14 @@ Este projeto foi desenvolvido seguindo práticas Scrum e BDD (Epic → Features
 → User Stories), combinando competências de Analytics Engineering e Product
 Ownership. O histórico completo desse planejamento — Epic, Features e User
 Stories originais — está preservado em [`docs/archive/`](docs/archive/).
+
+---
+
+## Licença
+
+Código, templates, modelos dbt, specs e documentação deste repositório: **[MIT](LICENSE)** —
+livre para baixar, estudar, modificar e redistribuir.
+
+Os dados climáticos são do [Open-Meteo](https://open-meteo.com/), servidos pela API sob
+[CC BY 4.0](https://open-meteo.com/en/licence); este repositório apenas os consome e não os
+relicencia.
