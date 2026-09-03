@@ -11,28 +11,19 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — 07ace8f (spec 024, ajustes de
-    # revisão sobre as specs 022/023; só frontend + templates, nenhuma rota,
-    # endpoint ou query SQL muda em relação a e895852).
-    # Versão anterior em produção: e895852. Entrega deste bump:
-    #   - Botão "Compartilhar no WhatsApp" nos 5 relatórios novos +
-    #     /relatorio-cidade (novo templates/_share_button.html + web/src/share.ts).
-    #     Cada relatório lê/escreve os filtros na query string (deep link) para
-    #     o link compartilhado abrir a mesma visão.
-    #   - .share-button global agora é verde WhatsApp (#25d366) + ícone.
-    #   - /relatorio-mensal: <input type="month"> ganha o CSS da filter-bar
-    #     (era bug visual — seletor só cobria number/date).
-    #   - /relatorio-chuva-acumulada: ranking limitado a 10 linhas + botão
-    #     "Ver mais" (paginação client-side, sem tocar no endpoint).
-    # Sem mudança de seed / mart_* / endpoint — não precisa reiniciar pods.
-    # Validado em staging (Playwright headless via túnel SSH): 6 páginas de
-    # relatório com botão verde + ícone; wa.me/?text= com resumo + URL pública
-    # https://weather.jeysel.dev/relatorio-…?<filtros>; deep links restauram
-    # os filtros (dias/city/cidades); mensal com campos de mês estilizados;
-    # chuva-acumulada 10 linhas + "Ver mais (285 restantes)" → +10 por clique.
-    # CI verde: run 33791838636 (pytest + smoke test /health).
+    # Promovido manualmente em 2026-09-03 — fa5fa49 (spec 024, adendo 1).
+    # Versão anterior em produção: 07ace8f.
+    # Entrega deste bump: filtro "Cidade" no /relatorio-chuva-acumulada
+    #   (combobox pesquisável via /api/v1/ref/cidades, deep link ?cidade=…,
+    #   endpoint aceita cidade opcional combinado com meso via AND).
+    # Toca API (novo query param `cidade` em GET
+    #   /api/v1/relatorio-chuva-acumulada/dados, helper cidade_filter() em
+    #   routers/ref.py), template e frontend. Não muda seed / mart_* / cache
+    #   de referência → não precisa reiniciar pods além do rollout do bump.
+    # Validado: CI verde (run 33795712454 — pytest + smoke /health), staging
+    #   sincronizado com fa5fa49.
     #
-    # Rollback: última versão boa em produção é e895852. `kustomize edit set
-    # image ghcr.io/jeysel-dev/weather-analytics/api=...:e895852` + commit +
+    # Rollback: última versão boa em produção é 07ace8f. `kustomize edit set
+    # image ghcr.io/jeysel-dev/weather-analytics/api=...:07ace8f` + commit +
     # sync.
-    newTag: 07ace8f
+    newTag: fa5fa49
