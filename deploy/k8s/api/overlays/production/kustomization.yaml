@@ -11,17 +11,22 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-09-03 — 4d95143 (adendo spec 019).
-    # Versão anterior em produção: fa5fa49.
-    # Entrega deste bump: footer linka o LICENSE (MIT, novo na raiz) via
-    #   "Código e dados sob licença aberta" e perde os links placeholder
-    #   Privacidade / Termos de Uso. Só layout.html + web/src/style.css.
-    #   Não muda seed / mart_* / cache de referência → não precisa reiniciar
-    #   pods além do rollout do bump.
-    # Validado: CI verde (run 33808831043 — pytest 27 passed + smoke
-    #   /health), staging sincronizado com 4d95143 e footer conferido no ar.
+    # Promovido manualmente em 2026-09-04 — 70636b3 (corte da SA dedicada,
+    # spec 090 pendência final). Versão anterior em produção: 4d95143.
+    # Entrega deste bump: remove o fallback GOOGLE_APPLICATION_CREDENTIALS_
+    #   DASHBOARD do código (api/app/utils/bigquery.py) — a API passa a
+    #   exigir GOOGLE_APPLICATION_CREDENTIALS_API. Pré-requisito já cumprido
+    #   antes deste bump: SA dedicada weather-analytics-api-sa criada no GCP
+    #   (jobUser projeto + dataViewer marts/seeds), chave sincronizada no
+    #   Secret weather-analytics-sa-key, validada com requests reais contra
+    #   BigQuery em staging E produção (rotas marts e seeds) ANTES da troca
+    #   de imagem.
+    # Validado: CI verde (run 33903942862 — pytest + smoke /health), staging
+    #   sincronizado com 70636b3 e /api/v1/alertas/resumo confirmado com
+    #   dado real (822 alertas) rodando a imagem sem fallback.
     #
-    # Rollback: última versão boa em produção é fa5fa49. `kustomize edit set
-    # image ghcr.io/jeysel-dev/weather-analytics/api=...:fa5fa49` + commit +
-    # sync.
-    newTag: 4d95143
+    # Rollback: última versão boa em produção é 4d95143 (roda com o
+    # fallback ainda no código, então funciona com a SA antiga ou a nova).
+    # `kustomize edit set image
+    # ghcr.io/jeysel-dev/weather-analytics/api=...:4d95143` + commit + sync.
+    newTag: 70636b3
