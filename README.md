@@ -75,7 +75,7 @@ compartilhe a mesma chave entre pipeline e dashboard:
 | Variável | Usada por | Onde configurar |
 |----------|-----------|------------------|
 | `GOOGLE_APPLICATION_CREDENTIALS_PIPELINE` | `pipeline/` (ingest + dbt) | `pipeline/dbt_profiles.yml.example` → copiar e preencher |
-| `GOOGLE_APPLICATION_CREDENTIALS_API` | `api/` (dashboard, só leitura) | `api/.env.example` → copiar para `api/.env` (cai para `_DASHBOARD` como fallback) |
+| `GOOGLE_APPLICATION_CREDENTIALS_API` | `api/` (só leitura, SA dedicada `weather-analytics-api-sa`) | `api/.env.example` → copiar para `api/.env` |
 
 Substitua `seu-projeto-gcp` pelo `GCP_PROJECT_ID` real do seu projeto em
 qualquer comando de exemplo abaixo.

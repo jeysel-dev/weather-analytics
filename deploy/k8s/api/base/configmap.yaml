@@ -3,8 +3,5 @@ kind: ConfigMap
 metadata:
   name: weather-analytics-api-config
 data:
-  # Chave dedicada da API (spec 090). Enquanto a stack Streamlit coexiste, o
-  # código (api/app/utils/bigquery.py) cai para
-  # GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD se esta não estiver definida —
-  # aqui ela SEMPRE está.
+  # Chave da SA dedicada da API (weather-analytics-api-sa, spec 090).
   GOOGLE_APPLICATION_CREDENTIALS_API: "/app/secrets/weather-analytics-api-sa-key.json"

@@ -60,23 +60,11 @@ def _location() -> str | None:
 
 
 def _credentials_path() -> str:
-    """Caminho da chave da service account.
-
-    Variável dedicada à API (`GOOGLE_APPLICATION_CREDENTIALS_API`). Enquanto
-    a stack Streamlit coexiste com a FastAPI (migração incremental, spec
-    006), cai para `GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD` se a dedicada
-    não estiver definida — assim um deploy inicial da API funciona sem
-    mexer no infra, mas o alvo é cada stack ter sua própria chave (o
-    `.env.example` do Streamlit já descreve a dele como "não compartilhada
-    com o pipeline").
-    """
-    path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_API") or os.environ.get(
-        "GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD"
-    )
+    """Caminho da chave da service account dedicada da API (`weather-analytics-api-sa`)."""
+    path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_API")
     if not path:
         raise EnvironmentError(
-            "GOOGLE_APPLICATION_CREDENTIALS_API (ou _DASHBOARD como fallback) "
-            "não definido. Ver api/.env.example."
+            "GOOGLE_APPLICATION_CREDENTIALS_API não definido. Ver api/.env.example."
         )
     return path
 

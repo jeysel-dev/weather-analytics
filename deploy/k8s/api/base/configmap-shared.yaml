@@ -7,9 +7,8 @@ metadata:
   # a possuiu de fato; a API sempre dependeu dela (deployment.yaml).
   name: weather-analytics-config
 data:
-  # GOOGLE_APPLICATION_CREDENTIALS_DASHBOARD omitida de propósito: fallback
-  # morto, a API sempre recebe GOOGLE_APPLICATION_CREDENTIALS_API via
-  # weather-analytics-api-config (configmap.yaml).
+  # A API sempre recebe GOOGLE_APPLICATION_CREDENTIALS_API via
+  # weather-analytics-api-config (configmap.yaml) — sem fallback no código.
   BIGQUERY_DATASET: marts
   BIGQUERY_LOCATION: southamerica-east1
   BIGQUERY_SEEDS_DATASET: seeds
