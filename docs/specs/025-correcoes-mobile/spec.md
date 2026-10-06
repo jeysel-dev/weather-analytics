@@ -6,7 +6,8 @@
 ## Status
 [x] implementado — `web/src/style.css` (`.chart--dynamic`, `.chart--heavy`,
 `.chart-mobile-note`, `.site-nav__toggle` 44×44px, breakpoint 480px dos
-filtros) + classes/nota nos 4 templates afetados.
+filtros, fix do submenu "Relatórios" em touch) + classes/nota nos 4
+templates afetados.
 
 ## Resumo
 Parecer de engenharia (sessão 2026-10-06) identificou um bug real de
@@ -17,7 +18,32 @@ sendo esmagada para 300px fixos no mobile; (2) os três heatmaps densos
 passam a ficar ocultos no mobile com uma nota explicativa pedindo acesso
 via computador; (3) o alvo de toque do botão hambúrguer, abaixo do mínimo
 recomendado; (4) o aperto dos campos de filtro (`select`/`input`) em
-telas muito estreitas (≤480px, ex. iPhone SE).
+telas muito estreitas (≤480px, ex. iPhone SE); (5) — achado em produção
+logo após o primeiro deploy desta spec — o submenu "Relatórios" do menu
+mobile não abria em toque real (funcionava com clique de mouse, por isso
+não foi pego na investigação inicial, que não testou com emulação de
+toque).
+
+### Addendum (2026-10-06): bug do submenu "Relatórios" em touch
+Usuário reportou em produção: "ao clicar na opção Relatórios, nada é
+exibido" no menu mobile. Reproduzido com Playwright + `hasTouch` (clique
+de mouse simulado NÃO reproduz — daí não ter aparecido na investigação
+original). Causa raiz: `web/src/style.css:201-204` tinha um fallback
+`.site-nav__has-sub:focus-within .site-nav__sub { display: block; }` sem
+restrição de dispositivo. Em touch, o navegador sintetiza
+`touchstart → mousedown → focus → mouseup → click`; o `focus` do
+`mousedown` já dispara `:focus-within` **antes do `click` ser
+processado**, e como `.site-nav__sub` é `position: static` no mobile
+(linha 808-814), isso causa reflow síncrono do drawer rolável
+(`.site-nav__links`) entre o `mousedown` e o `mouseup` do mesmo toque. O
+`click` sintético faz hit-test nas coordenadas originais do toque
+*depois* do reflow e erra o botão — cai no conteúdo da página atrás do
+menu, o que aciona o listener de "fechar ao clicar fora"
+(`web/src/nav.ts:21-25`) e fecha o drawer inteiro em vez de abrir o
+submenu. Corrigido restringindo o fallback `:focus-within` a
+`@media (hover: hover) and (pointer: fine)` (dispositivos com mouse) —
+no touch, só `aria-expanded` (JS, `initNavSubmenu`, `nav.ts:49`) decide a
+visibilidade, sem conflito com o CSS.
 
 ## Contexto
 Investigação de código (sem alteração) cobriu CSS, os 14 gráficos ECharts,
