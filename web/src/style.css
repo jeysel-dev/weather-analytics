@@ -96,8 +96,8 @@ section { margin-bottom: 40px; }
   display: none;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   border: none;
   background: transparent;
@@ -447,6 +447,20 @@ section { margin-bottom: 40px; }
   border-radius: 3px;
   background: var(--bg-card);
   margin-bottom: 8px;
+}
+
+/* Nota exibida no lugar de um `.chart--heavy` quando a tela é estreita
+   demais para uma matriz densa (heatmap) — ver spec 025. Escondida por
+   padrão; o `@media` mobile inverte os dois. */
+.chart-mobile-note {
+  display: none;
+  margin: 0 0 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-card);
+  color: var(--text);
+  font-size: 14px;
 }
 
 /* Grids de 2 colunas reaproveitados por várias páginas (rankings,
@@ -801,5 +815,32 @@ section { margin-bottom: 40px; }
 
   main { padding: 0 16px 32px; }
   h1 { font-size: 26px; }
-  .chart { height: 300px !important; }
+
+  /* `.chart--dynamic` calcula a própria altura em JS, proporcional à
+     quantidade de linhas (ranking de cidades, municípios afetados) — não
+     pode ser espremida para 300px junto dos gráficos de altura fixa
+     (spec 025). */
+  .chart:not(.chart--dynamic) { height: 300px !important; }
+
+  /* Heatmaps densos (data × macrorregião/cidade) não cabem de forma
+     legível na largura de um celular, mesmo com altura correta — ficam
+     ocultos e dão lugar à nota explicativa (spec 025). */
+  .chart--heavy { display: none; }
+  .chart--heavy ~ .page-caption { display: none; }
+  .chart-mobile-note { display: block; }
+}
+
+@media (max-width: 480px) {
+  .filter-field select,
+  .filter-field input[type="number"],
+  .filter-field input[type="date"],
+  .filter-field input[type="month"] {
+    min-width: 160px;
+  }
+
+  .filter-field select[multiple],
+  .filter-field .ts-wrapper,
+  .filter-field .ts-wrapper.multi {
+    min-width: 200px;
+  }
 }
