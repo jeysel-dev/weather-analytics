@@ -41,13 +41,19 @@ export function initNavSubmenu(): void {
   const toggles = document.querySelectorAll<HTMLButtonElement>(".site-nav__sub-toggle");
   for (const toggle of toggles) {
     const item = toggle.closest(".site-nav__has-sub");
-    if (item === null) continue;
+    const sub = item?.querySelector<HTMLElement>(".site-nav__sub") ?? null;
+    if (item === null || sub === null) continue;
 
-    const close = () => toggle.setAttribute("aria-expanded", "false");
-    const isOpen = () => toggle.getAttribute("aria-expanded") === "true";
+    const close = () => {
+      sub.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    };
+    const isOpen = () => sub.classList.contains("open");
 
     toggle.addEventListener("click", () => {
-      toggle.setAttribute("aria-expanded", isOpen() ? "false" : "true");
+      const next = !isOpen();
+      sub.classList.toggle("open", next);
+      toggle.setAttribute("aria-expanded", String(next));
     });
     document.addEventListener("click", (event) => {
       if (isOpen() && !item.contains(event.target as Node)) close();

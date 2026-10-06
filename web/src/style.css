@@ -198,19 +198,22 @@ section { margin-bottom: 40px; }
   z-index: 21;
 }
 
-.site-nav__sub-toggle[aria-expanded="true"] + .site-nav__sub {
+/* `.open` é setada por `nav.ts` (`initNavSubmenu`) — mesmo padrão já usado
+   pelo drawer mobile (`.site-nav__links.open`). Trocado do seletor de
+   atributo+irmão `[aria-expanded="true"] + .site-nav__sub` (spec 025) para
+   isto porque, em touch real (iOS Safari), o submenu simplesmente não
+   abria — a causa exata não foi confirmada (não reproduziu em emulação
+   Chromium/WebKit), mas classe setada direto no elemento via JS remove
+   qualquer dependência de seletor de atributo dinâmico ou combinador de
+   irmão, que pode se comportar de forma inconsistente entre engines. */
+.site-nav__sub.open {
   display: block;
 }
 
 /* :focus-within é só um fallback de teclado/mouse para quem tabula até o
-   submenu sem clicar no toggle. Em touch, o `mousedown` sintético foca o
-   botão ANTES do `click` ser processado — isso abria o submenu via CSS
-   puro no meio do toque, causando reflow do drawer (`.site-nav__sub` é
-   `position: static` no mobile) que desloca as coordenadas do toque para
-   fora do botão; o `click` sintético então erra o alvo e aciona o
-   "fechar ao clicar fora" (`nav.ts`), fechando o menu inteiro em vez de
-   abrir o submenu. Restringir a dispositivos com mouse evita o conflito;
-   no touch, só `aria-expanded` (JS, `initNavSubmenu`) controla a abertura. */
+   submenu sem clicar no toggle (não depende do JS). Restrito a
+   dispositivos com mouse real — em touch, só `.open` (JS) controla a
+   abertura. */
 @media (hover: hover) and (pointer: fine) {
   .site-nav__has-sub:focus-within .site-nav__sub {
     display: block;

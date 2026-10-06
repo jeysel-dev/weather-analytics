@@ -45,6 +45,42 @@ submenu. Corrigido restringindo o fallback `:focus-within` a
 no touch, só `aria-expanded` (JS, `initNavSubmenu`, `nav.ts:49`) decide a
 visibilidade, sem conflito com o CSS.
 
+### Addendum 2 (2026-10-06): bug persistiu em iPhone/Safari real
+Usuário confirmou (purge no Cloudflare + aba anônima, descartando cache)
+que o bug **persistia** mesmo com o fix do addendum 1 em produção
+(confirmado via `kubectl exec` no pod e via `curl` através do Cloudflare —
+o CSS/JS entregue era exatamente o corrigido). Comportamento relatado
+mudou de descrição: "o menu continua aberto, mas sem a lista de
+Relatórios" — ou seja, o drawer **não** fecha mais (o addendum 1 resolveu
+essa parte), mas o submenu ainda não abre.
+
+Nova investigação (Playwright, Chromium + WebKit, `page.tap()` real e
+touch com tremor via CDP, usando o build exato de produção) **não
+reproduziu** o bug em nenhum engine/emulação disponível. Hipótese mais
+provável: WebKit do Playwright é um build desktop, sem a camada
+UIKit/WKWebView do Safari iOS real — e Safari iOS tem a particularidade
+de **não focar `<button>` em toque** (diferente de Chromium), então o
+mecanismo exato do addendum 1 (`:focus-within` disparado por foco
+síncrono) provavelmente nem se aplica lá; o fato de a correção do
+addendum 1 não ter resolvido sugere uma causa diferente, não isolada com
+as ferramentas disponíveis.
+
+**Correção aplicada sem causa raiz 100% confirmada** (decisão deliberada
+dado o custo de mais um ciclo especulativo): trocado o mecanismo de
+abertura de seletor CSS de atributo+irmão
+(`.site-nav__sub-toggle[aria-expanded="true"] + .site-nav__sub`) para o
+mesmo padrão já usado — e comprovadamente funcional em produção — pelo
+próprio drawer mobile: uma classe `.open` setada diretamente no elemento
+via JS (`sub.classList.toggle("open", next)` em `nav.ts`, em vez de só
+`aria-expanded` no botão). Isso elimina qualquer dependência de
+combinador de irmão/seletor de atributo dinâmico — que pode ter
+comportamento de reflow/recálculo de estilo inconsistente entre engines —
+substituindo por exatamente o mecanismo que já funciona para
+`.site-nav__links.open`. O `aria-expanded` continua sendo setado (a11y),
+só deixou de ser a fonte de verdade do CSS. **Se o bug persistir mesmo
+após este fix, o próximo passo é debug remoto via Safari Web Inspector
+(cabo + Mac) — ver `web/src/nav.ts` e `web/src/style.css:185-222`.**
+
 ## Contexto
 Investigação de código (sem alteração) cobriu CSS, os 14 gráficos ECharts,
 tabelas, navegação e filtros em todas as páginas do dashboard
