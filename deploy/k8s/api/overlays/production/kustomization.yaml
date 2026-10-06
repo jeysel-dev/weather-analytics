@@ -11,18 +11,21 @@ resources:
 # kubectl patch application weather-analytics-api-production -n argocd.
 images:
   - name: ghcr.io/jeysel-dev/weather-analytics/api
-    # Promovido manualmente em 2026-10-06 — 77fefcb (spec 025, correções de
-    # experiência mobile). Versão anterior em produção: 70636b3.
-    # Entrega deste bump: só CSS/templates (web/src/style.css +
-    #   api/app/templates/{temperatura,precipitacao,alertas,comparativo}.html)
-    #   — altura dos gráficos de barra com altura dinâmica não é mais
-    #   esmagada em telas ≤720px; os 3 heatmaps densos ficam ocultos no
-    #   mobile com nota explicativa; botão hambúrguer 44×44px; filtros com
-    #   breakpoint em 480px. Nenhuma mudança de API/BigQuery/schema.
-    # Validado: CI verde (run 37495141640 — pytest + build + smoke /health),
-    #   staging sincronizado e Healthy em 77fefcb.
+    # Promovido manualmente em 2026-10-06 — 80942cf (spec 025, addendum:
+    # corrige o submenu "Relatórios" do menu mobile não abrindo em toque
+    # real — achado pelo usuário minutos depois do bump anterior, 77fefcb).
+    # Versão anterior em produção: 77fefcb.
+    # Entrega deste bump: só web/src/style.css — restringe o fallback CSS
+    #   `:focus-within` de `.site-nav__sub` a
+    #   `@media (hover: hover) and (pointer: fine)`; em touch, o mousedown
+    #   sintético focava o botão antes do click ser processado e o reflow
+    #   do drawer (position:static no mobile) deslocava o alvo do click,
+    #   que então caía fora do menu e fechava o drawer inteiro. Nenhuma
+    #   mudança de API/BigQuery/schema.
+    # Validado: CI verde (run 37497922389 — pytest + build + smoke /health),
+    #   staging sincronizado e Healthy em 80942cf.
     #
-    # Rollback: última versão boa em produção é 70636b3.
+    # Rollback: última versão boa em produção é 77fefcb.
     # `kustomize edit set image
-    # ghcr.io/jeysel-dev/weather-analytics/api=...:70636b3` + commit + sync.
-    newTag: 77fefcb
+    # ghcr.io/jeysel-dev/weather-analytics/api=...:77fefcb` + commit + sync.
+    newTag: 80942cf
