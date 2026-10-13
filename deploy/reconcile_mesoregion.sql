@@ -33,23 +33,20 @@
 -- PRÉ-REQUISITO
 -- ------------
 -- IMPORTANTE: `docker-compose.pipeline.yml` NA RAIZ DESTE REPO ESTÁ MORTO —
--- não é mais o que roda em produção (spec 041 do repo infra, já aplicada:
--- checkout /home/ubuntu/app_weather removido do servidor). O compose real
--- vive em `/home/ubuntu/infra/docker-compose.pipeline.yml` e usa a tag
--- `:latest` (não pinada) — confirmar com `cat` no servidor antes de assumir.
+-- não é mais o que roda em produção (spec 041 do repo infra, já aplicada: o
+-- checkout de código desta aplicação não existe mais no servidor). O compose
+-- real vive no checkout do repo `infra` no servidor e usa a tag `:latest` (não
+-- pinada) — confirmar antes de assumir.
 --
 -- 1. A imagem `ghcr.io/jeysel-dev/weather-pipeline:latest` com o `dbt/` novo
 --    já publicada (push em `main` tocando `dbt/**` dispara isso sozinho via
 --    `build-and-push.yml`) e já puxada no servidor.
 -- 2. O seed recarregado no BigQuery com os valores novos. Não existe
---    serviço `dbt` separado no compose (só `weather-pipeline`) — sobrescrever
---    o CMD, e `dbt deps` antes (dbt_packages não persiste entre `run`s):
---     ssh -i ~/.ssh/hostinger ubuntu@2.25.173.125
---     cd /home/ubuntu/infra
---     docker compose -f docker-compose.pipeline.yml pull weather-pipeline
---     docker compose -f docker-compose.pipeline.yml run --rm --entrypoint bash weather-pipeline -c \
---         "dbt deps --project-dir /app/dbt --profiles-dir /app/pipeline && \
---          dbt seed --project-dir /app/dbt --profiles-dir /app/pipeline --select locations"
+--    serviço `dbt` separado no compose (só `weather-pipeline`) — é preciso
+--    sobrescrever o CMD e rodar `dbt deps` antes (dbt_packages não persiste
+--    entre `run`s).
+--    Execução operacional (acesso ao servidor, diretório de trabalho e comando
+--    exato) documentada no runbook privado do repo `infra`.
 --
 -- Rodar os blocos abaixo no console do BigQuery (projeto weather-analytics-490113)
 -- ou via `bq query --use_legacy_sql=false < deploy/reconcile_mesoregion.sql`.
@@ -97,10 +94,9 @@ WHERE h.location_id = s.location_id
 -- `mart_climate__alerts` é `materialized='table'` e lê `mesoregion` de
 -- daily_facts. Rebuild é seguro (lê de uma mart, não do raw). Rodar via dbt:
 --
--- (cd /home/ubuntu/infra primeiro; dbt deps de novo — não persiste entre runs):
---     docker compose -f docker-compose.pipeline.yml run --rm --entrypoint bash weather-pipeline -c \
---         "dbt deps --project-dir /app/dbt --profiles-dir /app/pipeline && \
---          dbt run --project-dir /app/dbt --profiles-dir /app/pipeline --select mart_climate__alerts"
+-- Rodar `dbt run --select mart_climate__alerts` pela imagem do pipeline (com
+-- `dbt deps` antes — não persiste entre runs). Execução operacional
+-- documentada no runbook privado do repo `infra`.
 --
 -- (ou deixar o próximo run agendado do pipeline reconstruir — alerts é refeita
 -- a cada run de qualquer forma.)
